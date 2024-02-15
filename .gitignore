@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Build and Doxygen files
+build/
+docs/html/
+docs/latex/
+
+# VS code
+.vscode
