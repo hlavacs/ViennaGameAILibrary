@@ -5,26 +5,37 @@
 #include <random>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 
 namespace VGAIL
 {
 	typedef uint32_t u32;
 	typedef float f32;
 
-	struct Vec2i 
+	struct Vec2i
 	{
 		u32 x, y;
 
-		Vec2i(u32 x, u32 y) 
+		Vec2i(u32 x, u32 y)
 			:x(x), y(y) {}
 
 		Vec2i(u32 val)
 			: x(val), y(val) {}
+
+		bool operator==(const Vec2i& other)
+		{
+			return x == other.x && y == other.y;
+		}
 	};
+
+	std::ostream& operator<<(std::ostream& os, const Vec2i& vec)
+	{
+		return os << vec.x << ", " << vec.y;
+	}
 
 	struct Vec2f
 	{
-		float x, y;
+		f32 x, y;
 
 		Vec2f(f32 x, f32 y)
 			: x(x), y(y) {}
@@ -59,10 +70,13 @@ namespace VGAIL
 	struct Node
 	{
 		Vec2i pos;
-		float g, h;
+		f32 g, h;
 		Node* parent;
 		NodeState state;
 		std::vector<Node*> neighbors;
+		std::unordered_map<u32, std::vector<Vec2i>> adj_list;
+
+		u32 region_id;
 
 		Node(Vec2i pos)
 			: pos(pos)
@@ -72,16 +86,49 @@ namespace VGAIL
 			, state(NodeState::WALKABLE)
 		{}
 
-		float f() const
+		f32 f() const
 		{
 			return g + h;
 		}
 	};
 
-	struct MinHeapComparer
+	struct Region
 	{
-		bool operator()(Node* lhs, Node* rhs) const {
-			return lhs->f() > rhs->f();
+		u32 region_id;
+		std::vector<Node*> nodes;
+	};
+
+	struct RegionList
+	{
+		std::vector<Region*> regions;
+		u32 size_x, size_y;
+
+		RegionList(u32 size_x, u32 size_y)
+			: size_x(size_x)
+			, size_y(size_y)
+		{
+			for (u32 y = 0; y < size_y; y++)
+			{
+				for (u32 x = 0; x < size_x; x++)
+				{
+					Region* region = new Region();
+					region->region_id = x + y * size_x;
+					regions.push_back(region);
+				}
+			}
+		}
+
+		~RegionList()
+		{
+			for (u32 i = 0; i < regions.size(); i++)
+			{
+				delete regions[i];
+			}
+		}
+
+		u32 get_region_id(Vec2i pos)
+		{
+			return pos.x + pos.y * size_x;
 		}
 	};
 
@@ -100,59 +147,12 @@ namespace VGAIL
 			{
 				for (u32 x = 0; x < m_width; x++)
 				{
-					Node* node = new Node(Vec2i{x, y});
+					Node* node = new Node(Vec2i{ x, y });
 					m_nodes.push_back(node);
 
 					auto val = distribution(rng);
-					if (val <= 30)
+					if (val <= 45)
 						node->state = NodeState::OBSTRUCTABLE;
-				}
-			}
-			
-			for (u32 i = 0; i < m_nodes.size(); i++)
-			{
-				set_neighbors(m_nodes[i]);
-			}
-		}
-
-		NavMesh(const std::string& filepath)
-		{
-			std::ifstream stream(filepath);
-			std::string navmesh_data;
-
-			if (stream.is_open())
-			{
-				std::string line;
-				getline(stream, line);
-				m_width = std::stoi(line);
-
-				getline(stream, line);
-				m_height = std::stoi(line);
-
-				stream >> navmesh_data;
-			}
-			else
-			{
-				std::cout << "Could not read file " << filepath << std::endl;
-				return;
-			}
-
-			for (u32 y = 0; y < m_height; y++)
-			{
-				for (u32 x = 0; x < m_width; x++)
-				{
-					Node* node = new Node(Vec2i{x, y});
-					m_nodes.push_back(node);
-
-					char state = navmesh_data[get_index(Vec2i{x, y})];
-					if (state == 'w')
-					{
-						node->state = NodeState::WALKABLE;
-					}
-					else
-					{
-						node->state = NodeState::OBSTRUCTABLE;
-					}
 				}
 			}
 
@@ -161,6 +161,54 @@ namespace VGAIL
 				set_neighbors(m_nodes[i]);
 			}
 		}
+
+		// NavMesh(const std::string& filepath)
+		// {
+		// 	std::ifstream stream(filepath);
+		// 	std::string navmesh_data;
+
+		// 	if (stream.is_open())
+		// 	{
+		// 		std::string line;
+		// 		getline(stream, line);
+		// 		m_width = std::stoi(line);
+
+		// 		getline(stream, line);
+		// 		m_height = std::stoi(line);
+
+		// 		stream >> navmesh_data;
+		// 	}
+		// 	else
+		// 	{
+		// 		std::cout << "Could not read file " << filepath << std::endl;
+		// 		return;
+		// 	}
+
+		// 	for (u32 y = 0; y < m_height; y++)
+		// 	{
+
+		// 		for (u32 x = 0; x < m_width; x++)
+		// 		{
+		// 			Node* node = new Node(Vec2i{x, y});
+		// 			m_nodes.push_back(node);
+
+		// 			char state = navmesh_data[get_index(Vec2i{x, y})];
+		// 			if (state == 'w')
+		// 			{
+		// 				node->state = NodeState::WALKABLE;
+		// 			}
+		// 			else
+		// 			{
+		// 				node->state = NodeState::OBSTRUCTABLE;
+		// 			}
+		// 		}
+		// 	}
+
+		// 	for (u32 i = 0; i < m_nodes.size(); i++)
+		// 	{
+		// 		set_neighbors(m_nodes[i]);
+		// 	}
+		// }
 
 		~NavMesh()
 		{
@@ -180,11 +228,6 @@ namespace VGAIL
 			return m_height;
 		}
 
-		Node* get_node(Vec2i pos)
-		{
-			return m_nodes[get_index(pos)];
-		}
-
 		void set_obstacle(Vec2i obstacle_pos)
 		{
 			u32 index = get_index(obstacle_pos);
@@ -198,7 +241,7 @@ namespace VGAIL
 			}
 		}
 
-		std::vector<Node*> get_shortest_path(Vec2i start_pos, Vec2i end_pos)
+		std::vector<Vec2i> A_star(Vec2i start_pos, Vec2i end_pos)
 		{
 			for (Node* node : m_nodes)
 			{
@@ -232,13 +275,11 @@ namespace VGAIL
 
 				if (current == end_node)
 				{
-					std::cout << "Path found!" << std::endl;
+					std::vector<Vec2i> shortest_path;
 
-					std::vector<Node*> shortest_path;
-
-					while (current)
+					while (current->parent)
 					{
-						shortest_path.push_back(current);
+						shortest_path.push_back(current->pos);
 						current = current->parent;
 					}
 
@@ -251,13 +292,13 @@ namespace VGAIL
 					if (neighbor->state == NodeState::OBSTRUCTABLE)
 						continue;
 
-					float tentative_g = current->g + euclidean(neighbor->pos, current->pos);
+					f32 tentative_g = current->g + euclidean(neighbor->pos, current->pos);
 
 					if (tentative_g < neighbor->g)
 					{
 						neighbor->parent = current;
 						neighbor->g = tentative_g;
-						neighbor->h = manhattan(neighbor->pos, end_node->pos);
+						neighbor->h = euclidean(neighbor->pos, end_node->pos);
 
 						if (std::find(open_set.begin(), open_set.end(), neighbor) == std::end(open_set))
 						{
@@ -267,80 +308,128 @@ namespace VGAIL
 				}
 			}
 
-			std::cout << "Path not found!" << std::endl;
 			return {};
 		}
 
-		std::vector<Node*> get_shortest_path_min_heap(Vec2i start_pos, Vec2i end_pos)
+		void preprocess()
 		{
-			for (Node* node : m_nodes)
+			f32 region_length_on_x = 3.0f;
+			f32 region_length_on_y = 3.0f;
+
+			u32 num_regions_x = std::ceil(static_cast<f32>(m_width) / region_length_on_x);
+			u32 num_regions_y = std::ceil(static_cast<f32>(m_height) / region_length_on_y);
+
+			m_regions = new RegionList(num_regions_x, num_regions_y);
+
+			for (u32 y = 0; y < m_height; y++)
 			{
-				node->g = INFINITY;
-				node->h = INFINITY;
-				node->parent = nullptr;
+				u32 y_index = std::floor(static_cast<f32>(y) / region_length_on_y);
+
+				for (u32 x = 0; x < m_width; x++)
+				{
+					u32 x_index = std::floor(static_cast<f32>(x) / region_length_on_x);
+
+					u32 region_id = m_regions->get_region_id(Vec2i(x_index, y_index));
+					Node* node = get_node(Vec2i(x, y));
+					node->region_id = region_id;
+
+					m_regions->regions[region_id]->nodes.push_back(node);
+					//std::cout << "Region " << region_id << "-- Node: (" << x << ", " << y << ")"  << std::endl;
+				}
 			}
 
-			std::vector<Node*> open_set;
-			std::make_heap(open_set.begin(), open_set.end(), MinHeapComparer());
-			
-			Node* start_node = get_node(start_pos);
-			Node* end_node = get_node(end_pos);
-			
-			open_set.push_back(start_node);
-			std::push_heap(open_set.begin(), open_set.end(), MinHeapComparer());
-
-			start_node->g = 0.0f;
-
-			while (open_set.size() > 0)
+			uint32_t count = 0;
+			for (Node* N : m_nodes)
 			{
-				Node* current = open_set.front();
+				std::cout << "Processing node " << ++count << "/" << m_nodes.size() << std::endl;
 
-				std::pop_heap(open_set.begin(), open_set.end(), MinHeapComparer());
-				open_set.pop_back();
+				if (N->state == NodeState::OBSTRUCTABLE)
+					continue;
 
-				if (current == end_node)
+				for (Region* R : m_regions->regions)
 				{
-					std::cout << "Path found!" << std::endl;
-
-					std::vector<Node*> shortest_path;
-
-					while (current)
-					{
-						shortest_path.push_back(current);
-						current = current->parent;
-					}
-
-					std::reverse(shortest_path.begin(), shortest_path.end());
-					return shortest_path;
-				}
-
-				for (Node* neighbor : current->neighbors)
-				{
-					if (neighbor->state == NodeState::OBSTRUCTABLE)
+					if (N->region_id == R->region_id)
 						continue;
 
-					float tentative_g = current->g + euclidean(neighbor->pos, current->pos);
+					std::vector<std::vector<Vec2i>> paths;
 
-					if (tentative_g < neighbor->g)
+					// Calculate distances from N to all nodes in region R
+					for (Node* O_tentative : R->nodes)
 					{
-						neighbor->parent = current;
-						neighbor->g = tentative_g;
-						neighbor->h = manhattan(neighbor->pos, end_node->pos);
+						std::vector<Vec2i> path = A_star(N->pos, O_tentative->pos);
 
-						if (std::find(open_set.begin(), open_set.end(), neighbor) == std::end(open_set))
+						if (path.size() > 0)
 						{
-							open_set.push_back(neighbor);
-							std::push_heap(open_set.begin(), open_set.end(), MinHeapComparer());
+							paths.push_back(path);
 						}
 					}
+
+					// No paths found
+					if (paths.size() == 0)
+					{
+						N->adj_list[R->region_id] = {};
+						continue;
+					}
+
+					// Find most optimal path from N to R
+					u32 best_path_index = 0;
+					for (u32 i = 1; i < paths.size(); i++)
+					{
+						if (paths[i].size() < paths[best_path_index].size())
+						{
+							best_path_index = i;
+						}
+					}
+
+					// Add best path to R to the node N
+					N->adj_list[R->region_id] = paths[best_path_index];
 				}
 			}
-
-			std::cout << "Path not found!" << std::endl;
-			return {};
 		}
 
-		Vec2i get_position(u32 index)
+		std::vector<Vec2i> get_path(Vec2i start, Vec2i target)
+		{
+			Node* start_node = get_node(start);
+			Node* target_node = get_node(target);
+
+			u32 start_region_id = start_node->region_id;
+			u32 target_region_id = target_node->region_id;
+
+			// Get precomputed path from start node to target region
+			if (start_node->adj_list.size() == 0)
+			{
+				std::cout << "Cannot find path!" << std::endl;
+				return {};
+			}
+			std::vector<Vec2i> path_to_region = start_node->adj_list[target_region_id];
+
+			if (path_to_region.size() == 0)
+			{
+				std::cout << "No path found to region!" << std::endl;
+				return {};
+			}
+
+			// Calculate shortest path between node O and target node
+			Vec2i region_start_node = path_to_region[path_to_region.size() - 1];
+			if (region_start_node == target)
+			{
+				// Reached destination
+				return path_to_region;
+			}
+
+			std::vector<Vec2i> path_within_region = A_star(region_start_node, target);
+			if (path_within_region.size() == 0)
+			{
+				std::cout << "No path found inside region!" << std::endl;
+				return {};
+			}
+
+			path_to_region.insert(path_to_region.end(), path_within_region.begin(), path_within_region.end());
+
+			return path_to_region;
+		}
+
+		Vec2i get_2D_coordinates(u32 index)
 		{
 			u32 x = index % m_width;
 			u32 y = (index - x) / m_width;
@@ -362,96 +451,52 @@ namespace VGAIL
 			stream.close();
 		}
 
-	private:
 		u32 get_index(Vec2i pos)
 		{
 			return pos.x + pos.y * m_width;
 		}
+		Node* get_node(Vec2i pos)
+		{
+			return m_nodes[get_index(pos)];
+		}
+	private:
 
 		void set_neighbors(Node* node)
 		{
-			float x = node->pos.x;
-			float y = node->pos.y;
+			f32 x = node->pos.x;
+			f32 y = node->pos.y;
 			Node* neighbor;
 
-			// top left
-			if (x - 1 >= 0 && y - 1 >= 0 &&
-				x - 1 < m_width && y - 1 < m_height)
+			for (int v = -1; v <= 1; ++v)
 			{
-				neighbor = get_node(Vec2i(x - 1, y - 1));
-				node->neighbors.push_back(neighbor);
-			}
+				for (int u = -1; u <= 1; ++u)
+				{
+					if (u == 0 && v == 0) // Current node
+						continue;
 
-			// top mid
-			if (x >= 0 && y - 1 >= 0 &&
-				x < m_width && y - 1 < m_height)
-			{
-				neighbor = get_node(Vec2i(x, y - 1));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// top right
-			if (x + 1 >= 0 && y - 1 >= 0 &&
-				x + 1 < m_width && y - 1 < m_height)
-			{
-				neighbor = get_node(Vec2i(x + 1, y - 1));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// mid left
-			if (x - 1 >= 0 && y >= 0 &&
-				x - 1 < m_width && y < m_height)
-			{
-				neighbor = get_node(Vec2i(x - 1, y));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// mid right
-			if (x + 1 >= 0 && y >= 0 &&
-				x + 1 < m_width && y < m_height)
-			{
-				neighbor = get_node(Vec2i(x + 1, y));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// bottom left
-			if (x - 1 >= 0 && y + 1 >= 0 &&
-				x - 1 < m_width && y + 1 < m_height)
-			{
-				neighbor = get_node(Vec2i(x - 1, y + 1));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// bottom mid
-			if (x >= 0 && y + 1 >= 0 &&
-				x < m_width && y + 1 < m_height)
-			{
-				neighbor = get_node(Vec2i(x, y + 1));
-				node->neighbors.push_back(neighbor);
-			}
-
-			// bottom right
-			if (x + 1 >= 0 && y + 1 >= 0 &&
-				x + 1 < m_width && y + 1 < m_height)
-			{
-				neighbor = get_node(Vec2i(x + 1, y + 1));
-				node->neighbors.push_back(neighbor);
+					if (x + u >= 0 && y + v >= 0 &&
+						x + u < m_width && y + v < m_height)
+					{
+						neighbor = get_node(Vec2i(x + u, y + v));
+						node->neighbors.push_back(neighbor);
+					}
+				}
 			}
 		}
 
-		float manhattan(const Vec2i& v1, const Vec2i& v2)
+		f32 manhattan(const Vec2i& v1, const Vec2i& v2)
 		{
-			float dist_X = std::abs(static_cast<f32>(v1.x) - static_cast<f32>(v2.x));
-			float dist_Y = std::abs(static_cast<f32>(v1.y) - static_cast<f32>(v2.y));
+			f32 dist_X = std::abs(static_cast<f32>(v1.x) - static_cast<f32>(v2.x));
+			f32 dist_Y = std::abs(static_cast<f32>(v1.y) - static_cast<f32>(v2.y));
 
 			return dist_X + dist_Y;
 		}
 
-		float euclidean(const Vec2i& v1, const Vec2i& v2)
+		f32 euclidean(const Vec2i& v1, const Vec2i& v2)
 		{
-			float dist_x = static_cast<f32>(v1.x) - static_cast<f32>(v2.x);
-			float dist_Y = static_cast<f32>(v1.y) - static_cast<f32>(v2.y);
-			float dist = std::pow(dist_x, 2) + std::pow(dist_Y, 2);
+			f32 dist_x = static_cast<f32>(v1.x) - static_cast<f32>(v2.x);
+			f32 dist_Y = static_cast<f32>(v1.y) - static_cast<f32>(v2.y);
+			f32 dist = std::pow(dist_x, 2) + std::pow(dist_Y, 2);
 
 			return std::sqrt(dist);
 		}
@@ -459,13 +504,15 @@ namespace VGAIL
 	private:
 		std::vector<Node*> m_nodes;
 		u32 m_width, m_height;
+
+		RegionList* m_regions;
 	};
 
 	class GameAIManager
 	{
 	public:
 		GameAIManager() {}
-		~GameAIManager() 
+		~GameAIManager()
 		{
 			for (u32 i = 0; i < m_navmeshes.size(); i++)
 			{
@@ -476,14 +523,14 @@ namespace VGAIL
 		NavMesh* create_navmesh(u32 width, u32 height)
 		{
 			m_navmeshes.push_back(new NavMesh(width, height));
-			return m_navmeshes[m_navmeshes.size()-1];
-		}
-
-		NavMesh* create_navmesh(const std::string& filepath)
-		{
-			m_navmeshes.push_back(new NavMesh(filepath));
 			return m_navmeshes[m_navmeshes.size() - 1];
 		}
+
+		// NavMesh* create_navmesh(const std::string& filepath)
+		// {
+		// 	m_navmeshes.push_back(new NavMesh(filepath));
+		// 	return m_navmeshes[m_navmeshes.size() - 1];
+		// }
 
 		// To be used when having multiple navmeshes
 		void free_navmesh(NavMesh* navmesh)
