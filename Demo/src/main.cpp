@@ -12,23 +12,16 @@ int main(int argc, char* argv[])
 	uint32_t screen_width = 1200;
 	uint32_t screen_height = 800;
 
-	InitWindow(screen_width, screen_height, "Demo");
-	SetTargetFPS(60);
-
 	bool collision = false;
 	bool path_found = false;
 
-	float grid_stride = 50.0f;
-	float tile_size = 35.0f;
+	float grid_stride = 25.0f;
+	float tile_size = 15.0f;
 	uint32_t speed = 70;
 
 	Rectangle box_collision = { 0 };
 
 	VGAIL::GameAIManager* manager = new VGAIL::GameAIManager();
-
-	//VGAIL::NavMesh* navmesh = manager->create_navmesh("Demo/res/navmesh.txt");
-	// uint32_t navmesh_width = navmesh->get_width();
-	// uint32_t navmesh_height = navmesh->get_height();
 
 	uint32_t navmesh_width = static_cast<uint32_t>(screen_width / grid_stride);
 	uint32_t navmesh_height = static_cast<uint32_t>(screen_height / grid_stride);
@@ -44,14 +37,14 @@ int main(int argc, char* argv[])
 								static_cast<float>(target_position.y * grid_stride),
 								tile_size, tile_size };
 
-	if (navmesh->get_node(start_position)->state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->get_node(start_position).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(start_position)->state = VGAIL::NodeState::WALKABLE;
+		navmesh->get_node(start_position).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	if (navmesh->get_node(target_position)->state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->get_node(target_position).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(target_position)->state = VGAIL::NodeState::WALKABLE;
+		navmesh->get_node(target_position).state = VGAIL::NodeState::WALKABLE;
 	}
 
 	std::vector<VGAIL::Vec2i> path;
@@ -61,8 +54,11 @@ int main(int argc, char* argv[])
 
 	{
 		Timer timer("Preprocess");
-		navmesh->preprocess();
+		navmesh->start_preprocess();
 	}
+
+	InitWindow(screen_width, screen_height, "Demo");
+	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
 	{
@@ -111,12 +107,12 @@ int main(int argc, char* argv[])
 		{
 			for (uint32_t x = 0; x < navmesh_width; x++)
 			{
-				VGAIL::Node* node = navmesh->get_node(VGAIL::Vec2i(x, y));
+				VGAIL::NodeData& node = navmesh->get_node(VGAIL::Vec2i(x, y));
 
-				Rectangle node_rect = { node->pos.x * grid_stride, node->pos.y * grid_stride, tile_size, tile_size };
+				Rectangle node_rect = { node.pos.x * grid_stride, node.pos.y * grid_stride, tile_size, tile_size };
 
 				Color color;
-				if (node->state == VGAIL::NodeState::OBSTRUCTABLE)
+				if (node.state == VGAIL::NodeState::OBSTRUCTABLE)
 				{
 					color = CLITERAL(Color) { 139, 173, 133, 255 };
 				}
@@ -126,10 +122,6 @@ int main(int argc, char* argv[])
 				}
 
 				DrawRectangleRec(node_rect, color);
-				DrawText(std::to_string(node->region_id).c_str(), node->pos.x * grid_stride, node->pos.y * grid_stride, 10, RED);
-				// DrawText(std::to_string(node->h).c_str(), node->pos.x * grid_stride + 5, node->pos.y * grid_stride + 10, 10, BLACK);
-				DrawText(std::to_string(x).c_str(), node->pos.x * grid_stride + 5, node->pos.y * grid_stride + 10, 10, BLACK);
-				DrawText(std::to_string(y).c_str(), node->pos.x * grid_stride + 20, node->pos.y * grid_stride + 10, 10, BLACK);
 			}
 		}
 
