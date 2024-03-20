@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 	bool collision = false;
 	bool path_found = false;
 
-	float grid_stride = 25.0f;
-	float tile_size = 15.0f;
+	float grid_stride = 50.0f;
+	float tile_size = 35.0f;
 	uint32_t speed = 70;
 
 	Rectangle box_collision = { 0 };
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 			}
 			{
 				Timer timer("Geometric preprocessing time");
-				path2 = navmesh->get_path(start_position, target_position);
+				path2 = navmesh->get_path_multithreading(start_position, target_position);
 			}
 		}
 
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
 		DrawRectangleRec(start_rect, CLITERAL(Color) { 191, 64, 64, 255 });
 		DrawRectangleRec(target_rect, CLITERAL(Color) { 102, 119, 204, 255 });
 
-		if(path.size() > 0)
+		if (path.size() > 0)
 		{
 			for (uint32_t i = 1; i < path.size(); i++)
 			{
@@ -149,15 +149,15 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		if(path2.size() > 0) 
+		if (path2.size() > 0)
 		{
 			DrawLineEx(
-					Vector2{ start_position.x * grid_stride + (tile_size / 2),
-								start_position.y * grid_stride + (tile_size / 2) },
-					Vector2{ path2[0].x * grid_stride + (tile_size / 2),
-								path2[0].y * grid_stride + (tile_size / 2) },
-					3.0f,
-					RED);
+				Vector2{ start_position.x * grid_stride + (tile_size / 2),
+							start_position.y * grid_stride + (tile_size / 2) },
+				Vector2{ path2[0].x * grid_stride + (tile_size / 2),
+							path2[0].y * grid_stride + (tile_size / 2) },
+				3.0f,
+				RED);
 			for (uint32_t i = 1; i < path2.size(); i++)
 			{
 				DrawLineEx(

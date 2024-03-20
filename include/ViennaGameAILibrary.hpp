@@ -71,7 +71,7 @@ namespace VGAIL
 		OBSTRUCTABLE,
 		WALKABLE
 	};
-	
+
 	struct Region
 	{
 		u32 region_id;
@@ -152,7 +152,7 @@ namespace VGAIL
 			{
 				for (u32 x = 0; x < m_width; x++)
 				{
-					NodeData node(Vec2i{x, y});
+					NodeData node(Vec2i{ x, y });
 
 					auto val = distribution(rng);
 					if (val <= 30)
@@ -194,7 +194,7 @@ namespace VGAIL
 					u32 x_index = std::floor(static_cast<f32>(x) / region_length_on_x);
 
 					u32 region_id = m_regions->get_region_id(Vec2i(x_index, y_index));
-					
+
 					NodeData& node = get_node(Vec2i(x, y));
 					node.region_id = region_id;
 
@@ -265,7 +265,7 @@ namespace VGAIL
 				{
 					std::vector<Vec2i> shortest_path;
 
-					while(current_index != -1)
+					while (current_index != -1)
 					{
 						shortest_path.push_back(m_nodes[current_index].pos);
 						current_index = parents[current_index];
@@ -358,13 +358,21 @@ namespace VGAIL
 			u32 start_region_id = start_node.region_id;
 			u32 target_region_id = target_node.region_id;
 
+			if(start_region_id == target_region_id)
+			{
+				return A_star(start, target);
+			}
+
 			// Get precomputed path from start node to target region
 			if (m_adj_list[get_index(start_node.pos)].size() == 0)
 			{
 				std::cout << "Cannot find path!" << std::endl;
 				return {};
 			}
-			std::vector<Vec2i> path_to_region = m_adj_list[get_index(start_node.pos)][target_region_id];
+			
+			u32 start_node_index = get_index(start_node.pos);
+
+			std::vector<Vec2i> path_to_region = m_adj_list[start_node_index][target_region_id];
 
 			if (path_to_region.size() == 0)
 			{
@@ -431,7 +439,7 @@ namespace VGAIL
 				{
 					std::vector<Vec2i> shortest_path;
 
-					while(current_index != -1)
+					while (current_index != -1)
 					{
 						shortest_path.push_back(nodes[current_index].pos);
 						current_index = parents[current_index];
@@ -471,17 +479,17 @@ namespace VGAIL
 		{
 			u32 start_index = thread_id;
 
-			for(u32 region_index = start_index; region_index < region_list.size(); region_index += num_threads)
+			for (u32 region_index = start_index; region_index < region_list.size(); region_index += num_threads)
 			{
 				std::cout << "Preprocessing region " << region_index << "/" << region_list.size() << std::endl;
-				for(u32 i = 0; i < region_list[region_index]->nodes.size(); i++)
+				for (u32 i = 0; i < region_list[region_index]->nodes.size(); i++)
 				{
 					u32 node_index = region_list[region_index]->nodes[i];
-					
+
 					if (nodes[node_index].state == NodeState::OBSTRUCTABLE)
 						continue;
 
-					for (Region* R :region_list)
+					for (Region* R : region_list)
 					{
 						if (nodes[node_index].region_id == R->region_id)
 							continue;
@@ -521,23 +529,73 @@ namespace VGAIL
 				}
 			}
 		}
-			
+
 		void start_preprocess()
 		{
-			u32 num_threads = 6;
+			u32 num_threads = 4;
 			std::vector<std::thread> threads;
 
 			u32 regions_per_thread = m_regions->regions.size() / num_threads;
 
-			for(u32 i = 0; i < num_threads; i++)
+			for (u32 i = 0; i < num_threads; i++)
 			{
 				threads.push_back(std::thread(&NavMesh::preprocess_multithreading, this, i, num_threads, m_nodes, m_regions->regions));
 			}
 
-			for(u32 i = 0; i < threads.size(); i++)
+			for (u32 i = 0; i < threads.size(); i++)
 			{
 				threads[i].join();
 			}
+		}
+
+		std::vector<Vec2i> get_path_multithreading(Vec2i start, Vec2i target)
+		{
+			NodeData& start_node = get_node(start);
+			NodeData& target_node = get_node(target);
+
+			u32 start_region_id = start_node.region_id;
+			u32 target_region_id = target_node.region_id;
+
+			if(start_region_id == target_region_id)
+			{
+				return A_star_multithreading(start, target);
+			}
+
+			// Get precomputed path from start node to target region
+			if (m_adj_list[get_index(start_node.pos)].size() == 0)
+			{
+				std::cout << "Cannot find path!" << std::endl;
+				return {};
+			}
+			
+			u32 start_node_index = get_index(start_node.pos);
+
+			std::vector<Vec2i> path_to_region = m_adj_list[start_node_index][target_region_id];
+
+			if (path_to_region.size() == 0)
+			{
+				std::cout << "No path found to region!" << std::endl;
+				return {};
+			}
+
+			// Calculate shortest path between node O and target node
+			Vec2i region_start_node = path_to_region[path_to_region.size() - 1];
+			if (region_start_node == target)
+			{
+				// Reached destination
+				return path_to_region;
+			}
+
+			std::vector<Vec2i> path_within_region = A_star_multithreading(region_start_node, target);
+			if (path_within_region.size() == 0)
+			{
+				std::cout << "No path found inside region!" << std::endl;
+				return {};
+			}
+
+			path_to_region.insert(path_to_region.end(), path_within_region.begin(), path_within_region.end());
+
+			return path_to_region;
 		}
 
 		Vec2i get_2D_coordinates(u32 index)
