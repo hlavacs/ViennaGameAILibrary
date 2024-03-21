@@ -11,8 +11,12 @@ public:
 		m_StartTime = std::chrono::high_resolution_clock::now();
 	}
 	~Timer() { 
-		std::chrono::duration<float> duration = std::chrono::high_resolution_clock::now() - m_StartTime; 
-		std::cout << m_Name << ": " << duration.count() * 1000.0f << "ms" << std::endl;
+		auto endTime = std::chrono::high_resolution_clock::now();
+		auto start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTime).time_since_epoch().count();
+		auto end = std::chrono::time_point_cast<std::chrono::microseconds>(endTime).time_since_epoch().count();
+
+		auto duration = (end - start) * 0.001;
+		std::cout << m_Name << ": " << duration << " ms" << std::endl;
 	}
 private:
 	std::string m_Name;

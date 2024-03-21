@@ -15,9 +15,8 @@ int main(int argc, char* argv[])
 	bool collision = false;
 	bool path_found = false;
 
-	float grid_stride = 50.0f;
-	float tile_size = 35.0f;
-	uint32_t speed = 70;
+	float grid_stride = 30.0f;
+	float tile_size = 15.0f;
 
 	Rectangle box_collision = { 0 };
 
@@ -90,12 +89,13 @@ int main(int argc, char* argv[])
 		if (IsKeyPressed(KEY_R))
 		{
 			path_index = 0;
+			std::cout << "------------------" << std::endl;
 			{
 				Timer timer("A* time");
 				path = navmesh->A_star(start_position, target_position);
 			}
 			{
-				Timer timer("Geometric preprocessing time");
+				Timer timer("GP time");
 				path2 = navmesh->get_path_multithreading(start_position, target_position);
 			}
 		}

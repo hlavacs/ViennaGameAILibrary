@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <queue>
 #include <vector>
 #include <thread>
 #include <mutex>
@@ -66,12 +67,6 @@ namespace VGAIL
 		}
 	};
 
-	enum NodeState
-	{
-		OBSTRUCTABLE,
-		WALKABLE
-	};
-
 	struct Region
 	{
 		u32 region_id;
@@ -112,6 +107,12 @@ namespace VGAIL
 		}
 	};
 
+	enum NodeState
+	{
+		OBSTRUCTABLE,
+		WALKABLE
+	};
+
 	struct NodeData
 	{
 		Vec2i pos;
@@ -134,6 +135,13 @@ namespace VGAIL
 		bool operator==(const NodeData& other)
 		{
 			return pos == other.pos && g == other.g && h == other.h && region_id == other.region_id && state == other.state;
+		}
+	};
+
+	struct NodeDataComparator
+	{
+		bool operator()(const NodeData& node1, const NodeData& node2) const {
+			return node1.f() > node2.f();
 		}
 	};
 
@@ -358,7 +366,7 @@ namespace VGAIL
 			u32 start_region_id = start_node.region_id;
 			u32 target_region_id = target_node.region_id;
 
-			if(start_region_id == target_region_id)
+			if (start_region_id == target_region_id)
 			{
 				return A_star(start, target);
 			}
@@ -369,7 +377,7 @@ namespace VGAIL
 				std::cout << "Cannot find path!" << std::endl;
 				return {};
 			}
-			
+
 			u32 start_node_index = get_index(start_node.pos);
 
 			std::vector<Vec2i> path_to_region = m_adj_list[start_node_index][target_region_id];
@@ -412,28 +420,23 @@ namespace VGAIL
 				node.h = INFINITY;
 			}
 
-			std::vector<u32> open_set;
+			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> open_set;
 
 			u32 start_node_index = get_index(start_pos);
 			u32 end_node_index = get_index(end_pos);
 
-			open_set.push_back(start_node_index);
-
 			nodes[start_node_index].g = 0.0f;
+
+			open_set.push(nodes[start_node_index]);
 
 			while (open_set.size() > 0)
 			{
-				u32 current_index = open_set[0];
+				u32 current_index = get_index(open_set.top().pos);
 
-				for (u32 node_index : open_set)
+				while (open_set.size() > 0 && current_index == get_index(open_set.top().pos))
 				{
-					if (nodes[node_index].f() < nodes[current_index].f())
-					{
-						current_index = node_index;
-					}
+					open_set.pop();					
 				}
-
-				open_set.erase(std::remove(open_set.begin(), open_set.end(), current_index));
 
 				if (current_index == end_node_index)
 				{
@@ -464,10 +467,7 @@ namespace VGAIL
 						neighbor.g = tentative_g;
 						neighbor.h = euclidean(neighbor.pos, nodes[end_node_index].pos);
 
-						if (std::find(open_set.begin(), open_set.end(), neighbor_index) == std::end(open_set))
-						{
-							open_set.push_back(neighbor_index);
-						}
+						open_set.push(nodes[neighbor_index]);
 					}
 				}
 			}
@@ -556,7 +556,7 @@ namespace VGAIL
 			u32 start_region_id = start_node.region_id;
 			u32 target_region_id = target_node.region_id;
 
-			if(start_region_id == target_region_id)
+			if (start_region_id == target_region_id)
 			{
 				return A_star_multithreading(start, target);
 			}
@@ -567,9 +567,8 @@ namespace VGAIL
 				std::cout << "Cannot find path!" << std::endl;
 				return {};
 			}
-			
-			u32 start_node_index = get_index(start_node.pos);
 
+			u32 start_node_index = get_index(start_node.pos);
 			std::vector<Vec2i> path_to_region = m_adj_list[start_node_index][target_region_id];
 
 			if (path_to_region.size() == 0)
