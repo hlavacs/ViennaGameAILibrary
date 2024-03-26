@@ -213,29 +213,6 @@ namespace VGAIL
 
 		~NavMesh() {}
 
-		u32 get_width()
-		{
-			return m_width;
-		}
-
-		u32 get_height()
-		{
-			return m_height;
-		}
-
-		void set_obstacle(Vec2i obstacle_pos)
-		{
-			u32 index = get_index(obstacle_pos);
-			if (m_nodes[index].state == NodeState::OBSTRUCTABLE)
-			{
-				m_nodes[index].state = NodeState::WALKABLE;
-			}
-			else
-			{
-				m_nodes[index].state = NodeState::OBSTRUCTABLE;
-			}
-		}
-
 		std::vector<Vec2i> A_star(Vec2i start_pos, Vec2i end_pos)
 		{
 			std::vector<i32> parents(m_nodes.size(), -1);
@@ -246,28 +223,23 @@ namespace VGAIL
 				node.h = INFINITY;
 			}
 
-			std::vector<u32> open_set;
+			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> open_set;
 
 			u32 start_node_index = get_index(start_pos);
 			u32 end_node_index = get_index(end_pos);
 
-			open_set.push_back(start_node_index);
+			open_set.push(m_nodes[start_node_index]);
 
 			m_nodes[start_node_index].g = 0.0f;
 
 			while (open_set.size() > 0)
 			{
-				u32 current_index = open_set[0];
+				u32 current_index = get_index(open_set.top().pos);
 
-				for (u32 node_index : open_set)
+				while (open_set.size() > 0 && current_index == get_index(open_set.top().pos))
 				{
-					if (m_nodes[node_index].f() < m_nodes[current_index].f())
-					{
-						current_index = node_index;
-					}
+					open_set.pop();					
 				}
-
-				open_set.erase(std::remove(open_set.begin(), open_set.end(), current_index));
 
 				if (current_index == end_node_index)
 				{
@@ -298,10 +270,7 @@ namespace VGAIL
 						neighbor.g = tentative_g;
 						neighbor.h = euclidean(neighbor.pos, m_nodes[end_node_index].pos);
 
-						if (std::find(open_set.begin(), open_set.end(), neighbor_index) == std::end(open_set))
-						{
-							open_set.push_back(neighbor_index);
-						}
+						open_set.push(m_nodes[neighbor_index]);
 					}
 				}
 			}
@@ -597,6 +566,29 @@ namespace VGAIL
 			return path_to_region;
 		}
 
+		void set_obstacle(Vec2i obstacle_pos)
+		{
+			u32 index = get_index(obstacle_pos);
+			if (m_nodes[index].state == NodeState::OBSTRUCTABLE)
+			{
+				m_nodes[index].state = NodeState::WALKABLE;
+			}
+			else
+			{
+				m_nodes[index].state = NodeState::OBSTRUCTABLE;
+			}
+		}
+
+		u32 get_width()
+		{
+			return m_width;
+		}
+
+		u32 get_height()
+		{
+			return m_height;
+		}
+
 		Vec2i get_2D_coordinates(u32 index)
 		{
 			u32 x = index % m_width;
@@ -621,9 +613,9 @@ namespace VGAIL
 			f32 x = node.pos.x;
 			f32 y = node.pos.y;
 
-			for (int v = -1; v <= 1; ++v)
+			for (i32 v = -1; v <= 1; ++v)
 			{
-				for (int u = -1; u <= 1; ++u)
+				for (i32 u = -1; u <= 1; ++u)
 				{
 					if (u == 0 && v == 0) // Current node
 						continue;
