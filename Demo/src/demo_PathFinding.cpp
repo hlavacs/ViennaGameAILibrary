@@ -12,19 +12,14 @@ int main(int argc, char* argv[])
 	uint32_t screen_width = 1200;
 	uint32_t screen_height = 800;
 
-	bool collision = false;
 	bool path_found = false;
 
-	float grid_stride = 30.0f;
-	float tile_size = 15.0f;
-
-	Rectangle box_collision = { 0 };
-
-	VGAIL::GameAIManager* manager = new VGAIL::GameAIManager();
+	float grid_stride = 50.0f;
+	float tile_size = 35.0f;
 
 	uint32_t navmesh_width = static_cast<uint32_t>(screen_width / grid_stride);
 	uint32_t navmesh_height = static_cast<uint32_t>(screen_height / grid_stride);
-	VGAIL::NavMesh* navmesh = manager->create_navmesh(navmesh_width, navmesh_height);
+	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmesh_width, navmesh_height, 30);
 
 	VGAIL::Vec2i start_position = VGAIL::Vec2i(1, 1);
 	Rectangle start_rect = { static_cast<float>(start_position.x * grid_stride),
@@ -47,8 +42,6 @@ int main(int argc, char* argv[])
 	}
 
 	std::vector<VGAIL::Vec2i> path;
-	int path_index = 0;
-
 	std::vector<VGAIL::Vec2i> path2;
 
 	{
@@ -88,7 +81,6 @@ int main(int argc, char* argv[])
 
 		if (IsKeyPressed(KEY_R))
 		{
-			path_index = 0;
 			std::cout << "------------------" << std::endl;
 			{
 				Timer timer("A* time");
