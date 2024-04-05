@@ -11,10 +11,10 @@
 #include <sstream>
 #include <string>
 
-constexpr uint32_t screen_width = 1200;
-constexpr uint32_t screen_height = 900;
+constexpr uint32_t screenWidth = 1200;
+constexpr uint32_t screenHeight = 900;
 
-float tile_size = 50.0f;
+float tileSize = 50.0f;
 
 class Mine
 {
@@ -26,11 +26,11 @@ public:
 
 	~Mine() {}
 
-	Rectangle get_rectangle()
+	Rectangle getRectangle()
 	{
-		return { static_cast<float>(position.x * tile_size),
-				 static_cast<float>(position.y * tile_size),
-				 tile_size, tile_size };
+		return { static_cast<float>(position.x * tileSize),
+				 static_cast<float>(position.y * tileSize),
+				 tileSize, tileSize };
 	}
 
 	uint32_t size;
@@ -39,249 +39,249 @@ public:
 
 int main(int argc, char* argv[])
 {
-	uint32_t navmesh_width = static_cast<uint32_t>(screen_width / tile_size);
-	uint32_t navmesh_height = static_cast<uint32_t>((screen_height - 100) / tile_size);
-	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmesh_width, navmesh_height, 30);
+	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
+	uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
+	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30);
 
-	VGAIL::Vec2ui worker_position = VGAIL::Vec2ui(10, 10);
-	Rectangle worker = { static_cast<float>(worker_position.x * tile_size),
-						static_cast<float>(worker_position.y * tile_size),
-						tile_size, tile_size };
-	Color worker_color = BLUE;
+	VGAIL::Vec2ui workerPosition = VGAIL::Vec2ui(20, 2);
+	Rectangle worker = { static_cast<float>(workerPosition.x * tileSize),
+						static_cast<float>(workerPosition.y * tileSize),
+						tileSize, tileSize };
+	Color workerColor = BLUE;
 
-	if (navmesh->get_node(worker_position).state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->getNode(workerPosition).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(worker_position).state = VGAIL::NodeState::WALKABLE;
+		navmesh->getNode(workerPosition).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	VGAIL::Vec2ui home_position = VGAIL::Vec2ui(3, 2);
-	Rectangle home = { static_cast<float>(home_position.x * tile_size),
-						static_cast<float>(home_position.y * tile_size),
-						tile_size, tile_size };
+	VGAIL::Vec2ui homePosition = VGAIL::Vec2ui(3, 2);
+	Rectangle home = { static_cast<float>(homePosition.x * tileSize),
+						static_cast<float>(homePosition.y * tileSize),
+						tileSize, tileSize };
 
-	if (navmesh->get_node(home_position).state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->getNode(homePosition).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(home_position).state = VGAIL::NodeState::WALKABLE;
+		navmesh->getNode(homePosition).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	Mine* mine_1 = new Mine(3,  VGAIL::Vec2ui{ 20, 15 });
-	Mine* mine_2 = new Mine(10, VGAIL::Vec2ui{ 13,  9 });
-	Mine* mine_3 = new Mine(6,  VGAIL::Vec2ui{  3, 11 });
-	Mine* mine_4 = new Mine(21, VGAIL::Vec2ui{ 16,  7 });
-	Mine* mine_5 = new Mine(18, VGAIL::Vec2ui{  7,  2 });
+	Mine* mine1 = new Mine(3,  VGAIL::Vec2ui{ 11, 15 });
+	Mine* mine2 = new Mine(10, VGAIL::Vec2ui{ 13,  9 });
+	Mine* mine3 = new Mine(6,  VGAIL::Vec2ui{  3, 11 });
+	Mine* mine4 = new Mine(21, VGAIL::Vec2ui{ 16,  7 });
+	Mine* mine5 = new Mine(18, VGAIL::Vec2ui{  7,  2 });
 
 	std::vector<Mine*> mines;
-	mines.push_back(mine_1);
-	mines.push_back(mine_2);
-	mines.push_back(mine_3);
-	mines.push_back(mine_4);
-	mines.push_back(mine_5);
+	mines.push_back(mine1);
+	mines.push_back(mine2);
+	mines.push_back(mine3);
+	mines.push_back(mine4);
+	mines.push_back(mine5);
 
 	for(Mine* mine : mines)
 	{
-		if (navmesh->get_node(mine->position).state == VGAIL::NodeState::OBSTRUCTABLE)
+		if (navmesh->getNode(mine->position).state == VGAIL::NodeState::OBSTRUCTABLE)
 		{
-			navmesh->get_node(mine->position).state = VGAIL::NodeState::WALKABLE;
+			navmesh->getNode(mine->position).state = VGAIL::NodeState::WALKABLE;
 		}
 	}
 
-	Mine* current_mine = nullptr;
+	Mine* currentMine = nullptr;
 
-	uint32_t home_load = 0;
-	uint32_t current_load = 0;
-	uint32_t max_load_capacity = 5;
-	float load_time = 0.0f;
-	float load_time_cooldown = 1.0f;
+	uint32_t homeLoad = 0;
+	uint32_t currentLoad = 0;
+	uint32_t maxLoadCapacity = 5;
+	float loadTime = 0.0f;
+	float loadTimeCooldown = 1.0f;
 
-	float worker_speed = 100.0f;
+	float workerSpeed = 100.0f;
 	
 	std::vector<VGAIL::Vec2ui> path;
-	int32_t current_path_index = -1;
+	int32_t currentPathIndex = -1;
 
-	InitWindow(screen_width, screen_height, "Demo");
+	InitWindow(screenWidth, screenHeight, "Demo");
 	SetTargetFPS(60);
 
-	Font large_font = LoadFont("Demo/res/pixelplay.ttf");
-	Font tiny_font = LoadFont("Demo/res/SunnySpellsBasic.ttf");
+	Font stateFont = LoadFont("Demo/res/pixelplay.ttf");
+	Font loadFont = LoadFont("Demo/res/SunnySpellsBasic.ttf");
 
-    Texture2D home_texture = LoadTexture("Demo/res/home.png");
-	Rectangle home_texture_src = { 0.0f, 0.0f, static_cast<float>(home_texture.width), static_cast<float>(home_texture.height) };
-	Rectangle home_texture_dest = { home_position.x * tile_size, home_position.y * tile_size, tile_size, tile_size };
+    Texture2D homeTexture = LoadTexture("Demo/res/home.png");
+	Rectangle homeTextureSrc = { 0.0f, 0.0f, static_cast<float>(homeTexture.width), static_cast<float>(homeTexture.height) };
+	Rectangle homeTextureDest = { homePosition.x * tileSize, homePosition.y * tileSize, tileSize, tileSize };
 
-	Texture2D mine_texture = LoadTexture("Demo/res/mine.png");
-	Rectangle mine_texture_src = { 0.0f, 0.0f, static_cast<float>(mine_texture.width), static_cast<float>(mine_texture.height) };
+	Texture2D mineTexture = LoadTexture("Demo/res/mine.png");
+	Rectangle mineTextureSrc = { 0.0f, 0.0f, static_cast<float>(mineTexture.width), static_cast<float>(mineTexture.height) };
 
-	Texture2D worker_texture = LoadTexture("Demo/res/worker.png");
-	Rectangle worker_texture_src = { 0.0f, 0.0f, static_cast<float>(worker_texture.width), static_cast<float>(worker_texture.height) };
+	Texture2D workerTexture = LoadTexture("Demo/res/worker.png");
+	Rectangle workerTextureSrc = { 0.0f, 0.0f, static_cast<float>(workerTexture.width), static_cast<float>(workerTexture.height) };
 
-	Texture2D ground_texture = LoadTexture("Demo/res/ground.png");
-	Texture2D obstacle_texture = LoadTexture("Demo/res/obstacle.png");
+	Texture2D groundTexture = LoadTexture("Demo/res/ground.png");
+	Texture2D obstacleTexture = LoadTexture("Demo/res/obstacle.png");
 
-	VGAIL::StateMachine state_machine;
+	VGAIL::StateMachine stateMachine;
 
-	VGAIL::State* dropOffState = state_machine.create_state();
-	VGAIL::State* locateMineState = state_machine.create_state();
-	VGAIL::State* locateHomeState = state_machine.create_state();
-	VGAIL::State* idleState = state_machine.create_state();
-	VGAIL::State* collectState = state_machine.create_state();
+	VGAIL::State* dropOffState = stateMachine.createState();
+	VGAIL::State* locateMineState = stateMachine.createState();
+	VGAIL::State* locateHomeState = stateMachine.createState();
+	VGAIL::State* idleState = stateMachine.createState();
+	VGAIL::State* collectState = stateMachine.createState();
 
-	uint32_t current_state_index = 0;
+	uint32_t currentStateIndex = 0;
 
-	dropOffState->add_transition(locateMineState, [&]() {	
-		return current_load == 0; 
+	dropOffState->addTransition(locateMineState, [&]() {	
+		return currentLoad == 0; 
 	});
 
-	locateMineState->add_transition(idleState, [&](){
-		return current_mine->size == 0 || path.size() == 0;
+	locateMineState->addTransition(idleState, [&](){
+		return currentMine->size == 0 || path.size() == 0;
 	});
 
-	locateMineState->add_transition(collectState, [&](){
-		return current_path_index == path.size() - 1;
+	locateMineState->addTransition(collectState, [&](){
+		return currentPathIndex == path.size() - 1;
 	});
 
-	collectState->add_transition(locateHomeState, [&](){
-		return current_load == max_load_capacity || (current_mine->size == 0 && current_load > 0);
+	collectState->addTransition(locateHomeState, [&](){
+		return currentLoad == maxLoadCapacity || (currentMine->size == 0 && currentLoad > 0);
 	});
 
-	locateHomeState->add_transition(dropOffState, [&](){
-		return current_path_index == path.size() - 1;
+	locateHomeState->addTransition(dropOffState, [&](){
+		return currentPathIndex == path.size() - 1;
 	});
 
 	dropOffState->onEnterCallback = [&](){
-		current_state_index = 0;		
+		currentStateIndex = 0;		
 	};
 
 	dropOffState->onUpdateCallback = [&](float delta) {
-		current_state_index = 0;
-		if (current_load > 0)
+		currentStateIndex = 0;
+		if (currentLoad > 0)
 		{
-			load_time += delta;
-			if (load_time > load_time_cooldown)
+			loadTime += delta;
+			if (loadTime > loadTimeCooldown)
 			{
-				current_load--;
-				home_load++;
-				load_time = 0.0f;
+				currentLoad--;
+				homeLoad++;
+				loadTime = 0.0f;
 			}
 		}
 	};
 
 	locateHomeState->onEnterCallback = [&](){
-		current_state_index = 1;
+		currentStateIndex = 1;
 
-		VGAIL::Vec2ui worker_pos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tile_size), static_cast<uint32_t>(worker.y / tile_size) };
-		path = navmesh->A_star(worker_pos, home_position);
+		VGAIL::Vec2ui workerPos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tileSize), static_cast<uint32_t>(worker.y / tileSize) };
+		path = navmesh->A_Star(workerPos, homePosition);
 
 		if (path.size() > 0)
 		{				
-			current_path_index = 0;
+			currentPathIndex = 0;
 		}
 	};
 
 	locateHomeState->onUpdateCallback = [&](float delta){		
-		if (current_path_index < path.size() - 1)
+		if (currentPathIndex < path.size() - 1)
 		{
-			VGAIL::Vec2ui target_node = path[current_path_index];
-			VGAIL::Vec2f target = VGAIL::Vec2f{ static_cast<float>(target_node.x) * tile_size, static_cast<float>(target_node.y) * tile_size };
+			VGAIL::Vec2ui targetNode = path[currentPathIndex];
+			VGAIL::Vec2f target = VGAIL::Vec2f{ static_cast<float>(targetNode.x) * tileSize, static_cast<float>(targetNode.y) * tileSize };
 
 			if (std::abs(worker.x - static_cast<float>(target.x)) < 1.0f && std::abs(worker.y - static_cast<float>(target.y)) < 1.0f)
 			{
 				worker.x = target.x;
 				worker.y = target.y;
 
-				current_path_index++;
+				currentPathIndex++;
 				return;
 			}
 
 			VGAIL::Vec2f direction = target - VGAIL::Vec2f{ worker.x, worker.y };
 			direction.normalize();
 
-			worker.x += direction.x * delta * worker_speed;
-			worker.y += direction.y * delta * worker_speed;
+			worker.x += direction.x * delta * workerSpeed;
+			worker.y += direction.y * delta * workerSpeed;
 		}
 	};
 
 	locateHomeState->onExitCallback = [&]() {
 		path.clear();
-		current_path_index = -1;
+		currentPathIndex = -1;
 	};
 
 	locateMineState->onEnterCallback = [&](){
-		current_state_index = 2;		
+		currentStateIndex = 2;		
 
-		VGAIL::Vec2ui worker_pos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tile_size), static_cast<uint32_t>(worker.y / tile_size) };
+		VGAIL::Vec2ui workerPos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tileSize), static_cast<uint32_t>(worker.y / tileSize) };
 
-		uint32_t closest_mine_index = 0;
-		uint32_t closest_distance = 10000;
+		uint32_t closestMineIndex = 0;
+		uint32_t closestDistance = 10000;
 
 		for(uint32_t i = 0; i < mines.size(); i++)
 		{
 			if(mines[i]->size == 0)
 				continue;
 		
-			path = navmesh->A_star(worker_pos, mines[i]->position);
+			path = navmesh->A_Star(workerPos, mines[i]->position);
 
 			if (path.size() > 0)
 			{
-				if(path.size() < closest_distance)
+				if(path.size() < closestDistance)
 				{
-					closest_mine_index = i;
-					closest_distance = path.size();
+					closestMineIndex = i;
+					closestDistance = path.size();
 				}
 			}
 		}
 
-		current_mine = mines[closest_mine_index];
-		current_path_index = 0;
-		path = navmesh->A_star(worker_pos, current_mine->position);
+		currentMine = mines[closestMineIndex];
+		currentPathIndex = 0;
+		path = navmesh->A_Star(workerPos, currentMine->position);
 	};
 
 	locateMineState->onUpdateCallback = [&](float delta){
-		if (current_path_index < path.size() - 1)
+		if (currentPathIndex < path.size() - 1)
 		{
-			VGAIL::Vec2ui target_node = path[current_path_index];
-			VGAIL::Vec2f target = VGAIL::Vec2f{ static_cast<float>(target_node.x) * tile_size, static_cast<float>(target_node.y) * tile_size };
+			VGAIL::Vec2ui targetNode = path[currentPathIndex];
+			VGAIL::Vec2f target = VGAIL::Vec2f{ static_cast<float>(targetNode.x) * tileSize, static_cast<float>(targetNode.y) * tileSize };
 
 			if (std::abs(worker.x - static_cast<float>(target.x)) < 1.0f && std::abs(worker.y - static_cast<float>(target.y)) < 1.0f)
 			{
 				worker.x = target.x;
 				worker.y = target.y;
 
-				current_path_index++;
+				currentPathIndex++;
 				return;
 			}
 
 			VGAIL::Vec2f direction = target - VGAIL::Vec2f{ worker.x, worker.y };
 			direction.normalize();
 
-			worker.x += direction.x * delta * worker_speed;
-			worker.y += direction.y * delta * worker_speed;
+			worker.x += direction.x * delta * workerSpeed;
+			worker.y += direction.y * delta * workerSpeed;
 		}
 	};
 
 	locateMineState->onExitCallback = [&]() {
 		path.clear();
-		current_path_index = -1;
+		currentPathIndex = -1;
 	};
 
 	collectState->onEnterCallback = [&]() {
-		current_state_index = 3;
+		currentStateIndex = 3;
 	};
 
 	collectState->onUpdateCallback = [&](float delta){
-		if (current_load <= max_load_capacity && current_mine->size > 0)
+		if (currentLoad <= maxLoadCapacity && currentMine->size > 0)
 		{
-			load_time += delta;
-			if (load_time > load_time_cooldown)
+			loadTime += delta;
+			if (loadTime > loadTimeCooldown)
 			{
-				current_load++;
-				current_mine->size--;
-				load_time = 0.0f;
+				currentLoad++;
+				currentMine->size--;
+				loadTime = 0.0f;
 			}
 		}
 	};
 
 	idleState->onEnterCallback = [&]() {
-		current_state_index = 4;
+		currentStateIndex = 4;
 	};
 
 
@@ -289,91 +289,90 @@ int main(int argc, char* argv[])
 	{
 		float delta = GetFrameTime();
 
-		state_machine.update(delta);
+		stateMachine.update(delta);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		for (uint32_t y = 0; y < navmesh_height; y++)
+		for (uint32_t y = 0; y < navmeshHeight; y++)
 		{
-			for (uint32_t x = 0; x < navmesh_width; x++)
+			for (uint32_t x = 0; x < navmeshWidth; x++)
 			{
-				VGAIL::NodeData& node = navmesh->get_node(VGAIL::Vec2ui(x, y));
+				VGAIL::NodeData& node = navmesh->getNode(VGAIL::Vec2ui(x, y));
 
 				if (node.state == VGAIL::NodeState::OBSTRUCTABLE)
 				{
-					Rectangle obstacle_texture_src = { 0.0f, 0.0f, static_cast<float>(obstacle_texture.width), static_cast<float>(obstacle_texture.height) };
-					Rectangle obstacle_texture_dest = { node.pos.x * tile_size, node.pos.y * tile_size, tile_size, tile_size };
-					DrawTexturePro(obstacle_texture, obstacle_texture_src, obstacle_texture_dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+					Rectangle obstacleTextureSrc = { 0.0f, 0.0f, static_cast<float>(obstacleTexture.width), static_cast<float>(obstacleTexture.height) };
+					Rectangle obstacleTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
+					DrawTexturePro(obstacleTexture, obstacleTextureSrc, obstacleTextureDest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 				}
 				else 
 				{
-					Rectangle ground_texture_src = { 0.0f, 0.0f, static_cast<float>(ground_texture.width), static_cast<float>(ground_texture.height) };
-					Rectangle ground_texture_dest = { node.pos.x  * tile_size, node.pos.y * tile_size, tile_size, tile_size };
-					DrawTexturePro(ground_texture, ground_texture_src, ground_texture_dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+					Rectangle groundTextureSrc = { 0.0f, 0.0f, static_cast<float>(groundTexture.width), static_cast<float>(groundTexture.height) };
+					Rectangle groundTextureDest = { node.pos.x  * tileSize, node.pos.y * tileSize, tileSize, tileSize };
+					DrawTexturePro(groundTexture, groundTextureSrc, groundTextureDest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 				}
 			}
 		}
 
-		DrawTexturePro(home_texture, home_texture_src, home_texture_dest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
-		DrawTexturePro(worker_texture, worker_texture_src, worker, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
-
+		DrawTexturePro(homeTexture, homeTextureSrc, homeTextureDest, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 		for(Mine* mine : mines)
 		{
-			DrawTexturePro(mine_texture, mine_texture_src, mine->get_rectangle(), Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+			DrawTexturePro(mineTexture, mineTextureSrc, mine->getRectangle(), Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 		}
+		DrawTexturePro(workerTexture, workerTextureSrc, worker, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 
 		std::stringstream ss;
-		ss << current_load;
-		DrawTextEx(tiny_font, ss.str().c_str(), Vector2{worker.x + 7.0f, worker.y}, 15, 1.0f, BLACK);
+		ss << currentLoad;
+		DrawTextEx(loadFont, ss.str().c_str(), Vector2{worker.x + 7.0f, worker.y}, 15, 1.0f, BLACK);
 
 		ss.str(std::string());
-		ss << home_load;
-		DrawTextEx(tiny_font, ss.str().c_str(), Vector2{home.x + 2.5f, home.y}, 15, 1.0f, BLACK);
+		ss << homeLoad;
+		DrawTextEx(loadFont, ss.str().c_str(), Vector2{home.x + 2.5f, home.y}, 15, 1.0f, BLACK);
 
 		for(Mine* mine : mines)
 		{
 			ss.str(std::string());
 			ss << mine->size;
-			DrawTextEx(tiny_font, ss.str().c_str(), Vector2{mine->position.x * tile_size + 3.0f, mine->position.y * tile_size}, 15, 1.0f, BLACK);
+			DrawTextEx(loadFont, ss.str().c_str(), Vector2{mine->position.x * tileSize + 3.0f, mine->position.y * tileSize}, 15, 1.0f, BLACK);
 		}
 
-		std::string current_state = "";
+		std::string currentState = "";
 
-		switch(current_state_index)
+		switch(currentStateIndex)
 		{
 			case 0:
-				current_state = "Dropping off materials";
+				currentState = "Dropping off materials";
 				break;
 			case 1:
-				current_state = "Locating home";
+				currentState = "Locating home";
 				break;
 			case 2:
-				current_state = "Locating nearest mine";
+				currentState = "Locating nearest mine";
 				break;			
 			case 3:
-				current_state = "Collecting materials";
+				currentState = "Collecting materials";
 				break;
 			case 4:
-				current_state = "Idle";
+				currentState = "Idle";
 				break;
 			default:
-				current_state = "";
+				currentState = "";
 		}
 
 		ss.str(std::string());
-		ss << "Current state: " << current_state;
-		const char* full_text = ss.str().c_str();
-		Vector2 text_position = Vector2{ screen_width / 2.0f - 200.0f, screen_height - 70.0f };
-		DrawTextEx(large_font, full_text, text_position, large_font.baseSize, 3.0f, BLACK);
+		ss << "Current state: " << currentState;
+		const char* fullText = ss.str().c_str();
+		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 200.0f, screenHeight - 70.0f };
+		DrawTextEx(stateFont, fullText, textPosition, stateFont.baseSize, 3.0f, BLACK);
 		EndDrawing();
 	}
 	
-	UnloadTexture(obstacle_texture);
-	UnloadTexture(ground_texture);
-	UnloadTexture(home_texture);
-	UnloadTexture(mine_texture);
-	UnloadTexture(worker_texture);
+	UnloadTexture(obstacleTexture);
+	UnloadTexture(groundTexture);
+	UnloadTexture(homeTexture);
+	UnloadTexture(mineTexture);
+	UnloadTexture(workerTexture);
 	
 	CloseWindow();
 

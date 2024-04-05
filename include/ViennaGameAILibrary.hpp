@@ -85,25 +85,25 @@ namespace VGAIL
 
 	struct Region
 	{
-		ui32 region_id;
+		ui32 regionID;
 		std::vector<ui32> nodes;
 	};
 
 	struct RegionList
 	{
 		std::vector<Region*> regions;
-		ui32 size_x, size_y;
+		ui32 sizeX, sizeY;
 
-		RegionList(ui32 size_x, ui32 size_y)
-			: size_x(size_x)
-			, size_y(size_y)
+		RegionList(ui32 sizeX, ui32 sizeY)
+			: sizeX(sizeX)
+			, sizeY(sizeY)
 		{
-			for (ui32 y = 0; y < size_y; y++)
+			for (ui32 y = 0; y < sizeY; y++)
 			{
-				for (ui32 x = 0; x < size_x; x++)
+				for (ui32 x = 0; x < sizeX; x++)
 				{
 					Region* region = new Region();
-					region->region_id = x + y * size_x;
+					region->regionID = x + y * sizeX;
 					regions.push_back(region);
 				}
 			}
@@ -117,9 +117,9 @@ namespace VGAIL
 			}
 		}
 
-		ui32 get_region_id(Vec2ui pos)
+		ui32 getRegionID(Vec2ui pos)
 		{
-			return pos.x + pos.y * size_x;
+			return pos.x + pos.y * sizeX;
 		}
 	};
 
@@ -133,7 +133,7 @@ namespace VGAIL
 	{
 		Vec2ui pos;
 		f32 g, h;
-		ui32 region_id;
+		ui32 regionID;
 		NodeState state;
 
 		f32 f() const
@@ -150,7 +150,7 @@ namespace VGAIL
 
 		bool operator==(const NodeData& other)
 		{
-			return pos == other.pos && g == other.g && h == other.h && region_id == other.region_id && state == other.state;
+			return pos == other.pos && g == other.g && h == other.h && regionID == other.regionID && state == other.state;
 		}
 	};
 
@@ -164,7 +164,7 @@ namespace VGAIL
 	class NavMesh
 	{
 	public:
-		NavMesh(ui32 width, ui32 height, ui32 obstacles_percentage)
+		NavMesh(ui32 width, ui32 height, ui32 obstaclePercentage)
 			: m_width(width)
 			, m_height(height)
 		{
@@ -179,7 +179,7 @@ namespace VGAIL
 					NodeData node(Vec2ui{ x, y });
 
 					auto val = distribution(rng);
-					if (val <= obstacles_percentage)
+					if (val <= obstaclePercentage)
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -188,48 +188,20 @@ namespace VGAIL
 				}
 			}
 
-			m_adj_list.resize(m_nodes.size(), {});
+			m_adjList.resize(m_nodes.size(), {});
 			m_neighbors.resize(m_nodes.size(), {});
 
 			for (ui32 i = 0; i < m_nodes.size(); i++)
 			{
-				set_neighbors(i);
+				setNeighbors(i);
 			}
 
-			create_regions();
-		}
-
-		void create_regions()
-		{
-			f32 region_length_on_x = 9.0f;
-			f32 region_length_on_y = 9.0f;
-
-			ui32 num_regions_x = std::ceil(static_cast<f32>(m_width) / region_length_on_x);
-			ui32 num_regions_y = std::ceil(static_cast<f32>(m_height) / region_length_on_y);
-
-			m_regions = new RegionList(num_regions_x, num_regions_y);
-
-			for (ui32 y = 0; y < m_height; y++)
-			{
-				ui32 y_index = std::floor(static_cast<f32>(y) / region_length_on_y);
-
-				for (ui32 x = 0; x < m_width; x++)
-				{
-					ui32 x_index = std::floor(static_cast<f32>(x) / region_length_on_x);
-
-					ui32 region_id = m_regions->get_region_id(Vec2ui(x_index, y_index));
-
-					NodeData& node = get_node(Vec2ui(x, y));
-					node.region_id = region_id;
-
-					m_regions->regions[region_id]->nodes.push_back(get_index(node.pos));
-				}
-			}
+			createRegions();
 		}
 
 		~NavMesh() {}
 
-		std::vector<Vec2ui> A_star(Vec2ui start_pos, Vec2ui end_pos)
+		std::vector<Vec2ui> A_Star(Vec2ui startPos, Vec2ui endPos)
 		{
 			std::vector<i32> parents(m_nodes.size(), -1);
 
@@ -239,54 +211,54 @@ namespace VGAIL
 				node.h = INFINITY;
 			}
 
-			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> open_set;
+			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> openSet;
 
-			ui32 start_node_index = get_index(start_pos);
-			ui32 end_node_index = get_index(end_pos);
+			ui32 startNodeIndex = getIndex(startPos);
+			ui32 endNodeIndex = getIndex(endPos);
 
-			open_set.push(m_nodes[start_node_index]);
+			openSet.push(m_nodes[startNodeIndex]);
 
-			m_nodes[start_node_index].g = 0.0f;
+			m_nodes[startNodeIndex].g = 0.0f;
 
-			while (open_set.size() > 0)
+			while (openSet.size() > 0)
 			{
-				ui32 current_index = get_index(open_set.top().pos);
+				ui32 currentIndex = getIndex(openSet.top().pos);
 
-				while (open_set.size() > 0 && current_index == get_index(open_set.top().pos))
+				while (openSet.size() > 0 && currentIndex == getIndex(openSet.top().pos))
 				{
-					open_set.pop();
+					openSet.pop();
 				}
 
-				if (current_index == end_node_index)
+				if (currentIndex == endNodeIndex)
 				{
-					std::vector<Vec2ui> shortest_path;
+					std::vector<Vec2ui> shortestPath;
 
-					while (current_index != -1)
+					while (currentIndex != -1)
 					{
-						shortest_path.push_back(m_nodes[current_index].pos);
-						current_index = parents[current_index];
+						shortestPath.push_back(m_nodes[currentIndex].pos);
+						currentIndex = parents[currentIndex];
 					}
 
-					std::reverse(shortest_path.begin(), shortest_path.end());
-					return shortest_path;
+					std::reverse(shortestPath.begin(), shortestPath.end());
+					return shortestPath;
 				}
 
-				std::vector<ui32> neighbors = m_neighbors[current_index];
-				for (ui32 neighbor_index : neighbors)
+				std::vector<ui32> neighbors = m_neighbors[currentIndex];
+				for (ui32 neighborIndex : neighbors)
 				{
-					NodeData& neighbor = m_nodes[neighbor_index];
+					NodeData& neighbor = m_nodes[neighborIndex];
 					if (neighbor.state == NodeState::OBSTRUCTABLE)
 						continue;
 
-					f32 tentative_g = m_nodes[current_index].g + euclidean(neighbor.pos, m_nodes[current_index].pos);
+					f32 tentativeG = m_nodes[currentIndex].g + euclidean(neighbor.pos, m_nodes[currentIndex].pos);
 
-					if (tentative_g < neighbor.g)
+					if (tentativeG < neighbor.g)
 					{
-						parents[neighbor_index] = get_index(m_nodes[current_index].pos);
-						neighbor.g = tentative_g;
-						neighbor.h = euclidean(neighbor.pos, m_nodes[end_node_index].pos);
+						parents[neighborIndex] = getIndex(m_nodes[currentIndex].pos);
+						neighbor.g = tentativeG;
+						neighbor.h = euclidean(neighbor.pos, m_nodes[currentIndex].pos);
 
-						open_set.push(m_nodes[neighbor_index]);
+						openSet.push(m_nodes[neighborIndex]);
 					}
 				}
 			}
@@ -305,7 +277,7 @@ namespace VGAIL
 
 				for (Region* R : m_regions->regions)
 				{
-					if (m_nodes[i].region_id == R->region_id)
+					if (m_nodes[i].regionID == R->regionID)
 						continue;
 
 					std::vector<std::vector<Vec2ui>> paths;
@@ -313,7 +285,7 @@ namespace VGAIL
 					// Calculate distances from N to all nodes in region R
 					for (ui32 O_tentative : R->nodes)
 					{
-						std::vector<Vec2ui> path = A_star(m_nodes[i].pos, m_nodes[O_tentative].pos);
+						std::vector<Vec2ui> path = A_Star(m_nodes[i].pos, m_nodes[O_tentative].pos);
 
 						if (path.size() > 0)
 						{
@@ -328,72 +300,72 @@ namespace VGAIL
 					}
 
 					// Find most optimal path from N to R
-					ui32 best_path_index = 0;
+					ui32 bestPathIndex = 0;
 					for (ui32 j = 1; j < paths.size(); j++)
 					{
-						if (paths[j].size() < paths[best_path_index].size())
+						if (paths[j].size() < paths[bestPathIndex].size())
 						{
-							best_path_index = j;
+							bestPathIndex = j;
 						}
 					}
 
 					// Add best path to R to the node N
-					m_adj_list[i][R->region_id] = paths[best_path_index];
+					m_adjList[i][R->regionID] = paths[bestPathIndex];
 				}
 			}
 		}
 
-		std::vector<Vec2ui> get_path(Vec2ui start, Vec2ui target)
+		std::vector<Vec2ui> getPath(Vec2ui start, Vec2ui target)
 		{
-			NodeData& start_node = get_node(start);
-			NodeData& target_node = get_node(target);
+			NodeData& startNode = getNode(start);
+			NodeData& targetNode = getNode(target);
 
-			ui32 start_region_id = start_node.region_id;
-			ui32 target_region_id = target_node.region_id;
+			ui32 startRegionID = startNode.regionID;
+			ui32 targetRegionID = targetNode.regionID;
 
-			if (start_region_id == target_region_id)
+			if (startRegionID == targetRegionID)
 			{
-				return A_star(start, target);
+				return A_Star(start, target);
 			}
 
 			// Get precomputed path from start node to target region
-			if (m_adj_list[get_index(start_node.pos)].size() == 0)
+			if (m_adjList[getIndex(startNode.pos)].size() == 0)
 			{
 				std::cout << "Cannot find path!" << std::endl;
 				return {};
 			}
 
-			ui32 start_node_index = get_index(start_node.pos);
+			ui32 startNodeIndex = getIndex(startNode.pos);
 
-			std::vector<Vec2ui> path_to_region = m_adj_list[start_node_index][target_region_id];
+			std::vector<Vec2ui> pathToRegion = m_adjList[startNodeIndex][targetRegionID];
 
-			if (path_to_region.size() == 0)
+			if (pathToRegion.size() == 0)
 			{
 				std::cout << "No path found to region!" << std::endl;
 				return {};
 			}
 
 			// Calculate shortest path between node O and target node
-			Vec2ui region_start_node = path_to_region[path_to_region.size() - 1];
-			if (region_start_node == target)
+			Vec2ui regionStartNode = pathToRegion[pathToRegion.size() - 1];
+			if (regionStartNode == target)
 			{
 				// Reached destination
-				return path_to_region;
+				return pathToRegion;
 			}
 
-			std::vector<Vec2ui> path_within_region = A_star(region_start_node, target);
-			if (path_within_region.size() == 0)
+			std::vector<Vec2ui> pathWithinRegion = A_Star(regionStartNode, target);
+			if (pathWithinRegion.size() == 0)
 			{
 				std::cout << "No path found inside region!" << std::endl;
 				return {};
 			}
 
-			path_to_region.insert(path_to_region.end(), path_within_region.begin(), path_within_region.end());
+			pathToRegion.insert(pathToRegion.end(), pathWithinRegion.begin(), pathWithinRegion.end());
 
-			return path_to_region;
+			return pathToRegion;
 		}
 
-		std::vector<Vec2ui> A_star_multithreading(Vec2ui start_pos, Vec2ui end_pos)
+		std::vector<Vec2ui> A_Star_multithreading(Vec2ui startPos, Vec2ui endPos)
 		{
 			std::vector<NodeData> nodes = m_nodes;
 
@@ -405,54 +377,54 @@ namespace VGAIL
 				node.h = INFINITY;
 			}
 
-			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> open_set;
+			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> openSet;
 
-			ui32 start_node_index = get_index(start_pos);
-			ui32 end_node_index = get_index(end_pos);
+			ui32 startNodeIndex = getIndex(startPos);
+			ui32 endNodeIndex = getIndex(endPos);
 
-			nodes[start_node_index].g = 0.0f;
+			nodes[startNodeIndex].g = 0.0f;
 
-			open_set.push(nodes[start_node_index]);
+			openSet.push(nodes[startNodeIndex]);
 
-			while (open_set.size() > 0)
+			while (openSet.size() > 0)
 			{
-				ui32 current_index = get_index(open_set.top().pos);
+				ui32 currentIndex = getIndex(openSet.top().pos);
 
-				while (open_set.size() > 0 && current_index == get_index(open_set.top().pos))
+				while (openSet.size() > 0 && currentIndex == getIndex(openSet.top().pos))
 				{
-					open_set.pop();
+					openSet.pop();
 				}
 
-				if (current_index == end_node_index)
+				if (currentIndex == endNodeIndex)
 				{
-					std::vector<Vec2ui> shortest_path;
+					std::vector<Vec2ui> shortestPath;
 
-					while (current_index != -1)
+					while (currentIndex != -1)
 					{
-						shortest_path.push_back(nodes[current_index].pos);
-						current_index = parents[current_index];
+						shortestPath.push_back(nodes[currentIndex].pos);
+						currentIndex = parents[currentIndex];
 					}
 
-					std::reverse(shortest_path.begin(), shortest_path.end());
-					return shortest_path;
+					std::reverse(shortestPath.begin(), shortestPath.end());
+					return shortestPath;
 				}
 
-				std::vector<ui32> neighbors = m_neighbors[current_index];
-				for (ui32 neighbor_index : neighbors)
+				std::vector<ui32> neighbors = m_neighbors[currentIndex];
+				for (ui32 neighborIndex : neighbors)
 				{
-					NodeData& neighbor = nodes[neighbor_index];
+					NodeData& neighbor = nodes[neighborIndex];
 					if (neighbor.state == NodeState::OBSTRUCTABLE)
 						continue;
 
-					f32 tentative_g = nodes[current_index].g + euclidean(neighbor.pos, nodes[current_index].pos);
+					f32 tentativeG = nodes[currentIndex].g + euclidean(neighbor.pos, nodes[currentIndex].pos);
 
-					if (tentative_g < neighbor.g)
+					if (tentativeG < neighbor.g)
 					{
-						parents[neighbor_index] = get_index(nodes[current_index].pos);
-						neighbor.g = tentative_g;
-						neighbor.h = euclidean(neighbor.pos, nodes[end_node_index].pos);
+						parents[neighborIndex] = getIndex(nodes[currentIndex].pos);
+						neighbor.g = tentativeG;
+						neighbor.h = euclidean(neighbor.pos, nodes[endNodeIndex].pos);
 
-						open_set.push(nodes[neighbor_index]);
+						openSet.push(nodes[neighborIndex]);
 					}
 				}
 			}
@@ -460,23 +432,23 @@ namespace VGAIL
 			return {};
 		}
 
-		void preprocess_multithreading(ui32 thread_id, ui32 num_threads, std::vector<NodeData> nodes, std::vector<Region*> region_list)
+		void preprocess_multithreading(ui32 threadID, ui32 numThreads, std::vector<NodeData> nodes, std::vector<Region*> regionList)
 		{
-			ui32 start_index = thread_id;
+			ui32 startIndex = threadID;
 
-			for (ui32 region_index = start_index; region_index < region_list.size(); region_index += num_threads)
+			for (ui32 regionIndex = startIndex; regionIndex < regionList.size(); regionIndex += numThreads)
 			{
-				std::cout << "Preprocessing region " << region_index << "/" << region_list.size() << std::endl;
-				for (ui32 i = 0; i < region_list[region_index]->nodes.size(); i++)
+				std::cout << "Preprocessing region " << regionIndex << "/" << regionList.size() << std::endl;
+				for (ui32 i = 0; i < regionList[regionIndex]->nodes.size(); i++)
 				{
-					ui32 node_index = region_list[region_index]->nodes[i];
+					ui32 nodeIndex = regionList[regionIndex]->nodes[i];
 
-					if (nodes[node_index].state == NodeState::OBSTRUCTABLE)
+					if (nodes[nodeIndex].state == NodeState::OBSTRUCTABLE)
 						continue;
 
-					for (Region* R : region_list)
+					for (Region* R : regionList)
 					{
-						if (nodes[node_index].region_id == R->region_id)
+						if (nodes[nodeIndex].regionID == R->regionID)
 							continue;
 
 						std::vector<std::vector<Vec2ui>> paths;
@@ -484,7 +456,7 @@ namespace VGAIL
 						// Calculate distances from N to all nodes in region R
 						for (ui32 O_tentative : R->nodes)
 						{
-							std::vector<Vec2ui> path = A_star_multithreading(nodes[node_index].pos, nodes[O_tentative].pos);
+							std::vector<Vec2ui> path = A_Star_multithreading(nodes[nodeIndex].pos, nodes[O_tentative].pos);
 
 							if (path.size() > 0)
 							{
@@ -499,32 +471,32 @@ namespace VGAIL
 						}
 
 						// Find most optimal path from N to R
-						ui32 best_path_index = 0;
+						ui32 bestPathIndex = 0;
 						for (ui32 j = 1; j < paths.size(); j++)
 						{
-							if (paths[j].size() < paths[best_path_index].size())
+							if (paths[j].size() < paths[bestPathIndex].size())
 							{
-								best_path_index = j;
+								bestPathIndex = j;
 							}
 						}
 
 						// Add best path to R to the node N
-						m_adj_list[node_index][R->region_id] = paths[best_path_index];
+						m_adjList[nodeIndex][R->regionID] = paths[bestPathIndex];
 					}
 				}
 			}
 		}
 
-		void start_preprocess()
+		void startPreprocess()
 		{
-			ui32 num_threads = 4;
+			ui32 numThreads = 4;
 			std::vector<std::thread> threads;
 
-			ui32 regions_per_thread = m_regions->regions.size() / num_threads;
+			ui32 regionsPerThread = m_regions->regions.size() / numThreads;
 
-			for (ui32 i = 0; i < num_threads; i++)
+			for (ui32 i = 0; i < numThreads; i++)
 			{
-				threads.push_back(std::thread(&NavMesh::preprocess_multithreading, this, i, num_threads, m_nodes, m_regions->regions));
+				threads.push_back(std::thread(&NavMesh::preprocess_multithreading, this, i, numThreads, m_nodes, m_regions->regions));
 			}
 
 			for (ui32 i = 0; i < threads.size(); i++)
@@ -533,58 +505,58 @@ namespace VGAIL
 			}
 		}
 
-		std::vector<Vec2ui> get_path_multithreading(Vec2ui start, Vec2ui target)
+		std::vector<Vec2ui> getPath_multithreading(Vec2ui start, Vec2ui target)
 		{
-			NodeData& start_node = get_node(start);
-			NodeData& target_node = get_node(target);
+			NodeData& startNode = getNode(start);
+			NodeData& targetNode = getNode(target);
 
-			ui32 start_region_id = start_node.region_id;
-			ui32 target_region_id = target_node.region_id;
+			ui32 startRegionID = startNode.regionID;
+			ui32 targetRegionID = targetNode.regionID;
 
-			if (start_region_id == target_region_id)
+			if (startRegionID == targetRegionID)
 			{
-				return A_star_multithreading(start, target);
+				return A_Star_multithreading(start, target);
 			}
 
 			// Get precomputed path from start node to target region
-			if (m_adj_list[get_index(start_node.pos)].size() == 0)
+			if (m_adjList[getIndex(startNode.pos)].size() == 0)
 			{
 				std::cout << "Cannot find path!" << std::endl;
 				return {};
 			}
 
-			ui32 start_node_index = get_index(start_node.pos);
-			std::vector<Vec2ui> path_to_region = m_adj_list[start_node_index][target_region_id];
+			ui32 startNodeIndex = getIndex(startNode.pos);
+			std::vector<Vec2ui> pathToRegion = m_adjList[startNodeIndex][targetRegionID];
 
-			if (path_to_region.size() == 0)
+			if (pathToRegion.size() == 0)
 			{
 				std::cout << "No path found to region!" << std::endl;
 				return {};
 			}
 
 			// Calculate shortest path between node O and target node
-			Vec2ui region_start_node = path_to_region[path_to_region.size() - 1];
-			if (region_start_node == target)
+			Vec2ui regionStartNode = pathToRegion[pathToRegion.size() - 1];
+			if (regionStartNode == target)
 			{
 				// Reached destination
-				return path_to_region;
+				return pathToRegion;
 			}
 
-			std::vector<Vec2ui> path_within_region = A_star_multithreading(region_start_node, target);
-			if (path_within_region.size() == 0)
+			std::vector<Vec2ui> pathWithinRegion = A_Star_multithreading(regionStartNode, target);
+			if (pathWithinRegion.size() == 0)
 			{
 				std::cout << "No path found inside region!" << std::endl;
 				return {};
 			}
 
-			path_to_region.insert(path_to_region.end(), path_within_region.begin(), path_within_region.end());
+			pathToRegion.insert(pathToRegion.end(), pathWithinRegion.begin(), pathWithinRegion.end());
 
-			return path_to_region;
+			return pathToRegion;
 		}
 
-		void set_obstacle(Vec2ui obstacle_pos)
+		void setObstacle(Vec2ui obstaclePos)
 		{
-			ui32 index = get_index(obstacle_pos);
+			ui32 index = getIndex(obstaclePos);
 			if (m_nodes[index].state == NodeState::OBSTRUCTABLE)
 			{
 				m_nodes[index].state = NodeState::WALKABLE;
@@ -595,37 +567,65 @@ namespace VGAIL
 			}
 		}
 
-		ui32 get_width()
+		ui32 getWidth()
 		{
 			return m_width;
 		}
 
-		ui32 get_height()
+		ui32 getHeight()
 		{
 			return m_height;
 		}
 
-		Vec2ui get_2D_coordinates(ui32 index)
+		Vec2ui get2DCoordinates(ui32 index)
 		{
 			ui32 x = index % m_width;
 			ui32 y = (index - x) / m_width;
 			return Vec2ui(x, y);
 		}
 
-		ui32 get_index(Vec2ui pos)
+		ui32 getIndex(Vec2ui pos)
 		{
 			return pos.x + pos.y * m_width;
 		}
 
-		NodeData& get_node(Vec2ui pos)
+		NodeData& getNode(Vec2ui pos)
 		{
-			return m_nodes[get_index(pos)];
+			return m_nodes[getIndex(pos)];
 		}
 
 	private:
-		void set_neighbors(ui32 node_index)
+		void createRegions()
 		{
-			NodeData& node = m_nodes[node_index];
+			f32 regionLengthOnX = 9.0f;
+			f32 regionLengthOnY = 9.0f;
+
+			ui32 numRegionsX = std::ceil(static_cast<f32>(m_width) / regionLengthOnX);
+			ui32 numRegionsY = std::ceil(static_cast<f32>(m_height) / regionLengthOnY);
+
+			m_regions = new RegionList(numRegionsX, numRegionsY);
+
+			for (ui32 y = 0; y < m_height; y++)
+			{
+				ui32 yIndex = std::floor(static_cast<f32>(y) / regionLengthOnY);
+
+				for (ui32 x = 0; x < m_width; x++)
+				{
+					ui32 xIndex = std::floor(static_cast<f32>(x) / regionLengthOnX);
+
+					ui32 regionID = m_regions->getRegionID(Vec2ui(xIndex, yIndex));
+
+					NodeData& node = getNode(Vec2ui(x, y));
+					node.regionID = regionID;
+
+					m_regions->regions[regionID]->nodes.push_back(getIndex(node.pos));
+				}
+			}
+		}
+
+		void setNeighbors(ui32 nodeIndex)
+		{
+			NodeData& node = m_nodes[nodeIndex];
 			f32 x = node.pos.x;
 			f32 y = node.pos.y;
 
@@ -639,7 +639,7 @@ namespace VGAIL
 					if (x + u >= 0 && y + v >= 0 &&
 						x + u < m_width && y + v < m_height)
 					{
-						m_neighbors[node_index].push_back(get_index(Vec2ui(x + u, y + v)));
+						m_neighbors[nodeIndex].push_back(getIndex(Vec2ui(x + u, y + v)));
 					}
 				}
 			}
@@ -647,17 +647,17 @@ namespace VGAIL
 
 		f32 manhattan(const Vec2ui& v1, const Vec2ui& v2)
 		{
-			f32 dist_X = std::abs(static_cast<f32>(v1.x) - static_cast<f32>(v2.x));
-			f32 dist_Y = std::abs(static_cast<f32>(v1.y) - static_cast<f32>(v2.y));
+			f32 distX = std::abs(static_cast<f32>(v1.x) - static_cast<f32>(v2.x));
+			f32 distY = std::abs(static_cast<f32>(v1.y) - static_cast<f32>(v2.y));
 
-			return dist_X + dist_Y;
+			return distX + distY;
 		}
 
 		f32 euclidean(const Vec2ui& v1, const Vec2ui& v2)
 		{
-			f32 dist_x = static_cast<f32>(v1.x) - static_cast<f32>(v2.x);
-			f32 dist_Y = static_cast<f32>(v1.y) - static_cast<f32>(v2.y);
-			f32 dist = std::pow(dist_x, 2) + std::pow(dist_Y, 2);
+			f32 distX = static_cast<f32>(v1.x) - static_cast<f32>(v2.x);
+			f32 distY = static_cast<f32>(v1.y) - static_cast<f32>(v2.y);
+			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
 
 			return std::sqrt(dist);
 		}
@@ -669,33 +669,28 @@ namespace VGAIL
 
 		std::vector<NodeData> m_nodes;
 		std::vector<std::vector<ui32>> m_neighbors;
-		std::vector<std::unordered_map<ui32, std::vector<Vec2ui>>> m_adj_list;
+		std::vector<std::unordered_map<ui32, std::vector<Vec2ui>>> m_adjList;
 	};
 
 	class State;
-
 	class Transition
 	{
 	public:
 		Transition(State* target, std::function<bool()> callback)
 		{
-			target_state = target;
+			targetState = target;
 			onCheckCallback = callback;
 		}
 
 		~Transition() = default;
 
 		std::function<bool()> onCheckCallback;
-		State* target_state = nullptr;
+		State* targetState = nullptr;
 	};
 
 	class State
 	{
 	public:
-		std::function<void()> onEnterCallback;
-		std::function<void()> onExitCallback;
-		std::function<void(float)> onUpdateCallback;
-
 		State() {}
 
 		~State() {
@@ -705,12 +700,16 @@ namespace VGAIL
 			}
 		}
 
-		void add_transition(State* target_state, std::function<bool()> callback)
+		std::function<void()> onEnterCallback;
+		std::function<void()> onExitCallback;
+		std::function<void(float)> onUpdateCallback;
+
+		void addTransition(State* targetState, std::function<bool()> callback)
 		{
-			m_transitions.push_back(new Transition(target_state, callback));
+			m_transitions.push_back(new Transition(targetState, callback));
 		}
 
-		std::vector<Transition*> get_transitions()
+		std::vector<Transition*> getTransitions()
 		{
 			return m_transitions;
 		}
@@ -732,7 +731,7 @@ namespace VGAIL
 			}
 		}
 
-		State* create_state()
+		State* createState()
 		{
 			State* state = new State();
 			m_states.push_back(state);
@@ -744,53 +743,53 @@ namespace VGAIL
 			if (m_states.size() <= 0)
 				return;
 
-			if (!m_current_state)
+			if (!m_currentState)
 			{
-				m_current_state = m_states[0];
+				m_currentState = m_states[0];
 
-				if (m_current_state->onEnterCallback)
+				if (m_currentState->onEnterCallback)
 				{
-					m_current_state->onEnterCallback();
+					m_currentState->onEnterCallback();
 				}
 			}
 
-			Transition* active_transition = nullptr;
-			for (Transition* transition : m_current_state->get_transitions())
+			Transition* activeTransition = nullptr;
+			for (Transition* transition : m_currentState->getTransitions())
 			{
 				if (transition->onCheckCallback && transition->onCheckCallback())
 				{
-					active_transition = transition;
+					activeTransition = transition;
 					break;
 				}
 			}
 
-			if (active_transition)
+			if (activeTransition)
 			{
-				if (m_current_state->onExitCallback)
+				if (m_currentState->onExitCallback)
 				{
-					m_current_state->onExitCallback();
+					m_currentState->onExitCallback();
 				}
-				m_current_state = active_transition->target_state;
+				m_currentState = activeTransition->targetState;
 
-				if (m_current_state->onEnterCallback)
+				if (m_currentState->onEnterCallback)
 				{
-					m_current_state->onEnterCallback();
+					m_currentState->onEnterCallback();
 				}
 			}
 
-			if(m_current_state->onUpdateCallback)
+			if(m_currentState->onUpdateCallback)
 			{
-				m_current_state->onUpdateCallback(delta);
+				m_currentState->onUpdateCallback(delta);
 			}
 		}
 
-		State* get_current_state()
+		State* getCurrentState()
 		{
-			return m_current_state;
+			return m_currentState;
 		}
 
 	private:
 		std::vector<State*> m_states;
-		State* m_current_state = nullptr;
+		State* m_currentState = nullptr;
 	};
 }

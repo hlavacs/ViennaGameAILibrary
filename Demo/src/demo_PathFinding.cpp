@@ -9,64 +9,64 @@
 
 int main(int argc, char* argv[])
 {
-	uint32_t screen_width = 1200;
-	uint32_t screen_height = 800;
+	uint32_t screenWidth = 1200;
+	uint32_t screenHeight = 800;
 
-	bool path_found = false;
+	bool pathFound = false;
 
-	float grid_stride = 50.0f;
-	float tile_size = 35.0f;
+	float gridStride = 50.0f;
+	float tileSize = 35.0f;
 
-	uint32_t navmesh_width = static_cast<uint32_t>(screen_width / grid_stride);
-	uint32_t navmesh_height = static_cast<uint32_t>(screen_height / grid_stride);
-	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmesh_width, navmesh_height, 30);
+	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / gridStride);
+	uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / gridStride);
+	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30);
 
-	VGAIL::Vec2i start_position = VGAIL::Vec2i(1, 1);
-	Rectangle start_rect = { static_cast<float>(start_position.x * grid_stride),
-								static_cast<float>(start_position.y * grid_stride),
-								tile_size, tile_size };
+	VGAIL::Vec2ui startPosition = VGAIL::Vec2ui(1, 1);
+	Rectangle startRect = { static_cast<float>(startPosition.x * gridStride),
+								static_cast<float>(startPosition.y * gridStride),
+								tileSize, tileSize };
 
-	VGAIL::Vec2i target_position = VGAIL::Vec2i(navmesh_width - 2, navmesh_height - 2);
-	Rectangle target_rect = { static_cast<float>(target_position.x * grid_stride),
-								static_cast<float>(target_position.y * grid_stride),
-								tile_size, tile_size };
+	VGAIL::Vec2ui targetPosition = VGAIL::Vec2ui(navmeshWidth - 2, navmeshHeight - 2);
+	Rectangle targetRect = { static_cast<float>(targetPosition.x * gridStride),
+								static_cast<float>(targetPosition.y * gridStride),
+								tileSize, tileSize };
 
-	if (navmesh->get_node(start_position).state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->getNode(startPosition).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(start_position).state = VGAIL::NodeState::WALKABLE;
+		navmesh->getNode(startPosition).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	if (navmesh->get_node(target_position).state == VGAIL::NodeState::OBSTRUCTABLE)
+	if (navmesh->getNode(targetPosition).state == VGAIL::NodeState::OBSTRUCTABLE)
 	{
-		navmesh->get_node(target_position).state = VGAIL::NodeState::WALKABLE;
+		navmesh->getNode(targetPosition).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	std::vector<VGAIL::Vec2i> path;
-	std::vector<VGAIL::Vec2i> path2;
+	std::vector<VGAIL::Vec2ui> path;
+	std::vector<VGAIL::Vec2ui> path2;
 
 	{
 		Timer timer("Preprocess");
-		navmesh->start_preprocess();
+		navmesh->startPreprocess();
 	}
 
-	InitWindow(screen_width, screen_height, "Demo");
+	InitWindow(screenWidth, screenHeight, "Demo");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
 	{
 		float delta = GetFrameTime();
 
-		uint32_t x = static_cast<uint32_t>(std::floor(GetMousePosition().x / grid_stride));
-		uint32_t y = static_cast<uint32_t>(std::floor(GetMousePosition().y / grid_stride));
+		uint32_t x = static_cast<uint32_t>(std::floor(GetMousePosition().x / gridStride));
+		uint32_t y = static_cast<uint32_t>(std::floor(GetMousePosition().y / gridStride));
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			path.clear();
 			path2.clear();
 
-			start_position = VGAIL::Vec2i(x, y);
-			start_rect.x = start_position.x * grid_stride;
-			start_rect.y = start_position.y * grid_stride;
+			startPosition = VGAIL::Vec2ui(x, y);
+			startRect.x = startPosition.x * gridStride;
+			startRect.y = startPosition.y * gridStride;
 		}
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
@@ -74,9 +74,9 @@ int main(int argc, char* argv[])
 			path.clear();
 			path2.clear();
 
-			target_position = VGAIL::Vec2i(x, y);
-			target_rect.y = target_position.y * grid_stride;
-			target_rect.x = target_position.x * grid_stride;
+			targetPosition = VGAIL::Vec2ui(x, y);
+			targetRect.y = targetPosition.y * gridStride;
+			targetRect.x = targetPosition.x * gridStride;
 		}
 
 		if (IsKeyPressed(KEY_R))
@@ -84,24 +84,24 @@ int main(int argc, char* argv[])
 			std::cout << "------------------" << std::endl;
 			{
 				Timer timer("A* time");
-				path = navmesh->A_star(start_position, target_position);
+				path = navmesh->A_Star(startPosition, targetPosition);
 			}
 			{
 				Timer timer("GP time");
-				path2 = navmesh->get_path_multithreading(start_position, target_position);
+				path2 = navmesh->getPath_multithreading(startPosition, targetPosition);
 			}
 		}
 
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		for (uint32_t y = 0; y < navmesh_height; y++)
+		for (uint32_t y = 0; y < navmeshHeight; y++)
 		{
-			for (uint32_t x = 0; x < navmesh_width; x++)
+			for (uint32_t x = 0; x < navmeshWidth; x++)
 			{
-				VGAIL::NodeData& node = navmesh->get_node(VGAIL::Vec2i(x, y));
+				VGAIL::NodeData& node = navmesh->getNode(VGAIL::Vec2ui(x, y));
 
-				Rectangle node_rect = { node.pos.x * grid_stride, node.pos.y * grid_stride, tile_size, tile_size };
+				Rectangle nodeRect = { node.pos.x * gridStride, node.pos.y * gridStride, tileSize, tileSize };
 
 				Color color;
 				if (node.state == VGAIL::NodeState::OBSTRUCTABLE)
@@ -113,29 +113,29 @@ int main(int argc, char* argv[])
 
 				}
 
-				DrawRectangleRec(node_rect, color);
+				DrawRectangleRec(nodeRect, color);
 			}
 		}
 
-		DrawRectangleRec(start_rect, CLITERAL(Color) { 191, 64, 64, 255 });
-		DrawRectangleRec(target_rect, CLITERAL(Color) { 102, 119, 204, 255 });
+		DrawRectangleRec(startRect, CLITERAL(Color) { 191, 64, 64, 255 });
+		DrawRectangleRec(targetRect, CLITERAL(Color) { 102, 119, 204, 255 });
 
 		if (path.size() > 0)
 		{
 			for (uint32_t i = 1; i < path.size(); i++)
 			{
 				DrawLineEx(
-					Vector2{ start_position.x * grid_stride + (tile_size / 2),
-								start_position.y * grid_stride + (tile_size / 2) },
-					Vector2{ path[0].x * grid_stride + (tile_size / 2),
-								path[0].y * grid_stride + (tile_size / 2) },
+					Vector2{ startPosition.x * gridStride + (tileSize / 2),
+								startPosition.y * gridStride + (tileSize / 2) },
+					Vector2{ path[0].x * gridStride + (tileSize / 2),
+								path[0].y * gridStride + (tileSize / 2) },
 					3.0f,
 					CLITERAL(Color) { 89, 166, 140, 255 });
 				DrawLineEx(
-					Vector2{ path[i - 1].x * grid_stride + (tile_size / 2),
-								path[i - 1].y * grid_stride + (tile_size / 2) },
-					Vector2{ path[i].x * grid_stride + (tile_size / 2),
-								path[i].y * grid_stride + (tile_size / 2) },
+					Vector2{ path[i - 1].x * gridStride + (tileSize / 2),
+								path[i - 1].y * gridStride + (tileSize / 2) },
+					Vector2{ path[i].x * gridStride + (tileSize / 2),
+								path[i].y * gridStride + (tileSize / 2) },
 					3.0f,
 					CLITERAL(Color) { 89, 166, 140, 255 });
 			}
@@ -144,19 +144,19 @@ int main(int argc, char* argv[])
 		if (path2.size() > 0)
 		{
 			DrawLineEx(
-				Vector2{ start_position.x * grid_stride + (tile_size / 2),
-							start_position.y * grid_stride + (tile_size / 2) },
-				Vector2{ path2[0].x * grid_stride + (tile_size / 2),
-							path2[0].y * grid_stride + (tile_size / 2) },
+				Vector2{ startPosition.x * gridStride + (tileSize / 2),
+							startPosition.y * gridStride + (tileSize / 2) },
+				Vector2{ path2[0].x * gridStride + (tileSize / 2),
+							path2[0].y * gridStride + (tileSize / 2) },
 				3.0f,
 				RED);
 			for (uint32_t i = 1; i < path2.size(); i++)
 			{
 				DrawLineEx(
-					Vector2{ path2[i - 1].x * grid_stride + (tile_size / 2),
-								path2[i - 1].y * grid_stride + (tile_size / 2) },
-					Vector2{ path2[i].x * grid_stride + (tile_size / 2),
-								path2[i].y * grid_stride + (tile_size / 2) },
+					Vector2{ path2[i - 1].x * gridStride + (tileSize / 2),
+								path2[i - 1].y * gridStride + (tileSize / 2) },
+					Vector2{ path2[i].x * gridStride + (tileSize / 2),
+								path2[i].y * gridStride + (tileSize / 2) },
 					3.0f,
 					RED);
 			}

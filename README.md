@@ -4,7 +4,8 @@ A library containing game AI algorithms.
 ### Folder structure
 - Demo
 	- [raylib](https://github.com/raysan5/raylib)
-	- src
+	- src: Source folder containing the code for the demos
+	- res: Resource folder containing assets
 	- ```CMakeLists.txt```
 - docs: Contains the documentation for this project.
 - include: ```ViennaGameAILibrary.hpp```
