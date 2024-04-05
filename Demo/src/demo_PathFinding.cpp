@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		navmesh->startPreprocess();
 	}
 
-	InitWindow(screenWidth, screenHeight, "Demo");
+	InitWindow(screenWidth, screenHeight, "Demo for Pathfinding");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())

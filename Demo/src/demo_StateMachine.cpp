@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 	std::vector<VGAIL::Vec2ui> path;
 	int32_t currentPathIndex = -1;
 
-	InitWindow(screenWidth, screenHeight, "Demo");
+	InitWindow(screenWidth, screenHeight, "Demo for State Machines");
 	SetTargetFPS(60);
 
 	Font stateFont = LoadFont("Demo/res/pixelplay.ttf");
