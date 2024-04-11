@@ -19,6 +19,12 @@ namespace VGAIL
 	typedef int32_t i32;
 	typedef float f32;
 
+#ifdef NDEBUG
+#define VGAIL_ASSERT(x, msg) { }
+#else
+#define VGAIL_ASSERT(x, msg) { if(!(x)) { std::cout << "Assertion Failed: " << msg << std::endl; __debugbreak(); } }
+#endif
+
 	struct Vec2ui
 	{
 		ui32 x, y;
@@ -179,7 +185,7 @@ namespace VGAIL
 					NodeData node(Vec2ui{ x, y });
 
 					auto val = distribution(rng);
-					if (val <= obstaclePercentage)
+					if (val <= obstaclePercentage && obstaclePercentage != 0)
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -554,16 +560,21 @@ namespace VGAIL
 			return pathToRegion;
 		}
 
-		void setObstacle(Vec2ui obstaclePos)
+		void setObstructable(Vec2ui obstaclePos)
 		{
 			ui32 index = getIndex(obstaclePos);
-			if (m_nodes[index].state == NodeState::OBSTRUCTABLE)
-			{
-				m_nodes[index].state = NodeState::WALKABLE;
-			}
-			else
+			if (m_nodes[index].state != NodeState::OBSTRUCTABLE)
 			{
 				m_nodes[index].state = NodeState::OBSTRUCTABLE;
+			}
+		}
+
+		void setWalkable(Vec2ui pos)
+		{
+			ui32 index = getIndex(pos);
+			if (m_nodes[index].state != NodeState::WALKABLE)
+			{
+				m_nodes[index].state = NodeState::WALKABLE;
 			}
 		}
 
@@ -664,9 +675,7 @@ namespace VGAIL
 
 	private:
 		ui32 m_width, m_height;
-
 		RegionList* m_regions;
-
 		std::vector<NodeData> m_nodes;
 		std::vector<std::vector<ui32>> m_neighbors;
 		std::vector<std::unordered_map<ui32, std::vector<Vec2ui>>> m_adjList;
@@ -777,7 +786,7 @@ namespace VGAIL
 				}
 			}
 
-			if(m_currentState->onUpdateCallback)
+			if (m_currentState->onUpdateCallback)
 			{
 				m_currentState->onUpdateCallback(delta);
 			}
@@ -791,5 +800,85 @@ namespace VGAIL
 	private:
 		std::vector<State*> m_states;
 		State* m_currentState = nullptr;
+	};
+
+	class DecisionNode
+	{
+	public:
+		virtual ~DecisionNode()
+		{
+			for (DecisionNode* node : m_children)
+			{
+				delete node;
+			}
+		}
+
+		virtual void makeDecision(float dt) = 0;
+
+		DecisionNode& getChild(VGAIL::i32 index)
+		{
+			VGAIL_ASSERT(index < m_children.size(), "Index out of bounds!");
+			return *m_children[index];
+		}
+
+		template <class T, typename... Args>
+		DecisionNode& addChild(Args&& ...args)
+		{
+			DecisionNode* child = new T(args...);
+			m_children.push_back(child);
+			return *child;
+		}
+
+	public:
+		ui32 getChildrenSize()
+		{
+			return m_children.size();
+		}
+
+	private:
+		std::vector<DecisionNode*> m_children;
+	};
+
+	class DecisionTree
+	{
+	public:
+		DecisionTree() {}
+
+		~DecisionTree()
+		{
+			resetTree();
+		}
+
+		void update(float dt)
+		{
+			if (m_root)
+			{
+				m_root->makeDecision(dt);
+			}
+		}
+
+		template <class T, typename... Args>
+		DecisionNode& createRoot(Args&& ...args)
+		{
+			if (m_root)
+			{
+				resetTree();
+			}
+
+			m_root = new T(args...);
+			return *m_root;
+		}
+
+	private:
+		void resetTree()
+		{
+			if (m_root)
+			{
+				delete m_root;
+			}
+		}
+
+	private:
+		DecisionNode* m_root = nullptr;
 	};
 }
