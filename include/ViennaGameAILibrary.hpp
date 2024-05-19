@@ -55,6 +55,11 @@ namespace VGAIL
 	{
 		f32 x, y;
 
+		Vec2f()
+			: x(0.0f)
+			, y(0.0f)
+		{}
+
 		Vec2f(f32 x, f32 y)
 			: x(x), y(y) {}
 
@@ -71,10 +76,42 @@ namespace VGAIL
 			return Vec2f{ x + other.x, y + other.y };
 		}
 
+		Vec2f operator*(f32 other)
+		{
+			return Vec2f{ x * other, y * other };
+		}
+
+		Vec2f operator/(f32 other)
+		{
+			return Vec2f{ x / other, y / other };
+		}
+
+		f32 getMagnitude()
+		{
+			return std::sqrt(x * x + y * y);
+		}
+
+		void setMagnitude(f32 value)
+		{
+			f32 mag = getMagnitude();
+			f32 scaleFactor = value / mag;
+			x *= scaleFactor;
+			y *= scaleFactor;
+		}
+
+		void limitMagnitude(f32 value)
+		{
+			f32 mag = getMagnitude();
+			if (mag > value)
+			{
+				setMagnitude(value);
+			}
+		}
+
 		void normalize()
 		{
-			f32 mag = std::sqrt(x * x + y * y);
-			if (mag <= 0.0f)
+			f32 mag = getMagnitude();
+			if (mag < 0.0f)
 			{
 				std::cout << "mag < 0" << std::endl;
 				return;
@@ -186,6 +223,59 @@ namespace VGAIL
 
 					auto val = distribution(rng);
 					if (val <= obstaclePercentage && obstaclePercentage != 0)
+					{
+						node.state = NodeState::OBSTRUCTABLE;
+					}
+
+					m_nodes.emplace_back(node);
+				}
+			}
+
+			m_adjList.resize(m_nodes.size(), {});
+			m_neighbors.resize(m_nodes.size(), {});
+
+			for (ui32 i = 0; i < m_nodes.size(); i++)
+			{
+				setNeighbors(i);
+			}
+
+			createRegions();
+		}
+
+		NavMesh(const std::string& filepath)
+		{
+			std::ifstream stream(filepath);
+			std::string navmeshData;
+
+			if (stream.is_open())
+			{
+				std::string line;
+				getline(stream, line);
+				m_width = std::stoi(line);
+
+				getline(stream, line);
+				m_height = std::stoi(line);
+
+				stream >> navmeshData;
+			}
+			else
+			{
+				std::cout << "Could not read file " << filepath << std::endl;
+				return;
+			}
+
+			for (ui32 y = 0; y < m_height; y++)
+			{
+				for (ui32 x = 0; x < m_width; x++)
+				{
+					NodeData node(Vec2ui{ x, y });
+
+					char state = navmeshData[getIndex(Vec2ui{ x, y })];
+					if (state == 'w')
+					{
+						node.state = NodeState::WALKABLE;
+					}
+					else
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -560,6 +650,21 @@ namespace VGAIL
 			return pathToRegion;
 		}
 
+		void saveToFile(const std::string& filepath)
+		{
+			std::ofstream stream(filepath);
+			stream << m_width << '\n';
+			stream << m_height << '\n';
+			for (NodeData node : m_nodes)
+			{
+				if (node.state == NodeState::WALKABLE)
+					stream << "w";
+				else
+					stream << "o";
+			}
+			stream.close();
+		}
+
 		void setObstructable(Vec2ui obstaclePos)
 		{
 			ui32 index = getIndex(obstaclePos);
@@ -880,5 +985,276 @@ namespace VGAIL
 
 	private:
 		DecisionNode* m_root = nullptr;
+	};
+
+	class Boid
+	{
+	public:
+		Boid(Vec2f position, Vec2f velocity)
+		{
+			m_position = position;
+			m_velocity = velocity;
+			m_acceleration = Vec2f{};
+		}
+
+		~Boid() {}
+
+		void setPosition(Vec2f position)
+		{
+			m_position = position;
+		}
+
+		Vec2f getPosition()
+		{
+			return m_position;
+		}
+
+		void setVelocity(Vec2f velocity)
+		{
+			m_velocity = velocity;
+		}
+
+		Vec2f getVelocity()
+		{
+			return m_velocity;
+		}
+
+		void flocking(f32 speed, f32 maxForce, f32 separationRadius, f32 perceptionRadius,
+			const std::vector<Boid*>& flock, f32 width, f32 height, f32 margin)
+		{
+			if (width > 0.0f && height > 0.0f)
+			{
+				stayWithinBorders(width, height, margin);
+			}
+
+			m_speed = speed;
+			m_maxForce = maxForce;
+
+			Vec2f separationVector;
+			Vec2f alignVector;
+			Vec2f cohesionVector;
+
+			ui32 separationCount = 0;
+			ui32 perceptionCount = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+
+				if (dist > 0.0f)
+				{
+					if (dist < separationRadius)
+					{
+						Vec2f diff = m_position - other->getPosition();
+						diff = diff / (dist * dist);
+						separationVector = separationVector + diff;
+						separationCount++;
+					}
+
+					if (dist < perceptionRadius)
+					{
+						alignVector = alignVector + other->getVelocity();
+						cohesionVector = cohesionVector + other->getPosition();
+						perceptionCount++;
+					}
+
+				}
+			}
+
+			if (separationCount > 0)
+			{
+				separationVector = separationVector / separationCount;
+				separationVector.setMagnitude(m_speed);
+				separationVector = separationVector - m_velocity;
+				separationVector.limitMagnitude(2 * m_maxForce);
+			}
+
+			if (perceptionCount > 0)
+			{
+				alignVector = alignVector / perceptionCount;
+				alignVector.setMagnitude(m_speed);
+				alignVector = alignVector - m_velocity;
+				alignVector.limitMagnitude(m_maxForce);
+
+				cohesionVector = cohesionVector / perceptionCount;
+				cohesionVector = cohesionVector - m_position;
+				cohesionVector.setMagnitude(m_speed);
+				cohesionVector = cohesionVector - m_velocity;
+				cohesionVector.limitMagnitude(m_maxForce);
+			}
+
+			m_acceleration = m_acceleration + separationVector;
+			m_acceleration = m_acceleration + alignVector;
+			m_acceleration = m_acceleration + cohesionVector;
+
+			m_position = m_position + m_velocity;
+			m_velocity = m_velocity + m_acceleration;
+			m_velocity.limitMagnitude(m_speed);
+			m_acceleration = { 0.0f, 0.0f };
+		}
+
+		void stayWithinBorders(f32 width, f32 height, f32 margin)
+		{
+			if (m_position.x < margin)
+			{
+				m_acceleration.x = m_acceleration.x + m_maxForce;
+			}
+			else if (m_position.x > width - margin)
+			{
+				m_acceleration.x = m_acceleration.x - m_maxForce;
+			}
+
+			if (m_position.y < margin)
+			{
+				m_acceleration.y = m_acceleration.y + m_maxForce;
+			}
+			else if (m_position.y > height - margin)
+			{
+				m_acceleration.y = m_acceleration.y - m_maxForce;
+			}
+		}
+
+		Vec2f separation(f32 separationRadius, const std::vector<Boid*>& flock)
+		{
+			Vec2f separationVector;
+			ui32 count = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+
+				if (dist > 0.0f && dist < separationRadius)
+				{
+					Vec2f diff = m_position - other->getPosition();
+					diff = diff / (dist * dist);
+					separationVector = separationVector + diff;
+					count++;
+				}
+			}
+
+			if (count > 0)
+			{
+				separationVector = separationVector / count;
+				separationVector.setMagnitude(m_speed);
+				separationVector = separationVector - m_velocity;
+				separationVector.limitMagnitude(2 * m_maxForce);
+			}
+
+			return separationVector;
+		}
+
+		Vec2f align(f32 perceptionRadius, const std::vector<Boid*>& flock)
+		{
+			Vec2f alignVector;
+			ui32 count = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+				if (dist > 0.0f && dist < perceptionRadius)
+				{
+					alignVector = alignVector + other->getVelocity();
+					count++;
+				}
+			}
+
+			if (count > 0)
+			{
+				alignVector = alignVector / count;
+				alignVector.setMagnitude(m_speed);
+				alignVector = alignVector - m_velocity;
+				alignVector.limitMagnitude(m_maxForce);
+			}
+
+			return alignVector;
+		}
+
+		Vec2f cohesion(f32 perceptionRadius, const std::vector<Boid*>& flock)
+		{
+			Vec2f cohesionVector;
+			ui32 count = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+				if (dist > 0.0f && dist < perceptionRadius)
+				{
+					cohesionVector = cohesionVector + other->getPosition();
+					count++;
+				}
+			}
+
+			if (count > 0)
+			{
+				cohesionVector = cohesionVector / count;
+				cohesionVector = cohesionVector - m_position;
+				cohesionVector.setMagnitude(m_speed);
+				cohesionVector = cohesionVector - m_velocity;
+				cohesionVector.limitMagnitude(m_maxForce);
+			}
+
+			return cohesionVector;
+		}
+
+	private:
+		f32 distance(const Vec2f& v1, const Vec2f& v2)
+		{
+			f32 distX = v1.x - v2.x;
+			f32 distY = v1.y - v2.y;
+			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
+
+			return std::sqrt(dist);
+		}
+
+		f32 m_speed, m_maxForce;
+		Vec2f m_position, m_velocity, m_acceleration;
+	};
+
+	class Flocking
+	{
+	public:
+		Flocking(f32 speed, f32 maxForce, f32 separationRadius, f32 perceptionRadius)
+		{
+			m_speed = speed;
+			m_maxForce = maxForce;
+
+			m_separationRadius = separationRadius;
+			m_perceptionRadius = perceptionRadius;
+		}
+
+		~Flocking()
+		{
+			for (ui32 i = 0; i < boids.size(); i++)
+			{
+				delete boids[i];
+			}
+		}
+
+		void addBoid(Vec2f position, Vec2f velocity)
+		{
+			boids.push_back(new Boid(position, velocity));
+		}
+
+		void setBorders(f32 width, f32 height, f32 margin)
+		{
+			m_width = width;
+			m_height = height;
+			m_margin = margin;
+		}
+
+		void update()
+		{
+			for (Boid* boid : boids)
+			{
+				boid->flocking(m_speed, m_maxForce, m_separationRadius, m_perceptionRadius, boids, m_width, m_height, m_margin);
+			}
+		}
+
+		std::vector<Boid*> boids;
+
+	private:
+		f32 m_speed, m_maxForce;
+		f32 m_separationRadius, m_perceptionRadius;
+		f32 m_width = 0.0f, m_height = 0.0f, m_margin = 0.0f;
 	};
 }

@@ -124,11 +124,12 @@ public:
 			dX /= length;
 			dY /= length;
 
-			npc->position.x += dX * dt * speed;
-			npc->position.y += dY * dt * speed;
-
 			npc->position.x = std::max(0.0f, std::min(npc->position.x, static_cast<float>(screenWidth) - 50.0f));
 			npc->position.y = std::max(0.0f, std::min(npc->position.y, static_cast<float>(screenHeight) - 50.0f));
+
+			npc->position.x += dX * dt * speed * 1.1;
+			npc->position.y += dY * dt * speed * 1.1;
+
 		}
 		else
 		{
@@ -146,7 +147,7 @@ public:
 			}
 			else
 			{
-				npc->mode = NPCMode::Resting;
+				npc->mode = NPCMode::Stretching;
 			}
 		}
 	}
