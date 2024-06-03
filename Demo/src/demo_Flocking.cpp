@@ -2,17 +2,23 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include <string>
 
 float randomFloat(float min, float max)
 {
 	return (rand() / (float)RAND_MAX * max) + min;
 }
 
-float speed = 2.0f;
-float maxForce = 0.05f;
+float minSpeed = 0.5f;
+float maxSpeed = 1.5f;
 
-float separationRadius = 10.0f;
-float perceptionRadius = 50.0f;
+float turnFactor = 0.05f;
+float avoidFactor = 0.05f;
+float matchingFactor = 0.05f;
+float centeringFactor = 0.0005f;
+
+float separationRange = 8.0f;
+float perceptionRange = 40.0f;
 
 float margin = 50.0f;
 
@@ -21,35 +27,34 @@ int main(int argc, char* argv[])
 	uint32_t screenWidth = 1200;
 	uint32_t screenHeight = 800;
 
-	VGAIL::Flocking* flock = new VGAIL::Flocking(speed, maxForce, separationRadius, perceptionRadius);
+	VGAIL::Flocking* flock = new VGAIL::Flocking();
 	flock->setBorders(static_cast<float>(screenWidth), static_cast<float>(screenHeight), margin);
-
-	for (uint32_t i = 0; i < 200; i++)
-	{
-		flock->addBoid(VGAIL::Vec2f{ randomFloat(0.0f, static_cast<float>(screenWidth)), randomFloat(0.0f, static_cast<float>(screenHeight)) },
-			VGAIL::Vec2f{ randomFloat(0.0f, 1.0f), randomFloat(0.0f, 1.0f) });
-	}
+	flock->setRanges(separationRange, perceptionRange);
 
 	InitWindow(screenWidth, screenHeight, "Demo for Flocking");
 	SetTargetFPS(60);
 
+	for (uint32_t i = 0; i < 50; i++)
+	{
+		VGAIL::Vec2f pos = VGAIL::Vec2f{ randomFloat(0.0f, static_cast<float>(screenWidth)), randomFloat(0.0f, static_cast<float>(screenHeight)) };
+		flock->addBoid(pos, VGAIL::Vec2f{ randomFloat(0.2f, 0.5f), randomFloat(0.2f, 0.5f) });
+	}
+
 	while (!WindowShouldClose())
 	{
-		float delta = GetFrameTime();
-		flock->update();
+		flock->update(minSpeed, maxSpeed, avoidFactor, matchingFactor, centeringFactor, turnFactor);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		for (VGAIL::Boid* boid : flock->boids)
+		for (uint32_t i = 0; i < flock->boids.size(); i++)
 		{
-			DrawCircle(boid->getPosition().x, boid->getPosition().y, separationRadius, Color{ 112, 31, 126, 50 });
-			DrawCircle(boid->getPosition().x, boid->getPosition().y, perceptionRadius, Color{ 102, 191, 255, 20 });
-			DrawCircle(boid->getPosition().x, boid->getPosition().y, 3.5f, BLACK);
+			DrawCircle(flock->boids[i]->getPosition().x, flock->boids[i]->getPosition().y, 3.5f, BLACK);
 		}
 
 		EndDrawing();
 	}
+
 	CloseWindow();
 
 	return 0;
