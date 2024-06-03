@@ -2,7 +2,6 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include <string>
 
 float randomFloat(float min, float max)
 {
