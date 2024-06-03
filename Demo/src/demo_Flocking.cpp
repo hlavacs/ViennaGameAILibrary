@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 	InitWindow(screenWidth, screenHeight, "Demo for Flocking");
 	SetTargetFPS(60);
 
-	for (uint32_t i = 0; i < 50; i++)
+	for (uint32_t i = 0; i < 200; i++)
 	{
 		VGAIL::Vec2f pos = VGAIL::Vec2f{ randomFloat(0.0f, static_cast<float>(screenWidth)), randomFloat(0.0f, static_cast<float>(screenHeight)) };
 		flock->addBoid(pos, VGAIL::Vec2f{ randomFloat(0.2f, 0.5f), randomFloat(0.2f, 0.5f) });
@@ -47,9 +47,9 @@ int main(int argc, char* argv[])
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		for (uint32_t i = 0; i < flock->boids.size(); i++)
+		for (VGAIL::Boid* boid : flock->boids)
 		{
-			DrawCircle(flock->boids[i]->getPosition().x, flock->boids[i]->getPosition().y, 3.5f, BLACK);
+			DrawCircle(boid->getPosition().x, boid->getPosition().y, 3.0f, BLACK);
 		}
 
 		EndDrawing();
