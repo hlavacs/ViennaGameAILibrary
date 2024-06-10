@@ -14,6 +14,8 @@
 
 namespace VGAIL
 {
+	constexpr float PI = 3.14159265358979f;
+
 	typedef uint32_t ui32;
 	typedef uint64_t ui64;
 	typedef int32_t i32;
@@ -76,6 +78,11 @@ namespace VGAIL
 			return Vec2f{ x + other.x, y + other.y };
 		}
 
+		Vec2f operator/(const Vec2f& other)
+		{
+			return Vec2f{ x / other.x, y / other.y };
+		}
+
 		Vec2f operator*(f32 other)
 		{
 			return Vec2f{ x * other, y * other };
@@ -86,9 +93,31 @@ namespace VGAIL
 			return Vec2f{ x / other, y / other };
 		}
 
+		bool operator==(const Vec2f& other)
+		{
+			return x == other.x && y == other.y;
+		}
+
 		f32 getMagnitude()
 		{
-			return std::sqrt(x * x + y * y);
+			return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+		}
+
+		void setMagnitude(f32 value)
+		{
+			f32 mag = getMagnitude();
+			f32 scaleFactor = value / mag;
+			x *= scaleFactor;
+			y *= scaleFactor;
+		}
+
+		void limitMagnitude(f32 value)
+		{
+			f32 mag = getMagnitude();
+			if (mag > value)
+			{
+				setMagnitude(value);
+			}
 		}
 
 		void normalize()
@@ -99,8 +128,8 @@ namespace VGAIL
 				std::cout << "mag < 0" << std::endl;
 				return;
 			}
-			x = x / mag;
-			y = y / mag;
+			x /= mag;
+			y /= mag;
 		}
 	};
 
@@ -987,7 +1016,7 @@ namespace VGAIL
 			m_position = position;
 		}
 
-		Vec2f getPosition()
+		Vec2f getPosition() const
 		{
 			return m_position;
 		}
@@ -997,17 +1026,39 @@ namespace VGAIL
 			m_velocity = velocity;
 		}
 
-		Vec2f getVelocity()
+		Vec2f getVelocity() const
 		{
 			return m_velocity;
 		}
 
-		ui32 getID()
+		ui32 getID() const
 		{
 			return m_id;
 		}
 
-		void flocking(f32 minSpeed, f32 maxSpeed, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor,
+		f32 getRotationInDegrees()
+		{
+			if(m_velocity.getMagnitude() < 0.01f)
+			{
+				return 0.0f;
+			}
+
+			Vec2f target = m_position + m_velocity;
+			f32 radians = std::atan2(target.y - m_position.y, target.x - m_position.x);
+			return radians * (180.0f / PI);
+		}
+
+		void setMinSpeed(f32 minSpeed)
+		{
+			m_minSpeed = minSpeed;
+		}
+
+		void setMaxSpeed(f32 maxSpeed)
+		{
+			m_maxSpeed = maxSpeed;
+		}
+
+		void flocking(f32 dt, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor,
 			const std::vector<Boid*>& flock, f32 width, f32 height, f32 margin)
 		{
 			Vec2f separationVector, alignVector, cohesionVector;
@@ -1017,7 +1068,7 @@ namespace VGAIL
 			{
 				if (other->getID() != m_id)
 				{
-					f32 dist = distance(m_position, other->getPosition());
+					f32 dist = distanceTo(other->getPosition());
 
 					if (dist < separationRange)
 					{
@@ -1045,19 +1096,19 @@ namespace VGAIL
 			if (width > 0.0f && height > 0.0f)
 				stayWithinBorders(width, height, margin, turnFactor);
 
-			m_speed = sqrt(m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y);
+			f32 speed = m_velocity.getMagnitude();
 
-			if (m_speed < minSpeed)
+			if (speed < m_minSpeed)
 			{
-				m_velocity = (m_velocity / m_speed) * minSpeed;
+				m_velocity = (m_velocity / speed) * m_minSpeed;
 			}
 
-			if (m_speed > maxSpeed)
+			if (speed > m_maxSpeed)
 			{
-				m_velocity = (m_velocity / m_speed) * maxSpeed;
+				m_velocity = (m_velocity / speed) * m_maxSpeed;
 			}
 
-			m_position = m_position + m_velocity;
+			m_position = m_position + m_velocity * dt;
 		}
 
 		void stayWithinBorders(f32 width, f32 height, f32 margin, f32 turnFactor)
@@ -1081,13 +1132,13 @@ namespace VGAIL
 			}
 		}
 
-		void separation(f32 separationRange, f32 avoidFactor, const std::vector<Boid*>& flock)
+		Vec2f separation(f32 separationRange, f32 avoidFactor, const std::vector<Boid*>& flock)
 		{
 			Vec2f separationVector;
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distance(m_position, other->getPosition());
+				f32 dist = distanceTo(other->getPosition());
 
 				if (other->getID() != m_id && dist < separationRange)
 				{
@@ -1095,17 +1146,17 @@ namespace VGAIL
 				}
 			}
 
-			m_velocity = m_velocity + separationVector * avoidFactor;
+			return separationVector * avoidFactor;
 		}
 
-		void align(f32 perceptionRange, f32 matchingFactor, const std::vector<Boid*>& flock)
+		Vec2f align(f32 perceptionRange, f32 matchingFactor, const std::vector<Boid*>& flock)
 		{
 			Vec2f alignVector;
 			ui32 neighbors = 0;
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distance(m_position, other->getPosition());
+				f32 dist = distanceTo(other->getPosition());
 
 				if (m_id != other->getID() && dist < perceptionRange)
 				{
@@ -1119,17 +1170,17 @@ namespace VGAIL
 				alignVector = alignVector / neighbors;
 			}
 
-			m_velocity = m_velocity + (alignVector - m_velocity) * matchingFactor;
+			return (alignVector - m_velocity) * matchingFactor;
 		}
 
-		void cohesion(f32 perceptionRange, f32 centeringFactor, const std::vector<Boid*>& flock)
+		Vec2f cohesion(f32 perceptionRange, f32 centeringFactor, const std::vector<Boid*>& flock)
 		{
 			Vec2f cohesionVector;
 			ui32 neighbors = 0;
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distance(m_position, other->getPosition());
+				f32 dist = distanceTo(other->getPosition());
 				if (m_id != other->getID() && dist < perceptionRange)
 				{
 					cohesionVector = cohesionVector + other->getPosition();
@@ -1142,22 +1193,144 @@ namespace VGAIL
 				cohesionVector = cohesionVector / neighbors;
 			}
 
-			m_velocity = m_velocity + (cohesionVector - m_velocity) * centeringFactor;
+			return (cohesionVector - m_velocity) * centeringFactor;
 		}
 
-	private:
-		f32 distance(const Vec2f& v1, const Vec2f& v2)
+		Vec2f seek(Vec2f targetPosition, f32 maxForce)
 		{
-			f32 distX = v1.x - v2.x;
-			f32 distY = v1.y - v2.y;
+			Vec2f steeringForce = targetPosition - m_position;
+			steeringForce.normalize();
+			steeringForce = steeringForce * maxForce;
+			
+			return steeringForce;
+		}
+
+		Vec2f flee(Vec2f targetPosition, f32 maxForce)
+		{
+			Vec2f steeringForce = m_position - targetPosition;
+			steeringForce.normalize();
+			steeringForce = steeringForce * maxForce;
+
+			return steeringForce;
+		}	
+
+		Vec2f pursue(const Boid* target, f32 maxForce)
+		{
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+			f32 speed = m_velocity.getMagnitude();
+
+			f32 prediction = distance / speed;
+
+			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
+			return seek(newPosition, maxForce);
+		}
+
+		Vec2f evade(const Boid* target, f32 maxForce)
+		{
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+			f32 speed = m_velocity.getMagnitude();
+
+			f32 prediction = distance / speed;
+
+			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
+			return flee(newPosition, maxForce);
+		}
+
+		Vec2f arrive(Vec2f targetPosition, f32 slowRadius, f32 maxForce) 
+		{
+			Vec2f desiredVelocity = targetPosition - m_position;
+			f32 distance = desiredVelocity.getMagnitude();
+			
+			// arrivalThreshold 
+			if(distance <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			desiredVelocity.normalize();
+
+			if(distance > slowRadius)
+			{
+				desiredVelocity = desiredVelocity * m_maxSpeed;
+			}
+			else
+			{
+				desiredVelocity = desiredVelocity * m_maxSpeed * distance / slowRadius;
+			}
+			 
+			Vec2f steeringForce = desiredVelocity - m_velocity;
+
+			if(steeringForce.getMagnitude() > maxForce)
+			{
+				steeringForce.normalize();
+				steeringForce = steeringForce * maxForce;
+			}
+
+			return steeringForce;
+		}
+
+		Vec2f wander(f32 circleDistance, f32 circleRadius, f32 displaceRange, f32 maxForce)
+		{
+			Vec2f desired = m_velocity;
+			desired.setMagnitude(circleDistance);
+			desired = desired + m_position;
+
+			f32 theta = m_theta	+ getRotationInDegrees();
+
+			f32 x = circleRadius * cos(theta);
+			f32 y = circleRadius * sin(theta);
+
+			desired = desired + Vec2f{x, y};
+
+			Vec2f steeringForce = desired - m_position;
+			steeringForce.setMagnitude(maxForce);	
+
+			m_theta = m_theta + randomFloat(-displaceRange, displaceRange);
+
+			return steeringForce;
+		}
+
+		void applySteeringForce(Vec2f steeringForce)
+		{
+			m_velocity = m_velocity + steeringForce;
+		}
+
+		void updatePosition()
+		{
+			if (m_velocity.getMagnitude() < m_minSpeed)
+			{
+				m_velocity = (m_velocity / m_velocity.getMagnitude()) * m_minSpeed;
+			}
+
+			if (m_velocity.getMagnitude() > m_maxSpeed)
+			{
+				m_velocity = (m_velocity / m_velocity.getMagnitude()) * m_maxSpeed;
+			}
+
+			m_position = m_position + m_velocity;
+		}
+
+		f32 distanceTo(const Vec2f& v2)
+		{
+			f32 distX = m_position.x - v2.x;
+			f32 distY = m_position.y - v2.y;
 			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
 
 			return std::sqrt(dist);
-		}
+		}	
 
+	private:
 		ui32 m_id;
-		f32 m_speed;
+		f32 m_theta = PI;
+		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;
 		Vec2f m_position, m_velocity;
+
+		float randomFloat(float min, float max)
+		{
+			return (rand() / (float)RAND_MAX * max) + min;
+		}
 	};
 
 	class Flocking
@@ -1173,9 +1346,12 @@ namespace VGAIL
 			}
 		}
 
-		void addBoid(Vec2f position, Vec2f velocity)
+		void addBoid(Vec2f position, Vec2f velocity, f32 minSpeed, f32 maxSpeed)
 		{
-			boids.push_back(new Boid(position, velocity, boids.size()));
+			Boid* boid = new Boid(position, velocity, boids.size());
+			boid->setMinSpeed(minSpeed);
+			boid->setMaxSpeed(maxSpeed);
+			boids.push_back(boid);
 		}
 
 		void setBorders(f32 width, f32 height, f32 margin)
@@ -1191,12 +1367,11 @@ namespace VGAIL
 			m_perceptionRange = perceptionRange;
 		}
 
-		void update(f32 minSpeed, f32 maxSpeed, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor)
+		void update(f32 dt, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor)
 		{
-
 			for (Boid* boid : boids)
 			{
-				boid->flocking(minSpeed, maxSpeed, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, turnFactor, boids, m_width, m_height, m_margin);
+				boid->flocking(dt, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, turnFactor, boids, m_width, m_height, m_margin);
 			}
 		}
 
