@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 				{ 0.0f, 0.0f, static_cast<float>(texture.width), static_cast<float>(texture.height) }, 
 				{ boid->getPosition().x, boid->getPosition().y, 50.0f, 50.0f }, 
 				Vector2{ 25.0f, 25.0f }, 
-				boid->getRotation() - 90.f,  
+				boid->getRotationInDegrees() - 90.f,  
 				WHITE
 			);
 		}

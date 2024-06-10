@@ -1329,7 +1329,7 @@ namespace VGAIL
 
 		float randomFloat(float min, float max)
 		{
-			return (rand() / (float)RAND_MAX * max) + min;
+			return (rand() / static_cast<float>(RAND_MAX) * max) + min;
 		}
 	};
 
