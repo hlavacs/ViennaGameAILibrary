@@ -5,11 +5,6 @@
 #include "raylib.h"
 #include "raymath.h"
 
-float randomFloat(float min, float max)
-{
-	return (rand() / (float)RAND_MAX * max) + min;
-}
-
 float minSpeed = 50.0f;
 float maxSpeed = 80.0f;
 
@@ -57,8 +52,9 @@ int main(int argc, char* argv[])
 
 	for (uint32_t i = 0; i < 100; i++)
 	{
-		VGAIL::Vec2f pos = VGAIL::Vec2f{ randomFloat(0.0f, static_cast<float>(screenWidth)), randomFloat(0.0f, static_cast<float>(screenHeight)) };
-		flock->addBoid(pos, VGAIL::Vec2f{randomFloat(0.5f, 1.0f), randomFloat(0.5f, 1.0f)}, minSpeed, maxSpeed);
+		flock->addBoid(VGAIL::Vec2f{VGAIL::random(0.0f, static_cast<float>(screenWidth)), VGAIL::random(0.0f, static_cast<float>(screenHeight))}, 
+						VGAIL::Vec2f{VGAIL::random(0.5f, 1.0f), VGAIL::random(0.5f, 1.0f)}, 
+						minSpeed, maxSpeed);
 	}
 
 	while (!WindowShouldClose())

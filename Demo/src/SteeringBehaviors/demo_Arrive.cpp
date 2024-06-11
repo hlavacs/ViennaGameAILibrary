@@ -6,11 +6,6 @@
 #include "raylib.h"
 #include "raymath.h"
 
-float randomFloat(float min, float max)
-{
-	return (rand() / (float)RAND_MAX * max) + min;
-}
-
 int main(int argc, char* argv[])
 {
 	uint32_t screenWidth = 1200;
@@ -22,7 +17,7 @@ int main(int argc, char* argv[])
 	InitWindow(screenWidth, screenHeight, "Demo for Arrive");
 	SetTargetFPS(60);
 	
-	VGAIL::Boid* agent = new VGAIL::Boid(VGAIL::Vec2f{100.0f, 100.0f}, VGAIL::Vec2f{ randomFloat(1.5f, 2.0f), randomFloat(1.5f, 2.0f)}, 0);
+	VGAIL::Boid* agent = new VGAIL::Boid(VGAIL::Vec2f{100.0f, 100.0f}, VGAIL::Vec2f{ VGAIL::random(1.5f, 2.0f), VGAIL::random(1.5f, 2.0f)}, 0);
 	agent->setMaxSpeed(1.0f);
 	agent->setMaxSpeed(3.0f);
 	Texture2D agentTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");

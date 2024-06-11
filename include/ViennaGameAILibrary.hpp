@@ -138,6 +138,15 @@ namespace VGAIL
 		return os << vec.x << ", " << vec.y;
 	}
 
+	f32 random(f32 min, f32 max)
+	{
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
+		
+		return distribution(rng);
+	}
+
 	struct Region
 	{
 		ui32 regionID;
@@ -223,17 +232,13 @@ namespace VGAIL
 			: m_width(width)
 			, m_height(height)
 		{
-			std::random_device dev;
-			std::mt19937 rng(dev());
-			std::uniform_int_distribution<std::mt19937::result_type> distribution(0, 100); // distribution in range [0, 1]
-
 			for (ui32 y = 0; y < m_height; y++)
 			{
 				for (ui32 x = 0; x < m_width; x++)
 				{
 					NodeData node(Vec2ui{ x, y });
 
-					auto val = distribution(rng);
+					auto val = random(0, 100);
 					if (val <= obstaclePercentage && obstaclePercentage != 0)
 					{
 						node.state = NodeState::OBSTRUCTABLE;
@@ -1068,7 +1073,7 @@ namespace VGAIL
 			{
 				if (other->getID() != m_id)
 				{
-					f32 dist = distanceTo(other->getPosition());
+					f32 dist = distance(m_position, other->getPosition());
 
 					if (dist < separationRange)
 					{
@@ -1138,7 +1143,7 @@ namespace VGAIL
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distanceTo(other->getPosition());
+				f32 dist = distance(m_position, other->getPosition());
 
 				if (other->getID() != m_id && dist < separationRange)
 				{
@@ -1156,7 +1161,7 @@ namespace VGAIL
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distanceTo(other->getPosition());
+				f32 dist = distance(m_position, other->getPosition());
 
 				if (m_id != other->getID() && dist < perceptionRange)
 				{
@@ -1180,7 +1185,7 @@ namespace VGAIL
 
 			for (Boid* other : flock)
 			{
-				f32 dist = distanceTo(other->getPosition());
+				f32 dist = distance(m_position, other->getPosition());
 				if (m_id != other->getID() && dist < perceptionRange)
 				{
 					cohesionVector = cohesionVector + other->getPosition();
@@ -1287,7 +1292,7 @@ namespace VGAIL
 			Vec2f steeringForce = desired - m_position;
 			steeringForce.setMagnitude(maxForce);	
 
-			m_theta = m_theta + randomFloat(-displaceRange, displaceRange);
+			m_theta = m_theta + random(-displaceRange, displaceRange);
 
 			return steeringForce;
 		}
@@ -1312,10 +1317,10 @@ namespace VGAIL
 			m_position = m_position + m_velocity;
 		}
 
-		f32 distanceTo(const Vec2f& v2)
+		f32 distance(const Vec2f& v1, const Vec2f& v2)
 		{
-			f32 distX = m_position.x - v2.x;
-			f32 distY = m_position.y - v2.y;
+			f32 distX = v1.x - v2.x;
+			f32 distY = v1.y - v2.y;
 			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
 
 			return std::sqrt(dist);
@@ -1326,11 +1331,6 @@ namespace VGAIL
 		f32 m_theta = PI;
 		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;
 		Vec2f m_position, m_velocity;
-
-		float randomFloat(float min, float max)
-		{
-			return (rand() / static_cast<float>(RAND_MAX) * max) + min;
-		}
 	};
 
 	class Flocking
