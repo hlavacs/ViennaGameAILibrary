@@ -106,18 +106,15 @@ namespace VGAIL
 		void setMagnitude(f32 value)
 		{
 			f32 mag = getMagnitude();
+			if (mag <= 0.0f)
+			{
+				std::cout << "mag <= 0" << std::endl;
+				return;
+			}
+
 			f32 scaleFactor = value / mag;
 			x *= scaleFactor;
 			y *= scaleFactor;
-		}
-
-		void limitMagnitude(f32 value)
-		{
-			f32 mag = getMagnitude();
-			if (mag > value)
-			{
-				setMagnitude(value);
-			}
 		}
 
 		void normalize()
@@ -138,12 +135,11 @@ namespace VGAIL
 		return os << vec.x << ", " << vec.y;
 	}
 
-	f32 random(f32 min, f32 max)
+	f32 randomFloat(f32 min, f32 max)
 	{
 		std::random_device dev;
 		std::mt19937 rng(dev());
-		std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
-		
+		std::uniform_real_distribution<> distribution(min, max);
 		return distribution(rng);
 	}
 
@@ -238,8 +234,8 @@ namespace VGAIL
 				{
 					NodeData node(Vec2ui{ x, y });
 
-					auto val = random(0, 100);
-					if (val <= obstaclePercentage && obstaclePercentage != 0)
+					auto val = randomFloat(0.0f, 100.0f);
+					if (val <= static_cast<f32>(obstaclePercentage) && obstaclePercentage != 0)
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -1007,10 +1003,11 @@ namespace VGAIL
 	class Boid
 	{
 	public:
-		Boid(Vec2f position, Vec2f velocity, ui32 id)
+		Boid(Vec2f position, Vec2f velocity, f32 maxSpeed, ui32 id = 0)
 		{
 			m_position = position;
 			m_velocity = velocity;
+			m_maxSpeed = maxSpeed;
 			m_id = id;
 		}
 
@@ -1043,14 +1040,15 @@ namespace VGAIL
 
 		f32 getRotationInDegrees()
 		{
-			if(m_velocity.getMagnitude() < 0.01f)
+			if (m_velocity.getMagnitude() < 0.01f)
 			{
-				return 0.0f;
+				return m_lastRotation;
 			}
 
 			Vec2f target = m_position + m_velocity;
 			f32 radians = std::atan2(target.y - m_position.y, target.x - m_position.x);
-			return radians * (180.0f / PI);
+			m_lastRotation = radians * (180.0f / PI);
+			return m_lastRotation;
 		}
 
 		void setMinSpeed(f32 minSpeed)
@@ -1201,26 +1199,46 @@ namespace VGAIL
 			return (cohesionVector - m_velocity) * centeringFactor;
 		}
 
-		Vec2f seek(Vec2f targetPosition, f32 maxForce)
+		Vec2f seek(Vec2f targetPosition, f32 maxAcceleration)
 		{
 			Vec2f steeringForce = targetPosition - m_position;
 			steeringForce.normalize();
-			steeringForce = steeringForce * maxForce;
-			
+			steeringForce = steeringForce * maxAcceleration;
+
 			return steeringForce;
 		}
 
-		Vec2f flee(Vec2f targetPosition, f32 maxForce)
+		Vec2f flee(Vec2f targetPosition, f32 maxAcceleration)
 		{
 			Vec2f steeringForce = m_position - targetPosition;
 			steeringForce.normalize();
-			steeringForce = steeringForce * maxForce;
+			steeringForce = steeringForce * maxAcceleration;
 
 			return steeringForce;
-		}	
+		}
 
-		Vec2f pursue(const Boid* target, f32 maxForce)
+		Vec2f pursue(const Boid* target, f32 maxAcceleration)
 		{
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+			f32 prediction = distance / m_maxSpeed;
+
+			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
+			return seek(newPosition, maxAcceleration);
+		}
+
+		Vec2f evade(const Boid* target, f32 maxAcceleration)
+		{
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
 			Vec2f direction = target->getPosition() - m_position;
 			f32 distance = direction.getMagnitude();
 			f32 speed = m_velocity.getMagnitude();
@@ -1228,35 +1246,23 @@ namespace VGAIL
 			f32 prediction = distance / speed;
 
 			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
-			return seek(newPosition, maxForce);
+			return flee(newPosition, maxAcceleration);
 		}
 
-		Vec2f evade(const Boid* target, f32 maxForce)
-		{
-			Vec2f direction = target->getPosition() - m_position;
-			f32 distance = direction.getMagnitude();
-			f32 speed = m_velocity.getMagnitude();
-
-			f32 prediction = distance / speed;
-
-			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
-			return flee(newPosition, maxForce);
-		}
-
-		Vec2f arrive(Vec2f targetPosition, f32 slowRadius, f32 maxForce) 
+		Vec2f arrive(Vec2f targetPosition, f32 slowRadius, f32 maxAcceleration)
 		{
 			Vec2f desiredVelocity = targetPosition - m_position;
 			f32 distance = desiredVelocity.getMagnitude();
-			
+
 			// arrivalThreshold 
-			if(distance <= 0.01f)
+			if (distance <= 0.01f)
 			{
 				return Vec2f{};
 			}
 
 			desiredVelocity.normalize();
 
-			if(distance > slowRadius)
+			if (distance > slowRadius)
 			{
 				desiredVelocity = desiredVelocity * m_maxSpeed;
 			}
@@ -1264,37 +1270,42 @@ namespace VGAIL
 			{
 				desiredVelocity = desiredVelocity * m_maxSpeed * distance / slowRadius;
 			}
-			 
+
 			Vec2f steeringForce = desiredVelocity - m_velocity;
 
-			if(steeringForce.getMagnitude() > maxForce)
+			if (steeringForce.getMagnitude() > maxAcceleration)
 			{
 				steeringForce.normalize();
-				steeringForce = steeringForce * maxForce;
+				steeringForce = steeringForce * maxAcceleration;
 			}
 
 			return steeringForce;
 		}
 
-		Vec2f wander(f32 circleDistance, f32 circleRadius, f32 displaceRange, f32 maxForce)
+		Vec2f wander(f32 circleDistance, f32 circleRadius, f32 displaceRange, f32 maxAcceleration)
 		{
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
 			Vec2f desired = m_velocity;
 			desired.setMagnitude(circleDistance);
 			desired = desired + m_position;
 
-			f32 theta = m_theta	+ getRotationInDegrees();
+			f32 theta = m_theta + getRotationInDegrees();
 
 			f32 x = circleRadius * cos(theta);
 			f32 y = circleRadius * sin(theta);
 
-			desired = desired + Vec2f{x, y};
+			desired = desired + Vec2f{ x, y };
 
 			Vec2f steeringForce = desired - m_position;
-			steeringForce.setMagnitude(maxForce);	
+			steeringForce.normalize();
 
-			m_theta = m_theta + random(-displaceRange, displaceRange);
+			m_theta = m_theta + randomFloat(-displaceRange, displaceRange);
 
-			return steeringForce;
+			return steeringForce * maxAcceleration;
 		}
 
 		void applySteeringForce(Vec2f steeringForce)
@@ -1304,14 +1315,14 @@ namespace VGAIL
 
 		void updatePosition()
 		{
-			if (m_velocity.getMagnitude() < m_minSpeed)
-			{
-				m_velocity = (m_velocity / m_velocity.getMagnitude()) * m_minSpeed;
-			}
-
 			if (m_velocity.getMagnitude() > m_maxSpeed)
 			{
 				m_velocity = (m_velocity / m_velocity.getMagnitude()) * m_maxSpeed;
+			}
+
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				m_velocity = 0.0f;
 			}
 
 			m_position = m_position + m_velocity;
@@ -1324,13 +1335,14 @@ namespace VGAIL
 			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
 
 			return std::sqrt(dist);
-		}	
+		}
 
 	private:
 		ui32 m_id;
-		f32 m_theta = PI;
+		f32 m_theta = PI / 2.0f;
 		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;
 		Vec2f m_position, m_velocity;
+		f32 m_lastRotation = 0.0f;
 	};
 
 	class Flocking
@@ -1348,9 +1360,8 @@ namespace VGAIL
 
 		void addBoid(Vec2f position, Vec2f velocity, f32 minSpeed, f32 maxSpeed)
 		{
-			Boid* boid = new Boid(position, velocity, boids.size());
+			Boid* boid = new Boid(position, velocity, maxSpeed, boids.size());
 			boid->setMinSpeed(minSpeed);
-			boid->setMaxSpeed(maxSpeed);
 			boids.push_back(boid);
 		}
 

@@ -2,24 +2,28 @@
 	// https://kenney.nl/assets/shape-characters
 
 #include "ViennaGameAILibrary.hpp"
-
 #include "raylib.h"
-#include "raymath.h"
 
 int main(int argc, char* argv[])
 {
-	uint32_t screenWidth = 1200;
-	uint32_t screenHeight = 800;
+	float screenWidth = 1200.0f;
+	float screenHeight = 800.0f;
 
 	float targetX = 0.0f;
 	float targetY = 0.0f;
 
-	InitWindow(screenWidth, screenHeight, "Demo for Arrive");
+	VGAIL::Vec2f startPos = { 100.0f, 100.0f };
+	VGAIL::Vec2f startVel = { 0.0f };
+	float maxSpeed = 5.0f;
+
+	float slowRadius = 250.0f;
+	float maxAcceleration = 20.0f;
+
+	VGAIL::Boid* agent = new VGAIL::Boid(startPos, startVel, maxSpeed);
+
+	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Arrive");
 	SetTargetFPS(60);
-	
-	VGAIL::Boid* agent = new VGAIL::Boid(VGAIL::Vec2f{100.0f, 100.0f}, VGAIL::Vec2f{ VGAIL::random(1.5f, 2.0f), VGAIL::random(1.5f, 2.0f)}, 0);
-	agent->setMaxSpeed(1.0f);
-	agent->setMaxSpeed(3.0f);
+
 	Texture2D agentTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");
 
 	while (!WindowShouldClose())
@@ -27,15 +31,15 @@ int main(int argc, char* argv[])
 		float mouseX = GetMousePosition().x;
 		float mouseY = GetMousePosition().y;
 
-		if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			targetX = mouseX;
 			targetY = mouseY;
 		}
 
-		if(targetX > 0.0f && targetY > 0.0f)
+		if (targetX > 0.0f && targetY > 0.0f)
 		{
-			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{targetX, targetY}, 150.0f, 1.5f));
+			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{ targetX, targetY }, slowRadius, maxAcceleration));
 			agent->updatePosition();
 		}
 
@@ -43,20 +47,20 @@ int main(int argc, char* argv[])
 		ClearBackground(WHITE);
 
 		DrawTexturePro(
-			agentTexture, 
-			{ 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) }, 
-			{ agent->getPosition().x, agent->getPosition().y, 40.0f, 40.0f }, 
-			Vector2{ 20.0f, 20.0f }, 
-			agent->getRotationInDegrees(), 
+			agentTexture,
+			{ 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
+			{ agent->getPosition().x, agent->getPosition().y, 40.0f, 40.0f },
+			Vector2{ 20.0f, 20.0f },
+			agent->getRotationInDegrees(),
 			WHITE
 		);
 
 		DrawCircle(targetX, targetY, 3.0f, GREEN);
-		
+
 		EndDrawing();
 	}
-	UnloadTexture(agentTexture);
 
+	UnloadTexture(agentTexture);
 	CloseWindow();
 
 	return 0;
