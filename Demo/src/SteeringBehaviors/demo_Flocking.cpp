@@ -3,11 +3,34 @@
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
+float screenWidth = 1200.0f;
+float screenHeight = 800.0f;
+float margin = 50.0f;
+
+void stayWithinBorders(VGAIL::Boid* boid, float turnFactor)
+{
+	if (boid->getPosition().x < margin)
+	{
+		boid->setVelocity({ boid->getVelocity().x + turnFactor, boid->getVelocity().y });
+	}
+	if (boid->getPosition().x > static_cast<float>(screenWidth) - margin)
+	{
+		boid->setVelocity({ boid->getVelocity().x - turnFactor, boid->getVelocity().y });
+	}
+
+	if (boid->getPosition().y < margin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y + turnFactor });
+
+	}
+	if (boid->getPosition().y > static_cast<float>(screenHeight) - margin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y - turnFactor });
+	}
+}
+
 int main(int argc, char* argv[])
 {
-	float screenWidth = 1200.0f;
-	float screenHeight = 800.0f;
-
 	float minSpeed = 50.0f;
 	float maxSpeed = 80.0f;
 
@@ -19,8 +42,6 @@ int main(int argc, char* argv[])
 	float separationRange = 25.0f;
 	float perceptionRange = 50.0f;
 
-	float margin = 50.0f;
-
 	// Avoid factor UI variables
 	char avoid_char[11] = "0.05\0";
 	int avoid_letterCount = 4;
@@ -28,19 +49,18 @@ int main(int argc, char* argv[])
 	bool avoid_mouseOnText = false;
 
 	// Matching factor UI variables
-	char matching_char[11] = "0.05\0";
+	char matching_char[11] = "0.1\0";
 	int matching_letterCount = 4;
 	Rectangle matching_textBox = { 400, 50, 225, 30 };
 	bool matching_mouseOnText = false;
 
 	// Centering factor UI variables
-	char centering_char[11] = "0.0005\0";
+	char centering_char[11] = "0.005\0";
 	int centering_letterCount = 6;
 	Rectangle centering_textBox = { 700, 50, 225, 30 };
 	bool centering_mouseOnText = false;
 
 	VGAIL::Flocking* flock = new VGAIL::Flocking();
-	flock->setBorders(screenWidth, screenHeight, margin);
 	flock->setRanges(separationRange, perceptionRange);
 
 	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Flocking");
@@ -58,7 +78,11 @@ int main(int argc, char* argv[])
 
 	while (!WindowShouldClose())
 	{
-		flock->update(GetFrameTime(), avoidFactor, matchingFactor, centeringFactor, turnFactor);
+		for(VGAIL::Boid* boid: flock->boids)
+		{
+			stayWithinBorders(boid, turnFactor);
+		}
+		flock->update(GetFrameTime(), avoidFactor, matchingFactor, centeringFactor);
 
 		// Avoid factor
 		if (CheckCollisionPointRec(GetMousePosition(), avoid_textBox))

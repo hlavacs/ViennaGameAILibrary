@@ -20,7 +20,7 @@ float speed = 100.0f;
 
 uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
 uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / tileSize);
-VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 0);
+VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 0.0f);
 
 enum NPCMode
 {

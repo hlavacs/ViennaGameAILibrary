@@ -4,30 +4,51 @@
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
+int screenWidth = 1200;
+int screenHeight = 800;
+int screenMargin = 50;
+float tileSize = 50.0f;
+
+void stayWithinBorders(VGAIL::Boid* boid, float turnFactor)
+{
+	if (boid->getPosition().x * tileSize < screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x + turnFactor, boid->getVelocity().y });
+	}
+	if (boid->getPosition().x * tileSize > static_cast<float>(screenWidth) - screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x - turnFactor, boid->getVelocity().y });
+	}
+
+	if (boid->getPosition().y * tileSize < screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y + turnFactor });
+
+	}
+	if (boid->getPosition().y * tileSize > static_cast<float>(screenHeight) - screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y - turnFactor });
+	}
+}
+
 int main(int argc, char* argv[])
 {
-	float screenWidth = 1200.0f;
-	float screenHeight = 800.0f;
-
-	float maxAcceleration = 0.1f;
-
-	float screenMargin = 50.0f;
 	float turnFactor = 2.0f;
-
 	float maxSpeed = 3.0f;
-	float playerSpeed = 150.0f;
+	float playerSpeed = 5.0f;
+	float maxAcceleration = 0.1f;
 
 	VGAIL::Vec2f startVel = VGAIL::Vec2f{ VGAIL::randomFloat(0.5f, 1.0f) };
 
-	VGAIL::Vec2f agentSeekingStartPos = VGAIL::Vec2f{ 100.0f, 100.0f };
-	VGAIL::Vec2f agentFleeingStartPos = VGAIL::Vec2f{ 900.0f, 600.0f };
-	VGAIL::Vec2f playerStartPos = VGAIL::Vec2f{ 500.0f, 500.0f };
+	VGAIL::Vec2f agentSeekingStartPos = VGAIL::Vec2f{ 2.0f, 2.0f };
+	VGAIL::Vec2f agentFleeingStartPos = VGAIL::Vec2f{ 4.0f, 8.0f };
+	VGAIL::Vec2f playerStartPos = VGAIL::Vec2f{ 5.0f, 5.0f };
 
 	VGAIL::Boid* agentSeeking = new VGAIL::Boid(agentSeekingStartPos, startVel, maxSpeed);
 	VGAIL::Boid* agentFleeing = new VGAIL::Boid(agentFleeingStartPos, startVel, maxSpeed);
 	VGAIL::Boid* player = new VGAIL::Boid(playerStartPos, startVel, playerSpeed);
 
-	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Seek and Flee");
+	InitWindow(screenWidth, screenHeight, "Demo for Seek and Flee");
 	SetTargetFPS(60);
 
 	Texture2D agentSeekingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");
@@ -63,12 +84,12 @@ int main(int argc, char* argv[])
 		}
 
 		agentSeeking->applySteeringForce(agentSeeking->seek(player->getPosition(), maxAcceleration));
-		agentSeeking->stayWithinBorders(screenWidth, screenHeight, screenMargin, turnFactor);
-		agentSeeking->updatePosition();
+		stayWithinBorders(agentSeeking, turnFactor);
+		agentSeeking->updatePosition(dt);
 
 		agentFleeing->applySteeringForce(agentFleeing->flee(player->getPosition(), maxAcceleration));
-		agentFleeing->stayWithinBorders(screenWidth, screenHeight, screenMargin, turnFactor);
-		agentFleeing->updatePosition();
+		stayWithinBorders(agentFleeing, turnFactor);
+		agentFleeing->updatePosition(dt);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
@@ -76,7 +97,7 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			agentSeekingTexture,
 			{ 0.0f, 0.0f, static_cast<float>(agentSeekingTexture.width), static_cast<float>(agentSeekingTexture.height) },
-			{ agentSeeking->getPosition().x, agentSeeking->getPosition().y, 50.0f, 50.0f },
+			{ agentSeeking->getPosition().x * tileSize, agentSeeking->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			agentSeeking->getRotationInDegrees(),
 			WHITE
@@ -85,7 +106,7 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			agentFleeingTexture,
 			{ 0.0f, 0.0f, static_cast<float>(agentFleeingTexture.width), static_cast<float>(agentFleeingTexture.height) },
-			{ agentFleeing->getPosition().x, agentFleeing->getPosition().y, 50.0f, 50.0f },
+			{ agentFleeing->getPosition().x * tileSize, agentFleeing->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			agentFleeing->getRotationInDegrees(),
 			WHITE
@@ -94,14 +115,14 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			playerTexture,
 			{ 0.0f, 0.0f, static_cast<float>(playerTexture.width), static_cast<float>(playerTexture.height) },
-			{ player->getPosition().x, player->getPosition().y, 50.0f, 50.0f },
+			{ player->getPosition().x * tileSize, player->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			player->getRotationInDegrees(),
 			WHITE
 		);
 
-		DrawText("S", agentSeeking->getPosition().x, agentSeeking->getPosition().y, 10, BLACK);
-		DrawText("F", agentFleeing->getPosition().x, agentFleeing->getPosition().y, 10, BLACK);
+		DrawText("S", agentSeeking->getPosition().x * tileSize, agentSeeking->getPosition().y * tileSize, 10, BLACK);
+		DrawText("F", agentFleeing->getPosition().x * tileSize, agentFleeing->getPosition().y * tileSize, 10, BLACK);
 
 		EndDrawing();
 	}

@@ -6,22 +6,24 @@
 
 int main(int argc, char* argv[])
 {
-	float screenWidth = 1200.0f;
-	float screenHeight = 800.0f;
+	int screenWidth = 1200;
+	int screenHeight = 800;
 
 	float targetX = 0.0f;
 	float targetY = 0.0f;
 
-	VGAIL::Vec2f startPos = { 100.0f, 100.0f };
-	VGAIL::Vec2f startVel = { 0.0f };
-	float maxSpeed = 5.0f;
+	float tileSize = 50.0f;
 
-	float slowRadius = 250.0f;
-	float maxAcceleration = 20.0f;
+	VGAIL::Vec2f startPos = { 2.0f, 2.0f };
+	VGAIL::Vec2f startVel = { 0.0f };
+
+	float maxSpeed = 5.0f;
+	float slowRadius = 5.0f;
+	float maxAcceleration = 0.3f;
 
 	VGAIL::Boid* agent = new VGAIL::Boid(startPos, startVel, maxSpeed);
 
-	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Arrive");
+	InitWindow(screenWidth, screenHeight, "Demo for Arrive");
 	SetTargetFPS(60);
 
 	Texture2D agentTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");
@@ -39,8 +41,8 @@ int main(int argc, char* argv[])
 
 		if (targetX > 0.0f && targetY > 0.0f)
 		{
-			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{ targetX, targetY }, slowRadius, maxAcceleration));
-			agent->updatePosition();
+			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{ targetX/tileSize, targetY/tileSize }, slowRadius, maxAcceleration));
+			agent->updatePosition(GetFrameTime());
 		}
 
 		BeginDrawing();
@@ -49,7 +51,7 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			agentTexture,
 			{ 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
-			{ agent->getPosition().x, agent->getPosition().y, 40.0f, 40.0f },
+			{ agent->getPosition().x * tileSize, agent->getPosition().y * tileSize, 40.0f, 40.0f },
 			Vector2{ 20.0f, 20.0f },
 			agent->getRotationInDegrees(),
 			WHITE

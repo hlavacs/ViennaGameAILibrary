@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
 	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / gridStride);
 	uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / gridStride);
-	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30);
+	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
 
 	VGAIL::Vec2ui startPosition = VGAIL::Vec2ui(1, 1);
 	Rectangle startRect = { static_cast<float>(startPosition.x * gridStride),

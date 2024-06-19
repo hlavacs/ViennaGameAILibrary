@@ -6,30 +6,52 @@
 #include "raylib.h"
 #include "raymath.h"
 
+int screenWidth = 1200;
+int screenHeight = 800;
+int screenMargin = 50;
+float tileSize = 50.0f;
+
+void stayWithinBorders(VGAIL::Boid* boid, float turnFactor)
+{
+	if (boid->getPosition().x * tileSize < screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x + turnFactor, boid->getVelocity().y });
+	}
+	if (boid->getPosition().x * tileSize > static_cast<float>(screenWidth) - screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x - turnFactor, boid->getVelocity().y });
+	}
+
+	if (boid->getPosition().y * tileSize < screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y + turnFactor });
+
+	}
+	if (boid->getPosition().y * tileSize > static_cast<float>(screenHeight) - screenMargin)
+	{
+		boid->setVelocity({ boid->getVelocity().x, boid->getVelocity().y - turnFactor });
+	}
+}
+
 int main(int argc, char* argv[])
 {
-	float screenWidth = 1200.0f;
-	float screenHeight = 800.0f;
-
-	float maxAcceleration = 0.1f;
-
-	float screenMargin = 50.0f;
 	float turnFactor = 2.0f;
-
+	float playerSpeed = 5.0f;
 	float maxSpeed = 3.0f;
-	float playerSpeed = 150.0f;
-
+	float maxAcceleration = 0.1f;
+	float maxPrediction = 0.1f;
+	
 	VGAIL::Vec2f startVel = VGAIL::Vec2f{ VGAIL::randomFloat(0.5f, 1.5f) };
 
-	VGAIL::Vec2f agentPursuingStartPos = VGAIL::Vec2f{ 100.0f, 100.0f };
-	VGAIL::Vec2f agentEvadingStartPos = VGAIL::Vec2f{ 900.0f, 600.0f };
-	VGAIL::Vec2f playerStartPos = VGAIL::Vec2f{ 500.0f, 500.0f };
+	VGAIL::Vec2f agentPursuingStartPos = VGAIL::Vec2f{ 4.0f, 4.0f };
+	VGAIL::Vec2f agentEvadingStartPos = VGAIL::Vec2f{ 7.0f, 3.0f };
+	VGAIL::Vec2f playerStartPos = VGAIL::Vec2f{ 8.0f, 5.0f };
 
 	VGAIL::Boid* agentPursuing = new VGAIL::Boid(agentPursuingStartPos, startVel, maxSpeed);
 	VGAIL::Boid* agentEvading = new VGAIL::Boid(agentEvadingStartPos, startVel, maxSpeed);
 	VGAIL::Boid* player = new VGAIL::Boid(playerStartPos, startVel, playerSpeed);
 
-	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Pursue and Evade");
+	InitWindow(screenWidth, screenHeight, "Demo for Pursue and Evade");
 	SetTargetFPS(60);
 
 	Texture2D agentPursuingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");
@@ -64,13 +86,13 @@ int main(int argc, char* argv[])
 			player->setPosition({ player->getPosition().x, y });
 		}
 
-		agentPursuing->applySteeringForce(agentPursuing->pursue(player, maxAcceleration));
-		agentPursuing->stayWithinBorders(screenWidth, screenHeight, screenMargin, turnFactor);
-		agentPursuing->updatePosition();
+		agentPursuing->applySteeringForce(agentPursuing->pursue(player, maxAcceleration, maxPrediction));
+		stayWithinBorders(agentPursuing, turnFactor);
+		agentPursuing->updatePosition(dt);
 
-		agentEvading->applySteeringForce(agentEvading->evade(player, maxAcceleration));
-		agentEvading->stayWithinBorders(screenWidth, screenHeight, screenMargin, turnFactor);
-		agentEvading->updatePosition();
+		agentEvading->applySteeringForce(agentEvading->evade(player, maxAcceleration, maxPrediction));
+		stayWithinBorders(agentEvading, turnFactor);
+		agentEvading->updatePosition(dt);
 
 		BeginDrawing();
 		ClearBackground(WHITE);
@@ -78,7 +100,7 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			agentPursuingTexture,
 			{ 0.0f, 0.0f, static_cast<float>(agentPursuingTexture.width), static_cast<float>(agentPursuingTexture.height) },
-			{ agentPursuing->getPosition().x, agentPursuing->getPosition().y, 50.0f, 50.0f },
+			{ agentPursuing->getPosition().x * tileSize, agentPursuing->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			agentPursuing->getRotationInDegrees(),
 			WHITE
@@ -87,7 +109,7 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			agentEvadingTexture,
 			{ 0.0f, 0.0f, static_cast<float>(agentEvadingTexture.width), static_cast<float>(agentEvadingTexture.height) },
-			{ agentEvading->getPosition().x, agentEvading->getPosition().y, 50.0f, 50.0f },
+			{ agentEvading->getPosition().x * tileSize, agentEvading->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			agentEvading->getRotationInDegrees(),
 			WHITE
@@ -96,14 +118,14 @@ int main(int argc, char* argv[])
 		DrawTexturePro(
 			playerTexture,
 			{ 0.0f, 0.0f, static_cast<float>(playerTexture.width), static_cast<float>(playerTexture.height) },
-			{ player->getPosition().x, player->getPosition().y, 50.0f, 50.0f },
+			{ player->getPosition().x * tileSize, player->getPosition().y * tileSize, 50.0f, 50.0f },
 			Vector2{ 25.0f, 25.0f },
 			player->getRotationInDegrees(),
 			WHITE
 		);
 
-		DrawText("P", agentPursuing->getPosition().x, agentPursuing->getPosition().y, 10, BLACK);
-		DrawText("E", agentEvading->getPosition().x, agentEvading->getPosition().y, 10, BLACK);
+		DrawText("P", agentPursuing->getPosition().x * tileSize, agentPursuing->getPosition().y * tileSize, 10, BLACK);
+		DrawText("E", agentEvading->getPosition().x * tileSize, agentEvading->getPosition().y * tileSize, 10, BLACK);
 
 		EndDrawing();
 	}

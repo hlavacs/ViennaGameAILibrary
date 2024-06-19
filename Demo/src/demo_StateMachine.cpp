@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 {
 	// uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
 	// uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
-	// VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30);
+	// VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
 
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh("Demo/res/navmesh.txt");
 	uint32_t navmeshWidth = navmesh->getWidth();

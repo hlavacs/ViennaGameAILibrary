@@ -139,8 +139,25 @@ namespace VGAIL
 	{
 		std::random_device dev;
 		std::mt19937 rng(dev());
-		std::uniform_real_distribution<> distribution(min, max);
+		std::uniform_real_distribution<f32> distribution(min, max);
 		return distribution(rng);
+	}
+	
+	f32 randomInt(i32 min, i32 max)
+	{
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
+		return distribution(rng);
+	}
+
+	f32 distance(const Vec2f& v1, const Vec2f& v2)
+	{
+		f32 distX = v1.x - v2.x;
+		f32 distY = v1.y - v2.y;
+		f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
+
+		return std::sqrt(dist);
 	}
 
 	struct Region
@@ -224,7 +241,7 @@ namespace VGAIL
 	class NavMesh
 	{
 	public:
-		NavMesh(ui32 width, ui32 height, ui32 obstaclePercentage)
+		NavMesh(ui32 width, ui32 height, f32 obstaclePercentage)
 			: m_width(width)
 			, m_height(height)
 		{
@@ -235,7 +252,7 @@ namespace VGAIL
 					NodeData node(Vec2ui{ x, y });
 
 					auto val = randomFloat(0.0f, 100.0f);
-					if (val <= static_cast<f32>(obstaclePercentage) && obstaclePercentage != 0)
+					if (obstaclePercentage != 0.0f && val <= obstaclePercentage)
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -1004,12 +1021,11 @@ namespace VGAIL
 	{
 	public:
 		Boid(Vec2f position, Vec2f velocity, f32 maxSpeed, ui32 id = 0)
-		{
-			m_position = position;
-			m_velocity = velocity;
-			m_maxSpeed = maxSpeed;
-			m_id = id;
-		}
+		: m_position(position)
+		, m_velocity(velocity)
+		, m_maxSpeed(maxSpeed)
+		, m_id(id)
+		{}
 
 		~Boid() {}
 
@@ -1061,8 +1077,7 @@ namespace VGAIL
 			m_maxSpeed = maxSpeed;
 		}
 
-		void flocking(f32 dt, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor,
-			const std::vector<Boid*>& flock, f32 width, f32 height, f32 margin)
+		void flocking(f32 dt, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, const std::vector<Boid*>& flock)
 		{
 			Vec2f separationVector, alignVector, cohesionVector;
 			ui32 neighbors = 0;
@@ -1096,9 +1111,6 @@ namespace VGAIL
 
 			m_velocity = m_velocity + (separationVector * avoidFactor);
 
-			if (width > 0.0f && height > 0.0f)
-				stayWithinBorders(width, height, margin, turnFactor);
-
 			f32 speed = m_velocity.getMagnitude();
 
 			if (speed < m_minSpeed)
@@ -1112,27 +1124,6 @@ namespace VGAIL
 			}
 
 			m_position = m_position + m_velocity * dt;
-		}
-
-		void stayWithinBorders(f32 width, f32 height, f32 margin, f32 turnFactor)
-		{
-			if (m_position.x < margin)
-			{
-				m_velocity.x = m_velocity.x + turnFactor;
-			}
-			if (m_position.x > width - margin)
-			{
-				m_velocity.x = m_velocity.x - turnFactor;
-			}
-
-			if (m_position.y < margin)
-			{
-				m_velocity.y = m_velocity.y + turnFactor;
-			}
-			if (m_position.y > height - margin)
-			{
-				m_velocity.y = m_velocity.y - turnFactor;
-			}
 		}
 
 		Vec2f separation(f32 separationRange, f32 avoidFactor, const std::vector<Boid*>& flock)
@@ -1217,33 +1208,43 @@ namespace VGAIL
 			return steeringForce;
 		}
 
-		Vec2f pursue(const Boid* target, f32 maxAcceleration)
+		Vec2f pursue(const Boid* target, f32 maxAcceleration, f32 maxPrediction)
 		{
-			if (m_velocity.getMagnitude() <= 0.01f)
+			f32 speed = m_velocity.getMagnitude();
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+
+			if (distance <= 0.01f)
 			{
 				return Vec2f{};
 			}
 
-			Vec2f direction = target->getPosition() - m_position;
-			f32 distance = direction.getMagnitude();
-			f32 prediction = distance / m_maxSpeed;
+			f32 prediction;
+			if(speed <= distance / maxPrediction)
+				prediction = maxPrediction;
+			else
+				prediction = distance / speed;
 
 			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
 			return seek(newPosition, maxAcceleration);
 		}
 
-		Vec2f evade(const Boid* target, f32 maxAcceleration)
-		{
-			if (m_velocity.getMagnitude() <= 0.01f)
+		Vec2f evade(const Boid* target, f32 maxAcceleration, f32 maxPrediction)
+		{			
+			f32 speed = m_velocity.getMagnitude();
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+
+			if (distance <= 0.01f)
 			{
 				return Vec2f{};
 			}
 
-			Vec2f direction = target->getPosition() - m_position;
-			f32 distance = direction.getMagnitude();
-			f32 speed = m_velocity.getMagnitude();
-
-			f32 prediction = distance / speed;
+			f32 prediction;
+			if(speed <= distance / maxPrediction)
+				prediction = maxPrediction;
+			else
+				prediction = distance / speed;
 
 			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
 			return flee(newPosition, maxAcceleration);
@@ -1254,7 +1255,6 @@ namespace VGAIL
 			Vec2f desiredVelocity = targetPosition - m_position;
 			f32 distance = desiredVelocity.getMagnitude();
 
-			// arrivalThreshold 
 			if (distance <= 0.01f)
 			{
 				return Vec2f{};
@@ -1313,7 +1313,7 @@ namespace VGAIL
 			m_velocity = m_velocity + steeringForce;
 		}
 
-		void updatePosition()
+		void updatePosition(f32 dt)
 		{
 			if (m_velocity.getMagnitude() > m_maxSpeed)
 			{
@@ -1325,24 +1325,15 @@ namespace VGAIL
 				m_velocity = 0.0f;
 			}
 
-			m_position = m_position + m_velocity;
-		}
-
-		f32 distance(const Vec2f& v1, const Vec2f& v2)
-		{
-			f32 distX = v1.x - v2.x;
-			f32 distY = v1.y - v2.y;
-			f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
-
-			return std::sqrt(dist);
+			m_position = m_position + m_velocity * dt;
 		}
 
 	private:
 		ui32 m_id;
+		f32 m_lastRotation = 0.0f;
 		f32 m_theta = PI / 2.0f;
 		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;
 		Vec2f m_position, m_velocity;
-		f32 m_lastRotation = 0.0f;
 	};
 
 	class Flocking
@@ -1365,24 +1356,17 @@ namespace VGAIL
 			boids.push_back(boid);
 		}
 
-		void setBorders(f32 width, f32 height, f32 margin)
-		{
-			m_width = width;
-			m_height = height;
-			m_margin = margin;
-		}
-
 		void setRanges(f32 separationRange, f32 perceptionRange)
 		{
 			m_separationRange = separationRange;
 			m_perceptionRange = perceptionRange;
 		}
 
-		void update(f32 dt, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, f32 turnFactor)
+		void update(f32 dt, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor)
 		{
 			for (Boid* boid : boids)
 			{
-				boid->flocking(dt, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, turnFactor, boids, m_width, m_height, m_margin);
+				boid->flocking(dt, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, boids);
 			}
 		}
 
@@ -1390,6 +1374,5 @@ namespace VGAIL
 
 	private:
 		f32 m_separationRange = 0.0f, m_perceptionRange = 0.0f;
-		f32 m_width = 0.0f, m_height = 0.0f, m_margin = 0.0f;
 	};
 }
