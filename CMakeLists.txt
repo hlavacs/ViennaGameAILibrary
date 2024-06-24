@@ -17,15 +17,15 @@ add_subdirectory(Demo)
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
-  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Demo/docs/Doxyfile)
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Demo/Doxyfile)
 
   configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
   message("Doxygen build started")
 
   add_custom_target(doc_doxygen ALL
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Demo/docs
     COMMENT "Generating API documentation with Doxygen"
     VERBATIM)
 else (DOXYGEN_FOUND)

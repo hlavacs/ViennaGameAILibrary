@@ -1,483 +1,543 @@
 // Resources
-	// https://kenney.nl/assets/roguelike-rpg-pack
-	// https://kenney.nl/assets/platformer-characters
+	// https://kenney.nl/assets/platformer-pack-medieval
+	// 
 
 #include "ViennaGameAILibrary.hpp"
 
 #include "raylib.h"
-#include "raymath.h"
 #include "Timer.h"
 
 #include <sstream>
 #include <string>
-#include <algorithm>
 
-constexpr uint32_t screenWidth = 1200;
-constexpr uint32_t screenHeight = 900;
+int screenWidth = 1200;
+int screenHeight = 900;
 
 float tileSize = 50.0f;
-float speed = 100.0f;
+float playerSpeed = 100.0f;
 
-uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
-uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / tileSize);
-VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 0);
+float castleSizeX = 400.0f;
+float castleSizeY = 300.0f;
 
-enum NPCMode
+bool entered = false;
+float enteringTime = 0.0f;
+
+enum BurglarMode
 {
-	Resting,
-	Walking,
-	Harvesting,
-	Eating,
-	Stretching,
-	Fighting,
-	Running
+	WAITING,
+	WALKING,
+	ATTACKING,
+	FLEEING,
+	ENTERING
 };
 
-std::string currentDecision = "";
+enum GuardMode
+{
+	PATROLLING,
+	FIGHTING,
+	ALERTING,
+	RUNNING
+};
 
-class NPC
+class Burglar
 {
 public:
-	NPC(VGAIL::Vec2ui index, uint32_t health, uint32_t food)
+	Burglar(VGAIL::Vec2ui index, uint32_t health, BurglarMode defaultMode)
 		: index(index)
 		, health(health)
-		, food(food)
+		, mode(defaultMode)
 	{
 		position.x = static_cast<float>(index.x) * tileSize;
 		position.y = static_cast<float>(index.y) * tileSize;
 	}
 
-	~NPC() {}
-
-	Rectangle getRectangle()
-	{
-		return { position.x, position.y, tileSize, tileSize };
-	}
+	~Burglar() {}
 
 	VGAIL::Vec2ui index;
 	VGAIL::Vec2f position{ 0.0f, 0.0f };
 
 	uint32_t health;
-	uint32_t food;
-	NPCMode mode = NPCMode::Resting;
+	BurglarMode mode;
 };
 
-float distance(VGAIL::Vec2f& v1, VGAIL::Vec2f& v2)
-{
-	float distX = std::abs(v1.x - v2.x);
-	float distY = std::abs(v1.y - v2.y);
-
-	return std::sqrt(std::pow(distX, 2) + std::pow(distY, 2));
-}
-
-class isEnemyClose : public VGAIL::DecisionNode
+class Guard
 {
 public:
-	isEnemyClose(NPC* npc, VGAIL::Vec2f& enemyPos)
-		: npc(npc)
-		, enemyPos(enemyPos)
+	Guard(VGAIL::Vec2ui index, uint32_t health, GuardMode defaultMode)
+		: index(index)
+		, health(health)
+		, mode(defaultMode)
+	{
+		position.x = static_cast<float>(index.x) * tileSize;
+		position.y = static_cast<float>(index.y) * tileSize;
+	}
+
+	~Guard() {}
+
+	VGAIL::Vec2ui index;
+	VGAIL::Vec2f position{ 0.0f, 0.0f };
+
+	uint32_t health;
+	GuardMode mode;
+};
+
+class isGuardClose : public VGAIL::DecisionNode
+{
+public:
+	isGuardClose(Burglar* burglar, Guard* guard)
+		: burglar(burglar)
+		, guard(guard)
 	{}
 
-	~isEnemyClose() {}
+	~isGuardClose() {}
 
 	void makeDecision(float dt) override
 	{
-		float dist = distance(npc->position, enemyPos);
-		if (dist <= 120.0f)
+		float dist = VGAIL::distance(burglar->position, guard->position);
+		if (dist <= tileSize * 3.0f)
 		{
 			getChild(0).makeDecision(dt);
 		}
-		else if (dist > 120.0f && dist < 150.0f)
+		else
 		{
 			getChild(1).makeDecision(dt);
 		}
-		else
-		{
-			getChild(2).makeDecision(dt);
-		}
 	}
 
-	NPC* npc = nullptr;
-	VGAIL::Vec2f& enemyPos;
+	Burglar* burglar = nullptr;
+	Guard* guard = nullptr;
 };
 
-class HealthCheck : public VGAIL::DecisionNode
+class isInDanger : public VGAIL::DecisionNode
 {
 public:
-	HealthCheck(NPC* npc, VGAIL::Vec2f& enemyPos)
-		: npc(npc)
-		, enemyPos(enemyPos)
+	isInDanger(Burglar* burglar, Guard* guard)
+	: burglar(burglar)
+	, guard(guard)
 	{}
 
-	~HealthCheck() {}
+	~isInDanger() {}
 
 	void makeDecision(float dt) override
 	{
-		if (npc->health == 1)
+		float dist = VGAIL::distance(burglar->position, guard->position);
+
+		if(dist <= tileSize)
 		{
-			npc->mode = NPCMode::Running;
-
-			float dX = npc->position.x - enemyPos.x;
-			float dY = npc->position.y - enemyPos.y;
-
-			float length = std::sqrt(dX * dX + dY * dY);
-			dX /= length;
-			dY /= length;
-
-			npc->position.x += dX * dt * speed;
-			npc->position.y += dY * dt * speed;
-
-			npc->position.x = std::max(0.0f, std::min(npc->position.x, static_cast<float>(screenWidth) - 50.0f));
-			npc->position.y = std::max(0.0f, std::min(npc->position.y, static_cast<float>(screenHeight) - 50.0f));
-		}
-		else
-		{
-			float dist = distance(npc->position, enemyPos);
-			if (dist <= 40.0f)
+			if(burglar->health > 1)
 			{
-				npc->mode = NPCMode::Fighting;
-
+				burglar->mode = BurglarMode::ATTACKING;
 				takeDamageTime += dt;
 				if (takeDamageTime > takeDamageTimeCooldown)
 				{
-					npc->health--;
+					burglar->health--;
 					takeDamageTime = 0.0f;
 				}
 			}
 			else
 			{
-				npc->mode = NPCMode::Resting;
+				burglar->mode = BurglarMode::FLEEING;
+				burglar->position.x = burglar->position.x + dt * playerSpeed;
 			}
+		}
+		else
+		{
+			burglar->mode = BurglarMode::WAITING;
 		}
 	}
 
-	NPC* npc = nullptr;
-	VGAIL::Vec2f& enemyPos;
+	Burglar* burglar = nullptr;
+	Guard* guard = nullptr;
 
 	float takeDamageTime = 0.0f;
-	float takeDamageTimeCooldown = 3.0f;
+	float takeDamageTimeCooldown = 2.0f;
 };
 
-class FoodCheck : public VGAIL::DecisionNode
+class isCloseToCastle : public VGAIL::DecisionNode
 {
 public:
-	FoodCheck(NPC* npc)
-		: npc(npc)
-	{}
+	isCloseToCastle(Burglar* burglar, VGAIL::Vec2f castlePosition)
+	: burglar(burglar)
+	{
+		castlePos.x = castlePosition.x * tileSize + castleSizeX / 2.0f;
+		castlePos.y = burglar->position.y;
+	}
 
-	~FoodCheck() {}
+	~isCloseToCastle() {}
 
 	void makeDecision(float dt) override
 	{
-		if (npc->food > 0)
-		{
-			npc->mode = NPCMode::Eating;
+		float dist = VGAIL::distance(burglar->position, castlePos);
 
-			eatingTime += dt;
-			if (eatingTime > eatingTimeCooldown)
+		if(dist >= tileSize / 4.0f)
+		{
+			if(burglar->position.x > castlePos.x)
 			{
-				npc->food--;
-				npc->health++;
-				eatingTime = 0.0f;
+				burglar->position.x = burglar->position.x - dt * playerSpeed;
 			}
+			else
+			{
+				burglar->position.x = burglar->position.x + dt * playerSpeed;
+			}			
+			
+			burglar->mode = BurglarMode::WALKING;
 		}
 		else
 		{
-			npc->mode = NPCMode::Stretching;
+			burglar->mode = BurglarMode::ENTERING;
+
+			enteringTime += dt;
+			if(enteringTime >= 4.0f)
+			{
+				entered = true;
+			}			
 		}
 	}
 
-	NPC* npc = nullptr;
-
-	float eatingTime = 0.0f;
-	float eatingTimeCooldown = 5.0f;
+	Burglar* burglar = nullptr;
+	VGAIL::Vec2f castlePos;
 };
 
-class CropsCheck : public VGAIL::DecisionNode
+class isBurglarClose : public VGAIL::DecisionNode
 {
 public:
-	CropsCheck(bool& cropsReady, uint32_t& cropsAmount, NPC* npc)
-		: cropsReady(cropsReady)
-		, cropsAmount(cropsAmount)
-		, npc(npc)
+	isBurglarClose(Guard* guard, Burglar* burglar)
+		: guard(guard)
+		, burglar(burglar)
 	{}
 
-	~CropsCheck() {}
+	~isBurglarClose() {}
 
 	void makeDecision(float dt) override
 	{
-		if (cropsReady)
+		float dist = VGAIL::distance(guard->position, burglar->position);
+
+		if(entered)
 		{
-			VGAIL::Vec2ui npcCurrentIndex = VGAIL::Vec2ui(static_cast<uint32_t>(npc->position.x / tileSize), static_cast<uint32_t>(npc->position.y / tileSize));
-
-			uint32_t minX = 17;
-			uint32_t maxX = 23;
-			uint32_t newX = rand() % (maxX - minX + 1) + minX;
-
-			uint32_t minY = 0;
-			uint32_t maxY = 6;
-			uint32_t newY = rand() % (maxY - minY + 1) + minY;
-
-			VGAIL::Vec2ui newPos = VGAIL::Vec2ui(newX, newY);
-
-			harvestTime += dt;
-			if (harvestTime > harvestTimeCooldown
-				&& npcCurrentIndex.x >= 17 && npcCurrentIndex.x <= 23 && npcCurrentIndex.y <= 6)
+			guard->mode = GuardMode::ALERTING;
+		}
+		else
+		{
+			if (dist >= tileSize)
 			{
-				npc->mode = NPCMode::Harvesting;
-				npc->food++;
-				cropsAmount--;
-				harvestTime = 0.0f;
-			};
-
-			if (path.size() == 0 || currentPathIndex == path.size())
-			{
-				path = navmesh->A_Star(npcCurrentIndex, newPos);
-				currentPathIndex = 0;
-			}
-
-			if (path.size() > 0)
-			{
-				VGAIL::Vec2ui targetNode = path[currentPathIndex];
-				VGAIL::Vec2f target = VGAIL::Vec2f{ static_cast<float>(targetNode.x) * tileSize, static_cast<float>(targetNode.y) * tileSize };
-
-				if (std::abs(npc->position.x - target.x) < 1.0f && std::abs(npc->position.y - target.y) < 1.0f)
+				guard->mode = GuardMode::PATROLLING;
+				
+				timeLeft += dt;
+				if(timeLeft > timeLeftCooldown / 2)
 				{
-					npc->position.x = target.x;
-					npc->position.y = target.y;
-
-					if (npcCurrentIndex.x >= 17 && npcCurrentIndex.x <= 23 && npcCurrentIndex.y <= 6)
-						npc->mode = NPCMode::Harvesting;
-					else
-						npc->mode = NPCMode::Walking;
-
-					currentPathIndex++;
-					return;
+					guard->position.x = guard->position.x - dt * playerSpeed;
+				}
+				else
+				{
+					guard->position.x = guard->position.x + dt * playerSpeed;
 				}
 
-				VGAIL::Vec2f direction = target - npc->position;
-				direction.normalize();
-
-				npc->position.x += direction.x * speed * dt;
-				npc->position.y += direction.y * speed * dt;
+				if(timeLeft > timeLeftCooldown)
+				{
+					timeLeft = 0.0f;
+				}		
 			}
-		}
-		else
-		{
-			npc->mode = NPCMode::Resting;
-		}
+			else
+			{
+				if(guard->health > 1)
+				{
+					guard->mode = GuardMode::FIGHTING;
+					takeDamageTime += dt;
+					if (takeDamageTime > takeDamageTimeCooldown)
+					{
+						guard->health--;
+						takeDamageTime = 0.0f;
+					}
+				}
+				else
+				{
+					guard->mode = GuardMode::RUNNING;
+					guard->position.x = guard->position.x - dt * playerSpeed;
+				}
+			}
+		}		
 	}
 
-	NPC* npc = nullptr;
-	std::vector<VGAIL::Vec2ui> path;
-	int32_t currentPathIndex = 0;
+	Guard* guard = nullptr;
+	Burglar* burglar = nullptr;
 
-	bool& cropsReady;
-	uint32_t& cropsAmount;
-	float harvestTime = 0.0f;
-	float harvestTimeCooldown = 5.0f;
+	float takeDamageTime = 0.0f;
+	float takeDamageTimeCooldown = 2.0f;
+
+	float timeLeft = 0.0f;
+	float timeLeftCooldown = 8.0f;
+
 };
 
+uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
+uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
+VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 0.0f);
+
 int main(int argc, char* argv[])
-{
-	bool cropsReady = false;
-	float cropsGrowingTime = 0.0f;
-	float cropsGrowingCooldown = 2.0f;
-	uint32_t cropsAmount = 0;
+{	
+	Burglar* burglar = new Burglar(VGAIL::Vec2ui{22, 8}, 3, BurglarMode::WAITING);
+	Guard* guard = new Guard(VGAIL::Vec2ui{7, 8}, 3, GuardMode::PATROLLING);
 
-	VGAIL::Vec2ui enemyIndex(9, 9);
-	VGAIL::Vec2f enemyPosition(static_cast<float>(enemyIndex.x) * tileSize, static_cast<float>(enemyIndex.y) * tileSize);
-	Rectangle enemyRectangle = { enemyPosition.x, enemyPosition.y, tileSize, tileSize };
+	std::string burglar_currentDecision = "";
+	std::string guard_currentDecision = "";
 
-	if (navmesh->getNode(enemyIndex).state == VGAIL::NodeState::OBSTRUCTABLE)
-	{
-		navmesh->getNode(enemyIndex).state = VGAIL::NodeState::WALKABLE;
-	}
+	VGAIL::Vec2f castlePos = { 7, 3};
 
-	NPC* npc = new NPC(VGAIL::Vec2ui(5, 5), 3, 1);
+	VGAIL::DecisionTree burglar_tree;
+	VGAIL::DecisionNode& burglar_root = burglar_tree.createRoot<isGuardClose>(burglar, guard);
+	burglar_root.addChild<isInDanger>(burglar, guard);
+	burglar_root.addChild<isCloseToCastle>(burglar, castlePos);
 
-	if (navmesh->getNode(npc->index).state == VGAIL::NodeState::OBSTRUCTABLE)
-	{
-		navmesh->getNode(npc->index).state = VGAIL::NodeState::WALKABLE;
-	}
-
-	VGAIL::DecisionTree tree;
-	VGAIL::DecisionNode& root = tree.createRoot<isEnemyClose>(npc, enemyPosition);
-	root.addChild<HealthCheck>(npc, enemyPosition);
-	root.addChild<FoodCheck>(npc);
-	root.addChild<CropsCheck>(cropsReady, cropsAmount, npc);
+	VGAIL::DecisionTree guard_tree;
+	VGAIL::DecisionNode& guard_root = guard_tree.createRoot<isBurglarClose>(guard, burglar);
 
 	InitWindow(screenWidth, screenHeight, "Demo for Decision Tree");
 	SetTargetFPS(60);
 
-	Texture2D grassTexture = LoadTexture("Demo/res/demo_DecisionTree/grass.png");
-	Texture2D cropsTexture = LoadTexture("Demo/res/demo_DecisionTree/crops.png");
+	Font sunnyFont = LoadFont("Demo/res/demo_DecisionTree/SunnySpellsBasic.ttf");
+	Font pixelFont = LoadFont("Demo/res/demo_DecisionTree/pixelplay.ttf");
+	
+	Texture2D backgroundTexture = LoadTexture("Demo/res/demo_DecisionTree/background.png");
+	Texture2D groundTexture = LoadTexture("Demo/res/demo_DecisionTree/ground.png");
+	Texture2D gateClosedTexture = LoadTexture("Demo/res/demo_DecisionTree/gate_closed.png");
+	Texture2D gateOpenTexture = LoadTexture("Demo/res/demo_DecisionTree/gate_open.png");
 
-	Texture2D enemyTexture = LoadTexture("Demo/res/demo_DecisionTree/enemy.png");
-	Rectangle enemyTextureSrc = { 0.0f, 0.0f, static_cast<float>(enemyTexture.width), static_cast<float>(enemyTexture.height) };
+	Texture2D burglarWalkingTexture = LoadTexture("Demo/res/demo_DecisionTree/char_walk.png");
+	Texture2D burglarWaitingTexture = LoadTexture("Demo/res/demo_DecisionTree/char_idle.png");
+	Texture2D burglarFightingTexture = LoadTexture("Demo/res/demo_DecisionTree/char_attack.png");
+	Texture2D burglarRunningTexture = LoadTexture("Demo/res/demo_DecisionTree/char_run.png");
+	Texture2D burglarEnteringTexture = LoadTexture("Demo/res/demo_DecisionTree/char_enter.png");
 
-	Texture2D restingNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_resting.png");
-	Rectangle restingNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(restingNPCTexture.width), static_cast<float>(restingNPCTexture.height) };
-
-	Texture2D walkingNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_walking.png");
-	Rectangle walkingNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(walkingNPCTexture.width), static_cast<float>(walkingNPCTexture.height) };
-
-	Texture2D harvestNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_harvesting.png");
-	Rectangle harvestNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(harvestNPCTexture.width), static_cast<float>(harvestNPCTexture.height) };
-
-	Texture2D eatingNPCtexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_eating.png");
-	Rectangle eatingNPCtextureSrc = { 0.0f, 0.0f, static_cast<float>(eatingNPCtexture.width), static_cast<float>(eatingNPCtexture.height) };
-
-	Texture2D stretchingNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_stretching.png");
-	Rectangle stretchingNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(stretchingNPCTexture.width), static_cast<float>(stretchingNPCTexture.height) };
-
-	Texture2D fightingNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_fighting.png");
-	Rectangle fightingNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(fightingNPCTexture.width), static_cast<float>(fightingNPCTexture.height) };
-
-	Texture2D runningNPCTexture = LoadTexture("Demo/res/demo_DecisionTree/NPC_running.png");
-	Rectangle runningNPCTextureSrc = { 0.0f, 0.0f, static_cast<float>(runningNPCTexture.width), static_cast<float>(runningNPCTexture.height) };
+	Texture2D guardFightingTexture = LoadTexture("Demo/res/demo_DecisionTree/guard_fight.png");
+	Texture2D guardPatrollingTexture = LoadTexture("Demo/res/demo_DecisionTree/guard_walk.png");
+	Texture2D guardAlertingTexture = LoadTexture("Demo/res/demo_DecisionTree/guard_alert.png");
+	Texture2D guardRunningTexture = LoadTexture("Demo/res/demo_DecisionTree/guard_run.png");
 
 	while (!WindowShouldClose())
 	{
-		float delta = GetFrameTime();
-		tree.update(delta);
+		float dt = GetFrameTime();
+		burglar_tree.update(dt);
+		guard_tree.update(dt);
 
-		cropsGrowingTime += delta;
-		if (cropsGrowingTime > cropsGrowingCooldown)
+		if (IsKeyDown(KEY_LEFT))
 		{
-			cropsAmount++;
-			cropsGrowingTime = 0.0f;
+			float x = guard->position.x - dt * playerSpeed;
+			guard->position.x = x;
 		}
 
-		if (cropsAmount > 0)
+		if (IsKeyDown(KEY_RIGHT))
 		{
-			cropsReady = true;
+			float x = guard->position.x + dt * playerSpeed;
+			guard->position.x = x;
 		}
-		else
-		{
-			cropsReady = false;
-		}
-
-		if (IsKeyDown(KEY_LEFT) && enemyPosition.x > 5.0f)
-		{
-			enemyPosition.x -= delta * speed;
-		}
-
-		if (IsKeyDown(KEY_RIGHT) && enemyPosition.x < 1150.0f)
-		{
-			enemyPosition.x += delta * speed;
-		}
-
-		enemyRectangle.x = enemyPosition.x;
-		enemyIndex.x = static_cast<uint32_t>(enemyPosition.x / tileSize);
-
-		if (IsKeyDown(KEY_UP) && enemyPosition.y > 5.0f)
-		{
-			enemyPosition.y -= delta * speed;
-		}
-
-		if (IsKeyDown(KEY_DOWN) && enemyPosition.y < 850.0f)
-		{
-			enemyPosition.y += delta * speed;
-		}
-
-		enemyRectangle.y = enemyPosition.y;
-		enemyIndex.y = static_cast<uint32_t>(enemyPosition.y / tileSize);
 
 		BeginDrawing();
-		ClearBackground(WHITE);
+		ClearBackground(BLACK);
 
 		for (uint32_t y = 0; y < navmeshHeight; y++)
 		{
 			for (uint32_t x = 0; x < navmeshWidth; x++)
 			{
 				VGAIL::NodeData& node = navmesh->getNode(VGAIL::Vec2ui(x, y));
-
-				if (x > 16 && y < 7)
+				
+				if(y >= 9)
 				{
-					Rectangle cropsTextureSrc = { 0.0f, 0.0f, static_cast<float>(cropsTexture.width), static_cast<float>(cropsTexture.height) };
-					Rectangle cropsTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
-					DrawTexturePro(cropsTexture, cropsTextureSrc, cropsTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
+					Rectangle groundTextureSrc = { 0.0f, 0.0f, static_cast<float>(groundTexture.width), static_cast<float>(groundTexture.height) };
+					Rectangle groundTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
+					DrawTexturePro(groundTexture, groundTextureSrc, groundTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
 				}
 				else
 				{
-					Rectangle grassTextureSrc = { 0.0f, 0.0f, static_cast<float>(grassTexture.width), static_cast<float>(grassTexture.height) };
-					Rectangle grassTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
-					DrawTexturePro(grassTexture, grassTextureSrc, grassTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
+					Rectangle backgroundTextureSrc = { 0.0f, 0.0f, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height) };
+					Rectangle backgroundTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
+					DrawTexturePro(backgroundTexture, backgroundTextureSrc, backgroundTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
 				}
 			}
 		}
 
-		switch (npc->mode)
+		if(entered)
+		{	
+			DrawTexturePro(
+				gateOpenTexture,
+				{ 0.0f, 0.0f, static_cast<float>(gateOpenTexture.width), static_cast<float>(gateOpenTexture.height) },
+				{ castlePos.x * tileSize, castlePos.y * tileSize, castleSizeX, castleSizeY },
+				{ 0.0f },
+				0.0f,
+				WHITE
+			);
+		}
+		else
 		{
-		case NPCMode::Resting:
-			DrawTexturePro(restingNPCTexture, restingNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Resting";
-			break;
-
-		case NPCMode::Walking:
-			DrawTexturePro(walkingNPCTexture, walkingNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Walking to crops";
-			break;
-
-		case NPCMode::Harvesting:
-			DrawTexturePro(harvestNPCTexture, harvestNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Harvesting";
-			break;
-
-		case NPCMode::Eating:
-			DrawTexturePro(eatingNPCtexture, eatingNPCtextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Eating";
-			break;
-
-		case NPCMode::Stretching:
-			DrawTexturePro(stretchingNPCTexture, stretchingNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Stretching for fight";
-			break;
-
-		case NPCMode::Fighting:
-			DrawTexturePro(fightingNPCTexture, fightingNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Fighting";
-			break;
-
-		case NPCMode::Running:
-			DrawTexturePro(runningNPCTexture, runningNPCTextureSrc, npc->getRectangle(), Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
-			currentDecision = "Running away";
-			break;
+			DrawTexturePro(
+				gateClosedTexture,
+				{ 0.0f, 0.0f, static_cast<float>(gateClosedTexture.width), static_cast<float>(gateClosedTexture.height) },
+				{ castlePos.x * tileSize, castlePos.y * tileSize, castleSizeX, castleSizeY },
+				{ 0.0f },
+				0.0f,
+				WHITE
+			);
 		}
 
-		DrawTexturePro(enemyTexture, enemyTextureSrc, enemyRectangle, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
+		if(!entered)
+		{
+			switch (burglar->mode)
+			{
+				case BurglarMode::WALKING:
+					DrawTexturePro(
+						burglarWalkingTexture,
+						{ 0.0f, 0.0f, static_cast<float>(burglarWalkingTexture.width), static_cast<float>(burglarWalkingTexture.height) },
+						{ burglar->position.x, burglar->position.y, 40.0f, 50.0f },
+						{ 0.0f },
+						0.0f,
+						WHITE
+					);
+					burglar_currentDecision = "Walking to the castle";
+					break;
+
+				case BurglarMode::WAITING:
+					DrawTexturePro(
+						burglarWaitingTexture,
+						{ 0.0f, 0.0f, static_cast<float>(burglarWaitingTexture.width), static_cast<float>(burglarWaitingTexture.height) },
+						{ burglar->position.x, burglar->position.y, 40.0f, 50.0f },
+						{ 0.0f },
+						0.0f,
+						WHITE
+					);
+					burglar_currentDecision = "Waiting";
+					break;
+
+				case BurglarMode::ATTACKING:
+					DrawTexturePro(
+						burglarFightingTexture,
+						{ 0.0f, 0.0f, static_cast<float>(burglarFightingTexture.width), static_cast<float>(burglarFightingTexture.height) },
+						{ burglar->position.x, burglar->position.y, 40.0f, 50.0f },
+						{ 0.0f },
+						0.0f,
+						WHITE
+					);
+					burglar_currentDecision = "Fighting";
+					break;
+
+				case BurglarMode::ENTERING:
+					DrawTexturePro(
+						burglarEnteringTexture,
+						{ 0.0f, 0.0f, static_cast<float>(burglarEnteringTexture.width), static_cast<float>(burglarEnteringTexture.height) },
+						{ burglar->position.x, burglar->position.y, 40.0f, 50.0f },
+						{ 0.0f },
+						0.0f,
+						WHITE
+					);
+					burglar_currentDecision = "Entering the castle";
+					break;
+
+				case BurglarMode::FLEEING:
+					DrawTexturePro(
+						burglarRunningTexture,
+						{ 0.0f, 0.0f, static_cast<float>(burglarRunningTexture.width), static_cast<float>(burglarRunningTexture.height) },
+						{ burglar->position.x, burglar->position.y, 40.0f, 50.0f },
+						{ 0.0f },
+						0.0f,
+						WHITE
+					);
+					burglar_currentDecision = "Running away from the guard";
+					break;
+			}
+		}
+
+		switch (guard->mode)
+		{
+			case GuardMode::ALERTING:
+				DrawTexturePro(
+					guardAlertingTexture,
+					{ 0.0f, 0.0f, static_cast<float>(guardAlertingTexture.width), static_cast<float>(guardAlertingTexture.height) },
+					{ guard->position.x, guard->position.y, 40.0f, 50.0f },
+					Vector2{ 0.0f },
+					0.0f,
+					WHITE
+				);
+				guard_currentDecision = "Alerting the castle!";
+				break;
+
+			case GuardMode::PATROLLING:
+				DrawTexturePro(
+					guardPatrollingTexture,
+					{ 0.0f, 0.0f, static_cast<float>(guardPatrollingTexture.width), static_cast<float>(guardPatrollingTexture.height) },
+					{ guard->position.x, guard->position.y, 40.0f, 50.0f },
+					Vector2{ 0.0f },
+					0.0f,
+					WHITE
+				);
+				guard_currentDecision = "Patroling";
+				break;
+
+			case GuardMode::FIGHTING:
+				DrawTexturePro(
+					guardFightingTexture,
+					{ 0.0f, 0.0f, static_cast<float>(guardFightingTexture.width), static_cast<float>(guardFightingTexture.height) },
+					{ guard->position.x, guard->position.y, 40.0f, 50.0f },
+					Vector2{ 0.0f },
+					0.0f,
+					WHITE
+				);
+				guard_currentDecision = "Fighting";
+				break;
+
+			case GuardMode::RUNNING:
+				DrawTexturePro(
+					guardRunningTexture,
+					{ 0.0f, 0.0f, static_cast<float>(guardRunningTexture.width), static_cast<float>(guardRunningTexture.height) },
+					{ guard->position.x, guard->position.y, 40.0f, 50.0f },
+					Vector2{ 0.0f },
+					0.0f,
+					WHITE
+				);
+				guard_currentDecision = "Running away";
+				break;	
+		}		
 
 		std::stringstream ss;
-		ss << "Health: " << npc->health;
-		DrawText(ss.str().c_str(), 10.0f, 10.0f, 20, BLACK);
+		ss << "Guard health: " << guard->health;
+		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ 10.0f, 20.0f }, sunnyFont.baseSize, 1.0f, BLACK);
+		
+		ss.str(std::string());
+		ss << "Burglar health: " << burglar->health;
+		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ 950.0f, 20.0f }, sunnyFont.baseSize, 1.0f, BLACK);
+
+		if(!entered)
+		{
+			ss.str(std::string());
+			ss << "Burglar decision: " << burglar_currentDecision;
+			DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 85.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+		}
+		else
+		{
+			ss.str(std::string());
+			ss << "The burglar entered the castle!";
+			DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 85.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+		}
 
 		ss.str(std::string());
-		ss << "Food: " << npc->food;
-		DrawText(ss.str().c_str(), 10.0f, 30.0f, 20, BLACK);
-
-		ss.str(std::string());
-		ss << "Crops: " << cropsAmount;
-		DrawText(ss.str().c_str(), 10.0f, 50.0f, 20, BLACK);
-
-		ss.str(std::string());
-		ss << "Decision: " << currentDecision;
-		DrawText(ss.str().c_str(), 10.0f, 70.0f, 20, BLACK);
-
+		ss << "Guard decision: " << guard_currentDecision;
+		DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 50.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+		
 		EndDrawing();
 	}
 
-	UnloadTexture(grassTexture);
-	UnloadTexture(cropsTexture);
-	UnloadTexture(enemyTexture);
+	UnloadTexture(backgroundTexture);
+	UnloadTexture(groundTexture);
+	UnloadTexture(gateClosedTexture);
+	UnloadTexture(gateOpenTexture);
 
-	UnloadTexture(restingNPCTexture);
-	UnloadTexture(walkingNPCTexture);
-	UnloadTexture(harvestNPCTexture);
-	UnloadTexture(eatingNPCtexture);
-	UnloadTexture(stretchingNPCTexture);
-	UnloadTexture(runningNPCTexture);
-	UnloadTexture(fightingNPCTexture);
+	UnloadTexture(burglarWalkingTexture);
+	UnloadTexture(burglarWaitingTexture);
+	UnloadTexture(burglarRunningTexture);
+	UnloadTexture(burglarFightingTexture);
+	UnloadTexture(burglarEnteringTexture);
+
+	UnloadTexture(guardAlertingTexture);
+	UnloadTexture(guardFightingTexture);
+	UnloadTexture(guardPatrollingTexture);
+	UnloadTexture(guardRunningTexture);
 
 	return 0;
 }

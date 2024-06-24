@@ -14,6 +14,8 @@
 
 namespace VGAIL
 {
+	constexpr float PI = 3.14159265358979f;
+
 	typedef uint32_t ui32;
 	typedef uint64_t ui64;
 	typedef int32_t i32;
@@ -55,6 +57,11 @@ namespace VGAIL
 	{
 		f32 x, y;
 
+		Vec2f()
+			: x(0.0f)
+			, y(0.0f)
+		{}
+
 		Vec2f(f32 x, f32 y)
 			: x(x), y(y) {}
 
@@ -71,22 +78,86 @@ namespace VGAIL
 			return Vec2f{ x + other.x, y + other.y };
 		}
 
+		Vec2f operator/(const Vec2f& other)
+		{
+			return Vec2f{ x / other.x, y / other.y };
+		}
+
+		Vec2f operator*(f32 other)
+		{
+			return Vec2f{ x * other, y * other };
+		}
+
+		Vec2f operator/(f32 other)
+		{
+			return Vec2f{ x / other, y / other };
+		}
+
+		bool operator==(const Vec2f& other)
+		{
+			return x == other.x && y == other.y;
+		}
+
+		f32 getMagnitude()
+		{
+			return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+		}
+
+		void setMagnitude(f32 value)
+		{
+			f32 mag = getMagnitude();
+			if (mag <= 0.0f)
+			{
+				std::cout << "mag <= 0" << std::endl;
+				return;
+			}
+
+			f32 scaleFactor = value / mag;
+			x *= scaleFactor;
+			y *= scaleFactor;
+		}
+
 		void normalize()
 		{
-			f32 mag = std::sqrt(x * x + y * y);
-			if (mag <= 0.0f)
+			f32 mag = getMagnitude();
+			if (mag < 0.0f)
 			{
 				std::cout << "mag < 0" << std::endl;
 				return;
 			}
-			x = x / mag;
-			y = y / mag;
+			x /= mag;
+			y /= mag;
 		}
 	};
 
 	std::ostream& operator<<(std::ostream& os, const Vec2f& vec)
 	{
 		return os << vec.x << ", " << vec.y;
+	}
+
+	f32 randomFloat(f32 min, f32 max)
+	{
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_real_distribution<f32> distribution(min, max);
+		return distribution(rng);
+	}
+	
+	f32 randomInt(i32 min, i32 max)
+	{
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
+		return distribution(rng);
+	}
+
+	f32 distance(const Vec2f& v1, const Vec2f& v2)
+	{
+		f32 distX = v1.x - v2.x;
+		f32 distY = v1.y - v2.y;
+		f32 dist = std::pow(distX, 2) + std::pow(distY, 2);
+
+		return std::sqrt(dist);
 	}
 
 	struct Region
@@ -170,13 +241,58 @@ namespace VGAIL
 	class NavMesh
 	{
 	public:
-		NavMesh(ui32 width, ui32 height, ui32 obstaclePercentage)
+		NavMesh(ui32 width, ui32 height, f32 obstaclePercentage)
 			: m_width(width)
 			, m_height(height)
 		{
-			std::random_device dev;
-			std::mt19937 rng(dev());
-			std::uniform_int_distribution<std::mt19937::result_type> distribution(0, 100); // distribution in range [0, 1]
+			for (ui32 y = 0; y < m_height; y++)
+			{
+				for (ui32 x = 0; x < m_width; x++)
+				{
+					NodeData node(Vec2ui{ x, y });
+
+					auto val = randomFloat(0.0f, 100.0f);
+					if (obstaclePercentage != 0.0f && val <= obstaclePercentage)
+					{
+						node.state = NodeState::OBSTRUCTABLE;
+					}
+
+					m_nodes.emplace_back(node);
+				}
+			}
+
+			m_adjList.resize(m_nodes.size(), {});
+			m_neighbors.resize(m_nodes.size(), {});
+
+			for (ui32 i = 0; i < m_nodes.size(); i++)
+			{
+				setNeighbors(i);
+			}
+
+			createRegions();
+		}
+
+		NavMesh(const std::string& filepath)
+		{
+			std::ifstream stream(filepath);
+			std::string navmeshData;
+
+			if (stream.is_open())
+			{
+				std::string line;
+				getline(stream, line);
+				m_width = std::stoi(line);
+
+				getline(stream, line);
+				m_height = std::stoi(line);
+
+				stream >> navmeshData;
+			}
+			else
+			{
+				std::cout << "Could not read file " << filepath << std::endl;
+				return;
+			}
 
 			for (ui32 y = 0; y < m_height; y++)
 			{
@@ -184,8 +300,12 @@ namespace VGAIL
 				{
 					NodeData node(Vec2ui{ x, y });
 
-					auto val = distribution(rng);
-					if (val <= obstaclePercentage && obstaclePercentage != 0)
+					char state = navmeshData[getIndex(Vec2ui{ x, y })];
+					if (state == 'w')
+					{
+						node.state = NodeState::WALKABLE;
+					}
+					else
 					{
 						node.state = NodeState::OBSTRUCTABLE;
 					}
@@ -560,6 +680,21 @@ namespace VGAIL
 			return pathToRegion;
 		}
 
+		void saveToFile(const std::string& filepath)
+		{
+			std::ofstream stream(filepath);
+			stream << m_width << '\n';
+			stream << m_height << '\n';
+			for (NodeData node : m_nodes)
+			{
+				if (node.state == NodeState::WALKABLE)
+					stream << "w";
+				else
+					stream << "o";
+			}
+			stream.close();
+		}
+
 		void setObstructable(Vec2ui obstaclePos)
 		{
 			ui32 index = getIndex(obstaclePos);
@@ -880,5 +1015,364 @@ namespace VGAIL
 
 	private:
 		DecisionNode* m_root = nullptr;
+	};
+
+	class Boid
+	{
+	public:
+		Boid(Vec2f position, Vec2f velocity, f32 maxSpeed, ui32 id = 0)
+		: m_position(position)
+		, m_velocity(velocity)
+		, m_maxSpeed(maxSpeed)
+		, m_id(id)
+		{}
+
+		~Boid() {}
+
+		void setPosition(Vec2f position)
+		{
+			m_position = position;
+		}
+
+		Vec2f getPosition() const
+		{
+			return m_position;
+		}
+
+		void setVelocity(Vec2f velocity)
+		{
+			m_velocity = velocity;
+		}
+
+		Vec2f getVelocity() const
+		{
+			return m_velocity;
+		}
+
+		ui32 getID() const
+		{
+			return m_id;
+		}
+
+		f32 getRotationInDegrees()
+		{
+			if (m_velocity.getMagnitude() < 0.01f)
+			{
+				return m_lastRotation;
+			}
+
+			Vec2f target = m_position + m_velocity;
+			f32 radians = std::atan2(target.y - m_position.y, target.x - m_position.x);
+			m_lastRotation = radians * (180.0f / PI);
+			return m_lastRotation;
+		}
+
+		void setMinSpeed(f32 minSpeed)
+		{
+			m_minSpeed = minSpeed;
+		}
+
+		void setMaxSpeed(f32 maxSpeed)
+		{
+			m_maxSpeed = maxSpeed;
+		}
+
+		void flocking(f32 dt, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, const std::vector<Boid*>& flock)
+		{
+			Vec2f separationVector, alignVector, cohesionVector;
+			ui32 neighbors = 0;
+
+			for (Boid* other : flock)
+			{
+				if (other->getID() != m_id)
+				{
+					f32 dist = distance(m_position, other->getPosition());
+
+					if (dist < separationRange)
+					{
+						separationVector = separationVector + (m_position - other->getPosition());
+					}
+					else if (dist < perceptionRange)
+					{
+						alignVector = alignVector + other->getVelocity();
+						cohesionVector = cohesionVector + other->getPosition();
+						neighbors++;
+					}
+				}
+			}
+
+			if (neighbors > 0)
+			{
+				alignVector = alignVector / static_cast<float>(neighbors);
+				cohesionVector = cohesionVector / static_cast<float>(neighbors);
+
+				m_velocity = m_velocity + (alignVector - m_velocity) * matchingFactor + (cohesionVector - m_position) * centeringFactor;
+			}
+
+			m_velocity = m_velocity + (separationVector * avoidFactor);
+
+			f32 speed = m_velocity.getMagnitude();
+
+			if (speed < m_minSpeed)
+			{
+				m_velocity = (m_velocity / speed) * m_minSpeed;
+			}
+
+			if (speed > m_maxSpeed)
+			{
+				m_velocity = (m_velocity / speed) * m_maxSpeed;
+			}
+
+			m_position = m_position + m_velocity * dt;
+		}
+
+		Vec2f separation(f32 separationRange, f32 avoidFactor, const std::vector<Boid*>& flock)
+		{
+			Vec2f separationVector;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+
+				if (other->getID() != m_id && dist < separationRange)
+				{
+					separationVector = m_position - other->getPosition();
+				}
+			}
+
+			return separationVector * avoidFactor;
+		}
+
+		Vec2f align(f32 perceptionRange, f32 matchingFactor, const std::vector<Boid*>& flock)
+		{
+			Vec2f alignVector;
+			ui32 neighbors = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+
+				if (m_id != other->getID() && dist < perceptionRange)
+				{
+					alignVector = alignVector + other->getVelocity();
+					neighbors++;
+				}
+			}
+
+			if (neighbors > 0)
+			{
+				alignVector = alignVector / neighbors;
+			}
+
+			return (alignVector - m_velocity) * matchingFactor;
+		}
+
+		Vec2f cohesion(f32 perceptionRange, f32 centeringFactor, const std::vector<Boid*>& flock)
+		{
+			Vec2f cohesionVector;
+			ui32 neighbors = 0;
+
+			for (Boid* other : flock)
+			{
+				f32 dist = distance(m_position, other->getPosition());
+				if (m_id != other->getID() && dist < perceptionRange)
+				{
+					cohesionVector = cohesionVector + other->getPosition();
+					neighbors++;
+				}
+			}
+
+			if (neighbors > 0)
+			{
+				cohesionVector = cohesionVector / neighbors;
+			}
+
+			return (cohesionVector - m_velocity) * centeringFactor;
+		}
+
+		Vec2f seek(Vec2f targetPosition, f32 maxAcceleration)
+		{
+			Vec2f steeringForce = targetPosition - m_position;
+			steeringForce.normalize();
+			steeringForce = steeringForce * maxAcceleration;
+
+			return steeringForce;
+		}
+
+		Vec2f flee(Vec2f targetPosition, f32 maxAcceleration)
+		{
+			Vec2f steeringForce = m_position - targetPosition;
+			steeringForce.normalize();
+			steeringForce = steeringForce * maxAcceleration;
+
+			return steeringForce;
+		}
+
+		Vec2f pursue(const Boid* target, f32 maxAcceleration, f32 maxPrediction)
+		{
+			f32 speed = m_velocity.getMagnitude();
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+
+			if (distance <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			f32 prediction;
+			if(speed <= distance / maxPrediction)
+				prediction = maxPrediction;
+			else
+				prediction = distance / speed;
+
+			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
+			return seek(newPosition, maxAcceleration);
+		}
+
+		Vec2f evade(const Boid* target, f32 maxAcceleration, f32 maxPrediction)
+		{			
+			f32 speed = m_velocity.getMagnitude();
+			Vec2f direction = target->getPosition() - m_position;
+			f32 distance = direction.getMagnitude();
+
+			if (distance <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			f32 prediction;
+			if(speed <= distance / maxPrediction)
+				prediction = maxPrediction;
+			else
+				prediction = distance / speed;
+
+			Vec2f newPosition = target->getPosition() + target->getVelocity() * prediction;
+			return flee(newPosition, maxAcceleration);
+		}
+
+		Vec2f arrive(Vec2f targetPosition, f32 slowRadius, f32 maxAcceleration)
+		{
+			Vec2f desiredVelocity = targetPosition - m_position;
+			f32 distance = desiredVelocity.getMagnitude();
+
+			if (distance <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			desiredVelocity.normalize();
+
+			if (distance > slowRadius)
+			{
+				desiredVelocity = desiredVelocity * m_maxSpeed;
+			}
+			else
+			{
+				desiredVelocity = desiredVelocity * m_maxSpeed * distance / slowRadius;
+			}
+
+			Vec2f steeringForce = desiredVelocity - m_velocity;
+
+			if (steeringForce.getMagnitude() > maxAcceleration)
+			{
+				steeringForce.normalize();
+				steeringForce = steeringForce * maxAcceleration;
+			}
+
+			return steeringForce;
+		}
+
+		Vec2f wander(f32 circleDistance, f32 circleRadius, f32 displaceRange, f32 maxAcceleration)
+		{
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				return Vec2f{};
+			}
+
+			Vec2f desired = m_velocity;
+			desired.setMagnitude(circleDistance);
+			desired = desired + m_position;
+
+			f32 theta = m_theta + getRotationInDegrees();
+
+			f32 x = circleRadius * cos(theta);
+			f32 y = circleRadius * sin(theta);
+
+			desired = desired + Vec2f{ x, y };
+
+			Vec2f steeringForce = desired - m_position;
+			steeringForce.normalize();
+
+			m_theta = m_theta + randomFloat(-displaceRange, displaceRange);
+
+			return steeringForce * maxAcceleration;
+		}
+
+		void applySteeringForce(Vec2f steeringForce)
+		{
+			m_velocity = m_velocity + steeringForce;
+		}
+
+		void updatePosition(f32 dt)
+		{
+			if (m_velocity.getMagnitude() > m_maxSpeed)
+			{
+				m_velocity = (m_velocity / m_velocity.getMagnitude()) * m_maxSpeed;
+			}
+
+			if (m_velocity.getMagnitude() <= 0.01f)
+			{
+				m_velocity = 0.0f;
+			}
+
+			m_position = m_position + m_velocity * dt;
+		}
+
+	private:
+		ui32 m_id;
+		f32 m_lastRotation = 0.0f;
+		f32 m_theta = PI / 2.0f;
+		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;
+		Vec2f m_position, m_velocity;
+	};
+
+	class Flocking
+	{
+	public:
+		Flocking() {}
+
+		~Flocking()
+		{
+			for (ui32 i = 0; i < boids.size(); i++)
+			{
+				delete boids[i];
+			}
+		}
+
+		void addBoid(Vec2f position, Vec2f velocity, f32 minSpeed, f32 maxSpeed)
+		{
+			Boid* boid = new Boid(position, velocity, maxSpeed, boids.size());
+			boid->setMinSpeed(minSpeed);
+			boids.push_back(boid);
+		}
+
+		void setRanges(f32 separationRange, f32 perceptionRange)
+		{
+			m_separationRange = separationRange;
+			m_perceptionRange = perceptionRange;
+		}
+
+		void update(f32 dt, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor)
+		{
+			for (Boid* boid : boids)
+			{
+				boid->flocking(dt, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, boids);
+			}
+		}
+
+		std::vector<Boid*> boids;
+
+	private:
+		f32 m_separationRange = 0.0f, m_perceptionRange = 0.0f;
 	};
 }

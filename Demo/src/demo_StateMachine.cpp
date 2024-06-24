@@ -39,9 +39,13 @@ public:
 
 int main(int argc, char* argv[])
 {
-	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
-	uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
-	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30);
+	// uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
+	// uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
+	// VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
+
+	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh("Demo/res/navmesh.txt");
+	uint32_t navmeshWidth = navmesh->getWidth();
+	uint32_t navmeshHeight = navmesh->getHeight();
 
 	VGAIL::Vec2ui workerPosition = VGAIL::Vec2ui(20, 2);
 	Rectangle worker = { static_cast<float>(workerPosition.x * tileSize),
@@ -290,6 +294,11 @@ int main(int argc, char* argv[])
 		float delta = GetFrameTime();
 
 		stateMachine.update(delta);
+
+		if (IsKeyDown(KEY_S))
+		{
+			navmesh->saveToFile("Demo/res/navmesh.txt");
+		}
 
 		BeginDrawing();
 		ClearBackground(WHITE);
