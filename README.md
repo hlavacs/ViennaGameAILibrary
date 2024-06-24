@@ -184,19 +184,19 @@ The steering behaviors can only be used on ```VGAIL::Boids```.
 	```
 	- Evade
 	```
-	VGAIL::Vec2f steeringForce = agent->evade(target, maxAcceleration, maxPrediction);
+	VGAIL::Vec2f steeringForce = agent->evade(targetBoid, maxAcceleration, maxPrediction);
 	```
 	- Flee
 	```
-	VGAIL::Vec2f steeringForce = agent->flee(playerPosition, maxAcceleration);
+	VGAIL::Vec2f steeringForce = agent->flee(targetPosition, maxAcceleration);
 	```
 	- Pursue
 	```
-	VGAIL::Vec2f steeringForce = agent->pursue(target, maxAcceleration, maxPrediction);
+	VGAIL::Vec2f steeringForce = agent->pursue(targetBoid, maxAcceleration, maxPrediction);
 	```
 	- Seek
 	```
-	VGAIL::Vec2f steeringForce = agent->seek(playerPosition, maxAcceleration);
+	VGAIL::Vec2f steeringForce = agent->seek(targetPosition, maxAcceleration);
 	```
 	- Wander
 	```
