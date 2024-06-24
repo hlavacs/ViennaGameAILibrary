@@ -96,7 +96,7 @@ public:
 		}
 		else
 		{
-			float distance = VGAIL::distance(boid->getPosition(), VGAIL::Vec2f{barnPosition.x + (barnSize / tileSize / 2.0f), barnPosition.y + (barnSize / tileSize )});
+			float distance = VGAIL::distance(boid->getPosition(), VGAIL::Vec2f{ barnPosition.x + (barnSize / tileSize / 2.0f), barnPosition.y + (barnSize / tileSize) });
 			if (distance <= 1.0f)
 			{
 				visible = false;
@@ -105,7 +105,7 @@ public:
 			}
 			else
 			{
-				VGAIL::Vec2f steeringForce = boid->arrive(VGAIL::Vec2f{barnPosition.x + (barnSize / tileSize / 2.0f), barnPosition.y + (barnSize / tileSize )}, 3.0f, 0.3f);
+				VGAIL::Vec2f steeringForce = boid->arrive(VGAIL::Vec2f{ barnPosition.x + (barnSize / tileSize / 2.0f), barnPosition.y + (barnSize / tileSize) }, 3.0f, 0.3f);
 				boid->applySteeringForce(steeringForce);
 				boid->updatePosition(dt);
 			}
@@ -123,11 +123,11 @@ int main(int argc, char* argv[])
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 5.0f);
 
 	VGAIL::Boid* dog = new VGAIL::Boid(VGAIL::Vec2f{ 10.0f, 10.0f },
-										VGAIL::Vec2f{ 0.2f, 0.4f },
-										maxSpeed_dog, 500);
+		VGAIL::Vec2f{ 0.2f, 0.4f },
+		maxSpeed_dog, 500);
 	VGAIL::Boid* snake = new VGAIL::Boid(VGAIL::Vec2f{ 25.0f },
-										VGAIL::Vec2f{ 0.0f },
-										maxSpeed_snake);
+		VGAIL::Vec2f{ 0.0f },
+		maxSpeed_snake);
 
 	std::vector<Chicken*> chickens;
 	for (int i = 0; i < 10; i++)
@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
 					Rectangle grassTextureSrc = { 0.0f, 0.0f, static_cast<float>(grassTexture.width), static_cast<float>(grassTexture.height) };
 					Rectangle grassTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
 
-					if(dayTime)
+					if (dayTime)
 						DrawTexturePro(grassTexture, grassTextureSrc, grassTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
 					else
 						DrawTexturePro(grassTextureNight, grassTextureSrc, grassTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
@@ -261,8 +261,8 @@ int main(int argc, char* argv[])
 				{
 					Rectangle groundTextureSrc = { 0.0f, 0.0f, static_cast<float>(groundTexture.width), static_cast<float>(groundTexture.height) };
 					Rectangle groundTextureDest = { node.pos.x * tileSize, node.pos.y * tileSize, tileSize, tileSize };
-	
-					if(dayTime)
+
+					if (dayTime)
 						DrawTexturePro(groundTexture, groundTextureSrc, groundTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);
 					else
 						DrawTexturePro(groundTextureNight, groundTextureSrc, groundTextureDest, Vector2{ 0.0f, 0.0f }, 0.0f, WHITE);

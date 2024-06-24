@@ -288,7 +288,6 @@ int main(int argc, char* argv[])
 		currentStateIndex = 4;
 		};
 
-
 	while (!WindowShouldClose())
 	{
 		float delta = GetFrameTime();

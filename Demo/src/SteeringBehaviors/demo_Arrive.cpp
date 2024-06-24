@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
 		if (targetX > 0.0f && targetY > 0.0f)
 		{
-			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{ targetX/tileSize, targetY/tileSize }, slowRadius, maxAcceleration));
+			agent->applySteeringForce(agent->arrive(VGAIL::Vec2f{ targetX / tileSize, targetY / tileSize }, slowRadius, maxAcceleration));
 			agent->updatePosition(GetFrameTime());
 		}
 

@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	float maxSpeed = 3.0f;
 	float maxAcceleration = 0.1f;
 	float maxPrediction = 0.1f;
-	
+
 	VGAIL::Vec2f startVel = VGAIL::Vec2f{ VGAIL::randomFloat(0.5f, 1.5f) };
 
 	VGAIL::Vec2f agentPursuingStartPos = VGAIL::Vec2f{ 4.0f, 4.0f };

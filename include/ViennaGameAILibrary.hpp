@@ -142,7 +142,7 @@ namespace VGAIL
 		std::uniform_real_distribution<f32> distribution(min, max);
 		return distribution(rng);
 	}
-	
+
 	f32 randomInt(i32 min, i32 max)
 	{
 		std::random_device dev;
@@ -1021,10 +1021,10 @@ namespace VGAIL
 	{
 	public:
 		Boid(Vec2f position, Vec2f velocity, f32 maxSpeed, ui32 id = 0)
-		: m_position(position)
-		, m_velocity(velocity)
-		, m_maxSpeed(maxSpeed)
-		, m_id(id)
+			: m_position(position)
+			, m_velocity(velocity)
+			, m_maxSpeed(maxSpeed)
+			, m_id(id)
 		{}
 
 		~Boid() {}
@@ -1220,7 +1220,7 @@ namespace VGAIL
 			}
 
 			f32 prediction;
-			if(speed <= distance / maxPrediction)
+			if (speed <= distance / maxPrediction)
 				prediction = maxPrediction;
 			else
 				prediction = distance / speed;
@@ -1230,7 +1230,7 @@ namespace VGAIL
 		}
 
 		Vec2f evade(const Boid* target, f32 maxAcceleration, f32 maxPrediction)
-		{			
+		{
 			f32 speed = m_velocity.getMagnitude();
 			Vec2f direction = target->getPosition() - m_position;
 			f32 distance = direction.getMagnitude();
@@ -1241,7 +1241,7 @@ namespace VGAIL
 			}
 
 			f32 prediction;
-			if(speed <= distance / maxPrediction)
+			if (speed <= distance / maxPrediction)
 				prediction = maxPrediction;
 			else
 				prediction = distance / speed;

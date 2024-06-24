@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 	while (!WindowShouldClose())
 	{
-		for(VGAIL::Boid* boid: flock->boids)
+		for (VGAIL::Boid* boid : flock->boids)
 		{
 			stayWithinBorders(boid, turnFactor);
 		}
