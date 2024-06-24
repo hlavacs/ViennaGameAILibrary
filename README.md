@@ -42,7 +42,7 @@ In *Demo/```CMakeLists.txt```*, change the path of the .cpp file that you want t
 add_executable(Demo src/demo_PathFinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
 ```
 
-### Code documentation
+## Code documentation
 Documentation is generated using Doxygen. To see it, open ```index.html``` which can be found in the *Demo/docs/html* folder.
 
 ## How to use each feature the library provides
