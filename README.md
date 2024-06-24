@@ -37,12 +37,12 @@ Make sure Clang and Ninja are used by this project. Once the build process start
 6. Run ```run_demo_win.bat``` to start the project.
 
 ### To run different demos
-In *Demo/```CMakeLists.txt```*, change the path of the cpp file that needs to be run.
+In *Demo/```CMakeLists.txt```*, change the path of the .cpp file that you want to run.
 ```
 add_executable(Demo src/demo_PathFinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
 ```
 
-#### Code documentation
+### Code documentation
 Documentation is generated using Doxygen. To see it, open ```index.html``` which can be found in the *Demo/docs/html* folder.
 
 ## How to use each feature the library provides
