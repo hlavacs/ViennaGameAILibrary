@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 {
 	VGAIL::Vec2f startPos = { 5.0f, 5.0f };
 	VGAIL::Vec2f startVel = { VGAIL::randomFloat(0.5f, 1.0f) };
-	
+
 	float maxSpeed = 2.0f;
 	float maxAcceleration = 5.0f;
 
