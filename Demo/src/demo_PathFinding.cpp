@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
 	{
 		Timer timer("Preprocess");
-		navmesh->startPreprocess();
+		navmesh->preprocess(true, 4);
 	}
 
 	InitWindow(screenWidth, screenHeight, "Demo for Pathfinding");
@@ -84,11 +84,11 @@ int main(int argc, char* argv[])
 			std::cout << "------------------" << std::endl;
 			{
 				Timer timer("A* time");
-				path = navmesh->A_Star(startPosition, targetPosition);
+				path = navmesh->findPath(startPosition, targetPosition);
 			}
 			{
 				Timer timer("GP time");
-				path2 = navmesh->getPath_multithreading(startPosition, targetPosition);
+				path2 = navmesh->findPreprocessedPath(startPosition, targetPosition);
 			}
 		}
 

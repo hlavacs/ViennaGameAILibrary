@@ -47,37 +47,76 @@ Documentation is generated using Doxygen. To see it, open ```index.html``` which
 
 ## How to use each feature the library provides
 > **Note** : When implementing any features, keep in mind that you will need to transform the library coordinates into screen coordinates. The demos contain examples of how to do this.
-1. **Path finding**
+
+1. **Data structures and data types**
+
+*Vienna Game AI Library* uses two custom made vectors: ```Vec2ui``` and ```Vec2f```. Both represent 2D vectors, with ```Vec2ui``` made of unsigned integers, and ```Vec2f``` of floats.
+The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to the different calculations that are needed. Other data structures used in the library are ```std::vector``` and ```std::unordered_map```.
+
+The data types used in the library are: ```uint32_t```, ```uint64_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable. (```uint32_t``` -> ```ui32```, ```uint64_t``` -> ```ui64```, ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
+
+There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for path finding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
+
+2. **Path finding**
 
 Demo example: *Demo/src/demo_Pathfinding.cpp*
 
 - Create a navigation mesh
+
+To generate it randomly, pass the desired width and height, as well as a percentage which will limit the amount of obstacles spawned within the navigation mesh. To load it from a file, simply call the constructor with the file path as the argument.
 ```
-	// Generate it randomly with a given percentage for spawning obstacles
+	// Generate it randomly
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
 
 	// Or load it from a file
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh("Demo/res/navmesh.txt");
 ```
-- Create a start and and end goal
+The navmesh file can be created either manually or by the game itself. The file has the following structure:
+```
+	navmeshWidth
+	navmeshHeight
+	owwwwoowwowww...
+```
+```navmeshWidth``` and ```navmeshHeight``` need to be positive integers. The third line describes the pattern of the navigation mesh, where ```w``` is a walkable area and ```o``` is an obstacle. Make sure that the number of characters are equal to ```navmeshWidth``` * ```navmeshHeight```.
+
+There is also the option to save a randomly generated navmesh. This can be done by calling ```saveToFile(const std::string& filepath)``` (*ViennaGameAILibrary* : 453-466) and by passing a filepath. If the file doesn't exist, it will be created automatically.
+
+- Create start and end positions for the A* algorithm
+
+The start and end positions need to be ```Vec2ui```. Inside the application, they can be converted to screen coordinates by multiplying to a number of your choice. (see the demo for pathfinding for more details, specifically calculations that use ```gridStride```)
 ``` 
 	VGAIL::Vec2ui startPosition = VGAIL::Vec2ui(1, 1);
 	VGAIL::Vec2ui endPosition = VGAIL::Vec2ui(15, 15);
 ```
 - Optional: start geometric preprocessing
+ 
+ While A* ensures finding the shortest path, it sometimes can be quite slow. In video games, it is preferred that the path is retrieved as fast as possible, so if that means that the path returned is not the shortest one, it will most likely not have a big impact on the game. A path that is found fast but is not necessarily the shortest from all options, is called an optimal path. Geometric preprocessing ensures finding an optimal path, but not necessarily the shortest one.
+
+This process can be called while setting up the application (so before the game loop) in order to perform all calculations before the application starts. It can be done in two ways: with single or multiple threads. The call for this process is as follows:
 ```
-	navmesh->startPreprocess();
+	void preprocess(bool multithreading = false, ui32 numThreads = 4)
 ```
+The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (default: 4).
+
+This process will work on the Regions defined when the navmesh is created ( see *ViennaGameAILibrary* : 514-537). The number of regions depends on the navmesh size, and by default they are set to each contain 9 * 9 nodes (9 on the *x* axis, 9 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
+
+The following picture shows how the regions would look like on top of the demo for path finding. Each orange square represents a region.
+
+![Displaying regions on navmesh](/assets/pathfinding.jpg)
+
+During this process, the ```AStar``` method is called to calculate the distance between each nodes and each region. Therefore, at the end of the process, the ```m_adjList``` from the ```NavMesh``` class will contain the best path from one node to a region at ```m_adjList[nodeIndex][regionID]```. 
+
 - Use A* algorithm to find the most optimal path
 ```
 	// Without geometric preprocessing
-	std::vector<VGAIL::Vec2ui> path = navmesh->A_Star(startPosition, endPosition);
+	std::vector<VGAIL::Vec2ui> path = navmesh->findPath(startPosition, endPosition);
 
-	// Using geometric preprocessing and multithreading
-	std::vector<VGAIL::Vec2ui> path = navmesh->getPath_multithreading(startPosition, endPosition);
+	// Using geometric preprocessing and/or multithreading
+	std::vector<VGAIL::Vec2ui> path = navmesh->findPreprocessedPath(startPosition, endPosition);
 ```
+```findPath()``` calculates the path by using A*, while ```findPreprocessedPath()``` retrieves the stored path if geometric preprocessing has been done. 
 
-2. **Decision trees**
+3. **Decision trees**
 
 Demo example: *Demo/src/demo_DecisionTree.cpp*
 
@@ -135,7 +174,7 @@ Demo example: *Demo/src/demo_DecisionTree.cpp*
 ```
 	tree.update(deltaTime);
 ```
-3. **State machines**
+4. **State machines**
 
 - Create a state machine
 ```
@@ -169,7 +208,7 @@ Demo example: *Demo/src/demo_DecisionTree.cpp*
 	stateMachine.update(deltaTime);
 ```
 
-4. **Steering behaviors**
+5. **Steering behaviors**
 
 The steering behaviors can only be used on ```VGAIL::Boids```.
 
@@ -210,7 +249,7 @@ The steering behaviors can only be used on ```VGAIL::Boids```.
 
 > The ```getRotationInDegrees()``` method from the Boid class calculates the rotation of the boid in degrees and can be used to steer the boid towards the direction it is moving.
 
-5. **Flocking**
+6. **Flocking**
 
 The flocking behavior only works on ```VGAIL::Boid``` instances.
 
@@ -230,5 +269,3 @@ The flocking behavior only works on ```VGAIL::Boid``` instances.
 ```
 	flock->update(deltaTime, avoidFactor, matchingFactor, centeringFactor);
 ```
-
-For more information on the arguments taken by each method, please check the code documentation.
