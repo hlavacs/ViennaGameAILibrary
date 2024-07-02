@@ -1,7 +1,7 @@
 # ViennaGameAILibrary
 A library containing game AI algorithms.
 
-## Project structure
+# Project structure
 - *Demo*
 	- [raylib](https://github.com/raysan5/raylib)
 	- *src* - Source folder containing the code for the demos
@@ -14,15 +14,15 @@ A library containing game AI algorithms.
 - ```CMakeLists.txt```
 - ```README.md```
 
-## Setup - Windows
-### Prerequisites
+# Setup - Windows
+## Prerequisites
 - [Doxygen](https://www.doxygen.nl/index.html)
 - [Ninja](https://ninja-build.org/)
 - [Msys2](https://www.msys2.org/) - CMake and Clang need to be installed through msys2.
 	- CMake (minimum version required: 3.28.1)
  	- Clang
 
-### Build and run the project
+## Build and run the project
 1. Clone the project.
 2. Run ```git submodule init``` and ```git submodule update``` to fetch raylib.
 3. Update the location of ```clang++.exe``` in the ```build_demo_win.bat``` file based on the location of the msys2 folder.
@@ -36,19 +36,19 @@ Make sure Clang and Ninja are used by this project. Once the build process start
 ```
 6. Run ```run_demo_win.bat``` to start the project.
 
-### To run different demos
+## To run different demos
 In *Demo/```CMakeLists.txt```*, change the path of the .cpp file that you want to run.
 ```
 add_executable(Demo src/demo_PathFinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
 ```
 
-## Code documentation
+# Code documentation
 Documentation is generated using Doxygen. To see it, open ```index.html``` which can be found in the *Demo/docs/html* folder.
 
-## How to use each feature the library provides
+# How to use each feature the library provides
 > **Note** : When implementing any features, keep in mind that you will need to transform the library coordinates into screen coordinates. The demos contain examples of how to do this.
 
-1. **Data structures and data types**
+## 1. **Data structures and data types**
 
 *Vienna Game AI Library* uses two custom made vectors: ```Vec2ui``` and ```Vec2f```. Both represent 2D vectors, with ```Vec2ui``` made of unsigned integers, and ```Vec2f``` of floats.
 The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to the different calculations that are needed. Other data structures used in the library are ```std::vector``` and ```std::unordered_map```.
@@ -57,7 +57,7 @@ The data types used in the library are: ```uint32_t```, ```uint64_t```, ```int32
 
 There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for path finding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
 
-2. **Path finding**
+## 2. **Path finding**
 
 > Demo example: *Demo/src/demo_Pathfinding.cpp*
 
@@ -116,7 +116,7 @@ During this process, the ```AStar``` method is called to calculate the distance 
 ```
 ```findPath()``` calculates the path by using A*, while ```findPreprocessedPath()``` retrieves the stored path if geometric preprocessing has been done. 
 
-3. **Decision trees**
+## 3. **Decision trees**
 
 > Demo example: *Demo/src/demo_DecisionTree.cpp*
 
@@ -187,7 +187,7 @@ The logic behind the decision trees is displayed in the following picture.
 
 <!-- ![Decision trees for characters](/assets/decisionTree.jpg) -->
 
-4. **State machines**
+## 4. **State machines**
 
 > Demo example: *Demo/src/demo_StateMachine.cpp*
 
@@ -233,7 +233,7 @@ This method is responsible with managing the states and transitions between them
 	stateMachine.update(deltaTime);
 ```
 
-5. **Steering behaviors**
+## 5. **Steering behaviors**
 
 Demo examples:
 	
@@ -250,7 +250,7 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Boid* agent = new VGAIL::Boid(position, velocity, maxSpeed);
 ```
 - Calculate the steering force
-	- **Seek**
+	### 5.1. **Seek**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_SeekAndFlee.cpp*
 
 	The *seek* steering behavior allows for a realistic movement towards a given target. The method takes as arguments ```targetPosition``` (```Vec2f``` - position of the target) and ```maxAcceleration``` (```float``` - the maximum rate at which the velocity can change per unit of time).
@@ -258,9 +258,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->seek(targetPosition, maxAcceleration);
 	```
 	![Demo for seek](/assets/seek.gif)
+
 	In the example above, the blue object is seeking the player (yellow object).
 
-	- **Flee**
+	### 5.2. **Flee**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_SeekAndFlee.cpp*
 
 	The *flee* steering behavior is the opposite of *seek*, as it moves away from and not towards a target. The arguments are the same as for the *seek* behavior.
@@ -268,9 +269,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->flee(targetPosition, maxAcceleration);
 	```
 	![Demo for flee](/assets/flee.gif)
+
 	In the example above, the green object is fleeing the player (yellow object), while also staying inside the borders of the window.
 
-	- **Arrive**
+	### 5.3. **Arrive**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_Arrive.cpp*
 
 	The *arrive* steering behavior is responsible for slowing down the character before it reaches its destination such that it can stop smoothly. If the character is far from the destination, it uses the *seek* behavior to move towards it, and once it gets close enough, it starts slowing down until it eventually reaches the target. 
@@ -281,11 +283,12 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->arrive(targetPosition, slowRadius, maxAcceleration);
 	```
 	![Demo for arrive](/assets/arrive.gif)
+
 	In this example, the blue object uses the *arrive* steering behavior to get to the green dot and it slows down once it enters the area shown by the red circle.
 	
 	This behavior is useful in cases when it is important to show that a character reached its target destination. The *seek* behavior, used alone, will make the character bounce back and forth around the target, but the *arrive* behavior will ensure that the character will not move through the target by slowing down so it can stop once it reaches it.
 
-	- **Pursue**
+	### 5.4. **Pursue**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_PursueAndEvade.cpp*
 
 	*Pursue* is very similar to the *seek* behavior in the sense that it follows a given target. The difference is that the pursuer also tries to "catch" the target by anticipating its movement, which is done by predicting the target's future positions. That is done such that it avoids taking unnecessary paths as it will estimate where the target will be within the next few seconds and move towards that new position.
@@ -295,9 +298,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->pursue(targetBoid, maxAcceleration, maxPrediction);
 	```
 	![Demo for pursue](assets/pursue.gif)
+
 	In this example, the purple object is following the player (yellow object).
 
-	- **Evade**
+	### 5.5. **Evade**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_PursueAndEvade.cpp*
 
 	*Evade* is the opposite of *pursue*, as in it uses prediction to "escape" a given target. The same arguments as for the *pursue* behavior are used.
@@ -305,21 +309,25 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->evade(targetBoid, maxAcceleration, maxPrediction);
 	```
 	![Demo for evade](assets/evade.gif)
+
 	In this example, the pink object is following the player (yellow object), while also staying inside the borders of the window.
 
-	- **Wander**
+	### 5.6. **Wander**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_Wander.cpp*
 	
 	The *wander* steering behavior produces a natural-looking movement of a character "casually" walking around. It is created by producing small displacements and applying them to the character's velocity. This implementation, following Craig Reynold's proposal, uses a circle defined in front of the character from which all other forces are calculated.
 
 	![Wander - explanations](assets/wander.jpg)
-
+	
 	In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a ```circleDistance``` from the character and has a ```circleRadius```. Every frame, a random point is chosen from the outline of the circle which will the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving too abruptly left and right), a ```displacementRange``` is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, ```maxAcceleration``` is the maximum rate at which the velocity can change per unit of time.
 	```
 	VGAIL::Vec2f steeringForce = agent->wander(circleDistance, circleRadius, displaceRange, maxAcceleration);
 	```
 	![Demo for wander](assets/wander.gif)
 	In this example, the red line is the character's velocity which changes every frame depending on the randomly chosen point.
+
+	### 5.7. **Steer**
+	The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to steer the boid towards the direction it is moving.
 	
 - Apply the steering force and update the position. 
 
@@ -330,10 +338,7 @@ Please note that the ```updatePosition()``` method must be called after applying
 	agent->applySteeringForce(steeringForce);
 	agent->updatePosition(deltaTime);
 ```
-
-> The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to steer the boid towards the direction it is moving.
-
-6. **Flocking**
+## 6. **Flocking**
 
 The flocking behavior only works on ```VGAIL::Boid``` instances.
 
