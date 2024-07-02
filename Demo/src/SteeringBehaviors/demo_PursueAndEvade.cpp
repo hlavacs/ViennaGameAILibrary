@@ -36,10 +36,10 @@ void stayWithinBorders(VGAIL::Boid* boid, float turnFactor)
 int main(int argc, char* argv[])
 {
 	float turnFactor = 2.0f;
-	float playerSpeed = 5.0f;
+	float playerSpeed = 3.0f;
 	float maxSpeed = 3.0f;
 	float maxAcceleration = 0.1f;
-	float maxPrediction = 0.1f;
+	float maxPrediction = 0.3f;
 
 	VGAIL::Vec2f startVel = VGAIL::Vec2f{ VGAIL::randomFloat(0.5f, 1.5f) };
 
@@ -54,8 +54,8 @@ int main(int argc, char* argv[])
 	InitWindow(screenWidth, screenHeight, "Demo for Pursue and Evade");
 	SetTargetFPS(60);
 
-	Texture2D agentPursuingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/blue.png");
-	Texture2D agentEvadingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/green.png");
+	Texture2D agentPursuingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/purple.png");
+	Texture2D agentEvadingTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/pink.png");
 	Texture2D playerTexture = LoadTexture("Demo/res/demo_SteeringBehaviors/yellow.png");
 
 	while (!WindowShouldClose())

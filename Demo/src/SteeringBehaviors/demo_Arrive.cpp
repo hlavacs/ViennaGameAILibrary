@@ -18,8 +18,8 @@ int main(int argc, char* argv[])
 	VGAIL::Vec2f startVel = { 0.0f };
 
 	float maxSpeed = 5.0f;
-	float slowRadius = 5.0f;
-	float maxAcceleration = 0.3f;
+	float slowRadius = 2.5f;
+	float maxAcceleration = 0.5f;
 
 	VGAIL::Boid* agent = new VGAIL::Boid(startPos, startVel, maxSpeed);
 
@@ -57,8 +57,11 @@ int main(int argc, char* argv[])
 			WHITE
 		);
 
-		DrawCircle(targetX, targetY, 3.0f, GREEN);
-
+		if (targetX > 0.0f && targetY > 0.0f)
+		{
+			DrawCircle(targetX, targetY, 3.0f, GREEN);
+			DrawCircleLines(targetX, targetY, slowRadius * tileSize, RED);
+		}
 		EndDrawing();
 	}
 
