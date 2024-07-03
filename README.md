@@ -324,11 +324,15 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	VGAIL::Vec2f steeringForce = agent->wander(circleDistance, circleRadius, displaceRange, maxAcceleration);
 	```
 	![Demo for wander](assets/wander.gif)
+
 	In this example, the red line is the character's velocity which changes every frame depending on the randomly chosen point.
 
 	### 5.7. **Steer**
-	The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to steer the boid towards the direction it is moving.
-	
+	The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to show in which direction the boid is moving. Steering is already implemented in each already mentioned behavior, therefore this method is only needed for rendering.
+
+	Each texture needs a texture rotation as per the ```DrawTexturePro``` method from *raylib*. In the demos for the steering behaviors, the ```getRotationInDegrees()``` method is simply called when drawing the texture on the screen such that the texture is always facing the direction it is moving.
+
+The library also provides implementation for the three steering behaviors used usually in flocking (*separation*, *alignment*, *cohesion*). They are detailed in the next section.
 - Apply the steering force and update the position. 
 
 ```steeringForce``` is the output vector resulted from any of the methods shown above. 
@@ -342,19 +346,43 @@ Please note that the ```updatePosition()``` method must be called after applying
 
 The flocking behavior only works on ```VGAIL::Boid``` instances.
 
+The implementation follows Craig Reynolds's proposal.
+
 - Create the flock
+
+This is responsible for managing all boids such that they respect the three steering behaviors: separation, alignment and cohesion.
 ```
 	VGAIL::Flocking* flock = new VGAIL::Flocking();
 ```
+Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding. Alignment is responsible for calculating the average velocity of the boids and steer them in that direction. Cohesion is steering the boids towards the average position of the boids from the same group.
+
 - Set the separation and perception ranges
 ```
 	flock->setRanges(separationRange, perceptionRange);
 ```
+
+```separationRange``` is used in the ```separation``` behavior. Each boid needs such a range to avoid colliding with other boids. The algorithm checks for each boid if any fellow boid is at a distance smaller than this range, in which case it will steer the boid away such that it creates space between them.
+
+```perceptionRange``` is used in both ```alignment``` and ```cohesion```. This range represents the distance within which a boid considers neighboring boids, or in simpler terms, how far a boid "sees" other nearby boids. Once other boids are in this range, the algorithm will use ```alignment``` and ```cohesion``` to match its velocity to the other boids' velocity and to position the boid within the group.
+
 - Add boids to the flock
+
+To add a boid to the flock, simply call the following method:
 ```
 	flock->addBoid(position, velocity, minSpeed, maxSpeed);
 ```
+```position``` and ```velocity``` are both ```Vec2f```, while ```minSpeed``` and ```maxSpeed``` are ```float```.
+
 - In the game loop, update the flock
 ```
 	flock->update(deltaTime, avoidFactor, matchingFactor, centeringFactor);
 ```
+To update the flock, ```deltaTime``` is needed such that smooth movement is ensured. On top of that, three different factors are required as well.
+
+```avoidFactor```  determines how strongly boids react to possible collisions.
+
+```matchingFactor``` determines how strongly boids steer to match the average velocity of their neighbours.
+
+```centeringFactor``` determines how strongly boids steer to match the average position of their neighbours.
+
+![Demo for flocking](assets/flocking.gif)
