@@ -5,8 +5,8 @@
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
-int screenWidth = 1200;
-int screenHeight = 800;
+int screenWidth = 1900;
+int screenHeight = 1050;
 int screenMargin = 50;
 float tileSize = 50.0f;
 
@@ -40,9 +40,9 @@ int main(int argc, char* argv[])
 	float maxSpeed = 2.0f;
 	float maxAcceleration = 5.0f;
 
-	float circleDistance = 500.0f;
-	float circleRadius = 100.0f;
-	float displaceRange = 0.2f;
+	float circleDistance = 400.0f;
+	float circleRadius = 80.0f;
+	float displaceRange = 0.1f;
 
 	float turnFactor = 0.5f;
 
@@ -69,6 +69,14 @@ int main(int argc, char* argv[])
 			Vector2{ 20.0f, 20.0f },
 			agent->getRotationInDegrees(),
 			WHITE
+		);
+
+		DrawLine(
+			agent->getPosition().x * tileSize, 
+			agent->getPosition().y * tileSize,
+			agent->getPosition().x * tileSize + agent->getVelocity().x  * tileSize,
+			agent->getPosition().y * tileSize + agent->getVelocity().y  * tileSize,
+			RED
 		);
 
 		EndDrawing();
