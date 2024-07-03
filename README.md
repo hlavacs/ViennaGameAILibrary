@@ -103,7 +103,9 @@ This process will work on the Regions defined when the navmesh is created (see *
 
 The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
 
-![Displaying regions on navmesh](/assets/pathfinding.jpg)
+<div align="center">
+	<img src="assets/pathfinding.jpg">
+</div>
 
 During this process, the ```AStar``` method is called to calculate the distance between each nodes and each region. Therefore, at the end of the process, the ```m_adjList``` from the ```NavMesh``` class will contain the best path from one node to a region at ```m_adjList[nodeIndex][regionID]```. 
 
@@ -128,7 +130,7 @@ During this process, the ```AStar``` method is called to calculate the distance 
 
 - For each node of the tree (and recursively its children) a custom class needs to be implemented to delegate actions to its children based on some criteria.
 
-Each decision node needs to implement its own ```makeDecision(float dt)``` method, in which it either delegates further actions to its children, or implements game logic. In the example below, the ```isEnemyClose``` class is responsible for checking the distance between the player and an enemy. Depending on this distance, it calls a child decision node. 
+Each decision node needs to implement its own ```makeDecision(float dt)``` method, in which it either delegates further actions to its children or implements game logic. In the example below, the ```isEnemyClose``` class is responsible for checking the distance between the player and an enemy. Depending on this distance, it calls a child decision node. 
 ```
 	// Example: a character makes decisions based on the distance to an enemy
 	class isEnemyClose : public VGAIL::DecisionNode
@@ -183,11 +185,17 @@ The order in which the child nodes are instantiated is important, as it will mat
 
 In the example from *demo_DecisionTree.cpp*, both characters have their own decision tree and each chosen decision is displayed every frame on the screen.
 
-![Demo for decision tree](/assets/decisionTreeDemo.png)
+<div align="center">
+	<img src="assets/decisionTreeDemo.png">
+</div>
 
 The logic behind the decision trees is displayed in the following picture.
 
-![Decision trees for characters](/assets/decisionTree.jpg)
+<div align="center">
+	<img src="assets/decisionTree.jpg">
+</div>
+
+In this example, the decision nodes are represented by the rectangular objects (*isGuardClose*, *isBurglarClose*, etc.).
 
 ## 4. **State machines**
 
@@ -247,7 +255,7 @@ The steering behaviors can only be used on instances of the ```VGAIL::Boids``` c
 
 - Create the boid
 
-Each boid needs a position, a velocity and a maximum speed when instantiated. By default, the maximum speed is 5.0f, and the position and velocity are both 0. Each boid also has an id, used in the flocking algorithm, but since it is not relevant for the rest of the algorithms, it is set to 0 by default.
+Each boid needs a position, a velocity and a maximum speed when instantiated. By default, the maximum speed is 5.0f, and the position and velocity are both 0. Each boid also has an id, used in the flocking algorithm, but since it is not relevant for the rest of the steering behaviors, it is set to 0 by default.
 ```
 	VGAIL::Boid* agent = new VGAIL::Boid(position, velocity, maxSpeed);
 ```
@@ -259,7 +267,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	```
 	VGAIL::Vec2f steeringForce = agent->seek(targetPosition, maxAcceleration);
 	```
-	![Demo for seek](/assets/seek.gif)
+
+	<div align="center">
+		<img src="assets/seek.gif">
+	</div>
 
 	In the example above, the blue object is seeking the player (yellow object).
 
@@ -270,7 +281,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	```
 	VGAIL::Vec2f steeringForce = agent->flee(targetPosition, maxAcceleration);
 	```
-	![Demo for flee](/assets/flee.gif)
+	
+	<div align="center">
+		<img src="assets/flee.gif">
+	</div>
 
 	In the example above, the green object is fleeing the player (yellow object), while also staying inside the borders of the window.
 
@@ -284,7 +298,10 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	```
 	VGAIL::Vec2f steeringForce = agent->arrive(targetPosition, slowRadius, maxAcceleration);
 	```
-	![Demo for arrive](/assets/arrive.gif)
+
+	<div align="center">
+		<img src="assets/arrive.gif">
+	</div>
 
 	In this example, the blue object uses the *arrive* steering behavior to get to the green dot and it slows down once it enters the area shown by the red circle.
 	
@@ -293,40 +310,49 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	### 5.4. **Pursue**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_PursueAndEvade.cpp*
 
-	*Pursue* is very similar to the *seek* behavior in the sense that it follows a given target. The difference is that the pursuer also tries to "catch" the target by anticipating its movement, which is done by predicting the target's future positions. That is done such that it avoids taking unnecessary paths as it will estimate where the target will be within the next few seconds and move towards that new position.
+	*Pursue* is very similar to the *seek* behavior in the sense that it follows a given target. The difference is that the pursuer tries to "catch" the target by anticipating its movement, which is done by predicting the target's future positions. That is done such that it avoids taking unnecessary paths as it will estimate where the target will be within the next few seconds and move towards that new position.
 
 	The method takes three arguments: ```targetBoid``` (```Boid``` - the target to pursue), ```maxAcceleration``` (```float``` - the maximum rate at which the velocity can change per unit of time), and ```maxPrediction``` (```float``` - the maximum prediction time used to estimate where the target will be in the future).
 	```
 	VGAIL::Vec2f steeringForce = agent->pursue(targetBoid, maxAcceleration, maxPrediction);
 	```
-	![Demo for pursue](assets/pursue.gif)
+	<div align="center">
+		<img src="assets/pursue.gif">
+	</div>
 
 	In this example, the purple object is following the player (yellow object).
 
 	### 5.5. **Evade**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_PursueAndEvade.cpp*
 
-	*Evade* is the opposite of *pursue*, as in it uses prediction to "escape" a given target. The same arguments as for the *pursue* behavior are used.
+	*Evade* is the opposite of *pursue*, as it uses prediction to "escape" a given target. The same arguments as for the *pursue* behavior are used.
 	```
 	VGAIL::Vec2f steeringForce = agent->evade(targetBoid, maxAcceleration, maxPrediction);
 	```
-	![Demo for evade](assets/evade.gif)
+	<div align="center">
+		<img src="assets/evade.gif">
+	</div>
 
 	In this example, the pink object is following the player (yellow object), while also staying inside the borders of the window.
 
 	### 5.6. **Wander**
 	> Demo example: *Demo/src/SteeringBehaviors/demo_Wander.cpp*
 	
-	The *wander* steering behavior produces a natural-looking movement of a character "casually" walking around. It is created by producing small displacements and applying them to the character's velocity. This implementation, following Craig Reynold's proposal, uses a circle defined in front of the character from which all other forces are calculated.
+	The *wander* steering behavior produces a natural-looking movement of a character "casually" walking around. Its implementation, following Craig Reynold's proposal, uses a circle defined in front of the character from which the steering force is calculated.
 
-	![Wander - explanations](assets/wander.jpg)
+	<div align="center">
+		<img src="assets/wander.jpg">
+	</div>
 	
-	In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a ```circleDistance``` from the character and has a ```circleRadius```. Every frame, a random point is chosen from the outline of the circle which will the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving too abruptly left and right), a ```displacementRange``` is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, ```maxAcceleration``` is the maximum rate at which the velocity can change per unit of time.
+	In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a ```circleDistance``` from the character and has a ```circleRadius```. Every frame, a random point is chosen from the outline of the circle which will the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving abruptly left and right), a ```displacementRange``` is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, ```maxAcceleration``` is the maximum rate at which the velocity can change per unit of time.
 	```
 	VGAIL::Vec2f steeringForce = agent->wander(circleDistance, circleRadius, displaceRange, maxAcceleration);
 	```
-	![Demo for wander](assets/wander.gif)
 
+	<div align="center">
+		<img src="assets/wander.gif">
+	</div>
+	
 	In this example, the red line is the character's velocity which changes every frame depending on the randomly chosen point.
 
 	### 5.7. **Steer**
@@ -336,19 +362,16 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 
 The library also provides implementation for the three steering behaviors used usually in flocking (*separation*, *alignment*, *cohesion*). They are detailed in the next section.
 - Apply the steering force and update the position. 
-
-```steeringForce``` is the output vector resulted from any of the methods shown above. 
-
-Please note that the ```updatePosition()``` method must be called after applying the steering force, otherwise the boid's position will not change according to the new calculations.
 ```
 	agent->applySteeringForce(steeringForce);
 	agent->updatePosition(deltaTime);
 ```
+```steeringForce``` is the output vector resulted from any of the methods shown above. 
+
+Please note that the ```updatePosition()``` method must be called after applying the steering force, otherwise the boid's position will not change according to the new calculations.
 ## 6. **Flocking**
 
-The flocking behavior only works on ```VGAIL::Boid``` instances.
-
-The implementation follows Craig Reynolds's proposal.
+The flocking behavior only works on ```VGAIL::Boid``` instances. The implementation follows Craig Reynolds's proposal.
 
 - Create the flock
 
@@ -356,7 +379,7 @@ This is responsible for managing all boids such that they respect the three stee
 ```
 	VGAIL::Flocking* flock = new VGAIL::Flocking();
 ```
-Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding. Alignment is responsible for calculating the average velocity of the boids and steer them in that direction. Cohesion is steering the boids towards the average position of the boids from the same group.
+Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding. Alignment is responsible for calculating the average velocity of the boids and steer them accordingly. Cohesion is steering the boids towards the average position of the boids from the same group.
 
 - Set the separation and perception ranges
 ```
@@ -387,4 +410,6 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 
 ```centeringFactor``` determines how strongly boids steer to match the average position of their neighbours.
 
-![Demo for flocking](assets/flocking.gif)
+<div align="center">
+	<img src="assets/flocking.gif">
+</div>
