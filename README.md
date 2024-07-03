@@ -2,10 +2,11 @@
 A library containing game AI algorithms.
 
 # Project structure
+- *assets* - Resource folder containing media files used for ```README.md```
 - *Demo*
 	- [raylib](https://github.com/raysan5/raylib)
 	- *src* - Source folder containing the code for the demos
-	- *res* - Resource folder containing assets
+	- *res* - Resource folder containing assets used in demos
 	- *docs* - Code documentation
 	- ```CMakeLists.txt```
 - *include* - ```ViennaGameAILibrary.hpp```
@@ -51,9 +52,9 @@ Documentation is generated using Doxygen. To see it, open ```index.html``` which
 ## 1. **Data structures and data types**
 
 *Vienna Game AI Library* uses two custom made vectors: ```Vec2ui``` and ```Vec2f```. Both represent 2D vectors, with ```Vec2ui``` made of unsigned integers, and ```Vec2f``` of floats.
-The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to the different calculations that are needed. Other data structures used in the library are ```std::vector``` and ```std::unordered_map```.
+The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to required mathematical operations. Other data structures used in the library are ```std::vector``` and ```std::unordered_map```.
 
-The data types used in the library are: ```uint32_t```, ```uint64_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable. (```uint32_t``` -> ```ui32```, ```uint64_t``` -> ```ui64```, ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
+The data types used in the library are: ```uint32_t```, ```uint64_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable (```uint32_t``` -> ```ui32```, ```uint64_t``` -> ```ui64```, ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
 
 There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for path finding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
 
@@ -83,22 +84,22 @@ There is also the option to save a randomly generated navmesh. This can be done 
 
 - Create start and end positions for the A* algorithm
 
-The start and end positions need to be ```Vec2ui```. Inside the application, they can be converted to screen coordinates by multiplying to a number of your choice. (see the demo for pathfinding for more details, specifically calculations that use ```gridStride```)
+The start and end positions need to be ```Vec2ui```. Inside the application, they can be converted to screen coordinates by multiplying to a number of your choice. *See the demo for pathfinding for more details, specifically calculations that use ```gridStride```*.
 ``` 
 	VGAIL::Vec2ui startPosition = VGAIL::Vec2ui(1, 1);
 	VGAIL::Vec2ui endPosition = VGAIL::Vec2ui(15, 15);
 ```
 - Optional: start geometric preprocessing
  
- While A* ensures finding the shortest path, it sometimes can be quite slow. In video games, it is preferred that the path is retrieved as fast as possible, so if that means that the path returned is not the shortest one, it will most likely not have a big impact on the game. A path that is found fast but is not necessarily the shortest from all options, is called an optimal path. Geometric preprocessing ensures finding an optimal path, but not necessarily the shortest one.
+ While A* ensures finding the shortest path, it sometimes can be quite slow. In video games, it is preferred that the path is retrieved as fast as possible, so if that means that the path returned is not the shortest one, it will most likely not have a big impact on the game. A path that is found fast but is not necessarily the shortest from all options, is called an optimal path. Geometric preprocessing ensures finding an optimal path, so not necessarily the shortest one.
 
-This process can be called while setting up the application (so before the game loop) in order to perform all calculations before the application starts. It can be done in two ways: with single or multiple threads. The call for this process is as follows:
+This process can be called while setting up the application (before the game loop) in order to perform all calculations before the application starts. It can be done in two ways: with single or multiple threads. The call for this process is as follows:
 ```
 	void preprocess(bool multithreading = false, ui32 numThreads = 4)
 ```
 The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (default: 4).
 
-This process will work on the Regions defined when the navmesh is created ( see *ViennaGameAILibrary* : 514-537). The number of regions depends on the navmesh size, and by default they are set to each contain 9 * 9 nodes (9 on the *x* axis, 9 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
+This process will work on the Regions defined when the navmesh is created (see *ViennaGameAILibrary* : 514-537). The number of regions depends on the navmesh size, and by default they are set to each contain 9 * 9 nodes (9 on the *x* axis, 9 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
 
 The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
 
@@ -106,7 +107,7 @@ The following picture shows how the regions would look like on top of the demo f
 
 During this process, the ```AStar``` method is called to calculate the distance between each nodes and each region. Therefore, at the end of the process, the ```m_adjList``` from the ```NavMesh``` class will contain the best path from one node to a region at ```m_adjList[nodeIndex][regionID]```. 
 
-- Use A* algorithm to find the most optimal path
+- Find the most optimal path
 ```
 	// Without geometric preprocessing
 	std::vector<VGAIL::Vec2ui> path = navmesh->findPath(startPosition, endPosition);
@@ -162,17 +163,18 @@ Each decision node needs to implement its own ```makeDecision(float dt)``` metho
 - Create the root of the tree
 ```
 	// Example for the code shown above
-	VGAIL::DecisionNode& root = tree.createRoot<isEnemyClose>(args);
+	VGAIL::DecisionNode& root = tree.createRoot<isEnemyClose>(...args);
 ```
+```...args``` refers to any arguments that need to be passed to the custom class.
 - Add nodes and their children
 ```
-	VGAIL::DecisionNode& node1 = root.addChild<Class1>(args);
-	VGAIL::DecisionNode& node2 = root.addChild<Class2>(args);
+	VGAIL::DecisionNode& node1 = root.addChild<Class1>(...args);
+	VGAIL::DecisionNode& node2 = root.addChild<Class2>(...args);
 	...
-	VGAIL::DecisionNode& node1_child1 = node1.addChild<ClassX>(args);
+	VGAIL::DecisionNode& node1_child1 = node1.addChild<ClassX>(...args);
 	...
 ```
-The order in which the child nodes are instantiated is important, as it will matter when calling it from the parent node. In the example above, in the ```isEnemyClose``` class, ```getChild(0)``` will call the first child node that was created, in this case ```node1```.
+The order in which the child nodes are instantiated is important, as it will matter when calling it from the parent node. In the example above, in the ```isEnemyClose``` class, ```getChild(0)``` will call the first child node that was created, in this case ```node1_child1```.
 
 - In the game loop, update the decision tree
 ```
@@ -181,11 +183,11 @@ The order in which the child nodes are instantiated is important, as it will mat
 
 In the example from *demo_DecisionTree.cpp*, both characters have their own decision tree and each chosen decision is displayed every frame on the screen.
 
-<!-- ![Demo for decision tree](/assets/decisionTreeDemo.png) -->
+![Demo for decision tree](/assets/decisionTreeDemo.png)
 
 The logic behind the decision trees is displayed in the following picture.
 
-<!-- ![Decision trees for characters](/assets/decisionTree.jpg) -->
+![Decision trees for characters](/assets/decisionTree.jpg)
 
 ## 4. **State machines**
 
@@ -208,7 +210,7 @@ The ```onUpdateCallback()``` is called every frame, so the game logic for the st
 		// walk, play walking animation...
 	};
 ```
-- If needed, add action on the start and/or end of a state
+- If needed, add actions at the start and/or end of a state
 
 Each state has an ```onEnterCallback()``` and an ```onExitCallback()``` method. ```onEnterCallback()``` is called at the beginning of a state, and ```onExitCallback()``` is called at the end when the state is completed. 
 ```
@@ -224,11 +226,11 @@ Transitions are responsible with changing the current state by checking a certai
 		return health <= 2;
 	});
 ```
-In the example above, the transition is responsible with choosing the correct state based on the character's health. Once the health is less than or equal to 2, it will trigger the ```onEnterCallback()``` / ```onUpdateCallback()``` method.
+In the example above, the transition is responsible with choosing the correct state based on the character's health. Once the health is less than or equal to 2, it will trigger the ```onEnterCallback()``` / ```onUpdateCallback()``` method of the *sleeping* state.
 
 - In the game loop, update the state machine
 
-This method is responsible with managing the states and transitions between them.
+This method is responsible with managing the states and transitions between them every frame.
 ```
 	stateMachine.update(deltaTime);
 ```
