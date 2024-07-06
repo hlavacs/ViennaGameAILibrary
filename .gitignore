@@ -34,7 +34,7 @@
 # Build files
 build/
 
-# Doxygen files except index.html
+# Doxygen files except index.html and Doxyfile
 docs/
 !docs/html/index.html
 !docs/Doxyfile
