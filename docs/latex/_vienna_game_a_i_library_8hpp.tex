@@ -1,0 +1,225 @@
+\doxysection{D\+:/\+Uni\+Vie/\+Sem 5/\+Master/\+Vienna\+Game\+AILibrary/include/\+Vienna\+Game\+AILibrary.hpp File Reference}
+\hypertarget{_vienna_game_a_i_library_8hpp}{}\label{_vienna_game_a_i_library_8hpp}\index{D:/UniVie/Sem 5/Master/ViennaGameAILibrary/include/ViennaGameAILibrary.hpp@{D:/UniVie/Sem 5/Master/ViennaGameAILibrary/include/ViennaGameAILibrary.hpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$queue$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$mutex$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{VGAIL\+::\+Vec2ui}}
+\begin{DoxyCompactList}\small\item\em Custom 2D vector of unsigned integers. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f}}
+\begin{DoxyCompactList}\small\item\em Custom 2D vector of floats. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_region}{VGAIL\+::\+Region}}
+\begin{DoxyCompactList}\small\item\em Custom struct used in geometric preprocessing. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_region_list}{VGAIL\+::\+Region\+List}}
+\begin{DoxyCompactList}\small\item\em Custom struct to manage all regions created for geometric preprocessing. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data}{VGAIL\+::\+Node\+Data}}
+\begin{DoxyCompactList}\small\item\em Custom struct to hold node data. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_comparator}{VGAIL\+::\+Node\+Data\+Comparator}}
+\begin{DoxyCompactList}\small\item\em Custom struct that compares two \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} objects in a priority queue. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_nav_mesh}{VGAIL\+::\+Nav\+Mesh}}
+\begin{DoxyCompactList}\small\item\em Custom navigation mesh created especially for path finding. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_transition}{VGAIL\+::\+Transition}}
+\begin{DoxyCompactList}\small\item\em Custom class that manages the behavior of transitions between states. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_state}{VGAIL\+::\+State}}
+\begin{DoxyCompactList}\small\item\em Custom class that manages the behavior of states. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_state_machine}{VGAIL\+::\+State\+Machine}}
+\begin{DoxyCompactList}\small\item\em Custom class that manages the behavior of a state machine. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{VGAIL\+::\+Decision\+Node}}
+\begin{DoxyCompactList}\small\item\em Custom class that manages the nodes of a decision tree. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree}{VGAIL\+::\+Decision\+Tree}}
+\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{VGAIL\+::\+Boid}}
+\item 
+class \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking}{VGAIL\+::\+Flocking}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_vienna_game_a_i_library_8hpp_acfd12caf142a9dc75ec6955093d3a8d8}\label{_vienna_game_a_i_library_8hpp_acfd12caf142a9dc75ec6955093d3a8d8} 
+\#define {\bfseries VGAIL\+\_\+\+ASSERT}(x,  msg)~\{ if(!(x)) \{ std\+::cout $<$$<$ "{}Assertion Failed\+: "{} $<$$<$ msg $<$$<$ std\+::endl; \+\_\+\+\_\+debugbreak(); \} \}
+\begin{DoxyCompactList}\small\item\em Custom assertion macro. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{_vienna_game_a_i_library_8hpp_a6e96e90833108156a6d95d601201800c}\label{_vienna_game_a_i_library_8hpp_a6e96e90833108156a6d95d601201800c} 
+typedef uint32\+\_\+t {\bfseries VGAIL\+::ui32}
+\item 
+\Hypertarget{_vienna_game_a_i_library_8hpp_af8333bfe21d24bff898a50d442e53d50}\label{_vienna_game_a_i_library_8hpp_af8333bfe21d24bff898a50d442e53d50} 
+typedef uint64\+\_\+t {\bfseries VGAIL\+::ui64}
+\item 
+\Hypertarget{_vienna_game_a_i_library_8hpp_a1c3d200843d3fca7f6032325b82c90f3}\label{_vienna_game_a_i_library_8hpp_a1c3d200843d3fca7f6032325b82c90f3} 
+typedef int32\+\_\+t {\bfseries VGAIL\+::i32}
+\item 
+\Hypertarget{_vienna_game_a_i_library_8hpp_a09167f23430d1f5c1becfe0769048588}\label{_vienna_game_a_i_library_8hpp_a09167f23430d1f5c1becfe0769048588} 
+typedef float {\bfseries VGAIL\+::f32}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{VGAIL\+::\+Node\+State}} \{ {\bfseries OBSTRUCTABLE}
+, {\bfseries WALKABLE}
+ \}
+\begin{DoxyCompactList}\small\item\em States of the navmesh nodes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_acbd1cb2223679a73e4f45e20431fb9df}{VGAIL\+::operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}} \&vec)
+\begin{DoxyCompactList}\small\item\em Prints out a \doxylink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui} object. \end{DoxyCompactList}\item 
+std\+::ostream \& \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a5c133ee5072fb8cdc21ad83e1ecaecad}{VGAIL\+::operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&vec)
+\begin{DoxyCompactList}\small\item\em Prints out a \doxylink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f} object. \end{DoxyCompactList}\item 
+f32 \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a8f80e4ca017e0810b8a88774bd8ac9f8}{VGAIL\+::random\+Float}} (f32 min, f32 max)
+\begin{DoxyCompactList}\small\item\em Generates a random float value between a range. \end{DoxyCompactList}\item 
+i32 \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a94291ebe4321f7421edd2dcc4665f9f5}{VGAIL\+::random\+Int}} (i32 min, i32 max)
+\begin{DoxyCompactList}\small\item\em Generates a random signed integer value between a range. \end{DoxyCompactList}\item 
+f32 \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{VGAIL\+::distance}} (const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&v1, const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&v2)
+\begin{DoxyCompactList}\small\item\em Calculates the Euclidean distance between two \doxylink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f} objects. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr float \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}{VGAIL\+::\+PI}} = 3.\+14159265358979f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The Vienna Game AI Library
+
+(c) bei Lavinia-\/\+Elena Lehaci, University of Vienna, 2024 
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}\label{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!NodeState@{NodeState}}
+\index{NodeState@{NodeState}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{NodeState}{NodeState}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{VGAIL\+::\+Node\+State}}}
+
+
+
+States of the navmesh nodes. 
+
+Characters can pass through walkable nodes only, and obstructable nodes could be obstacles, walls etc. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}\label{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!distance@{distance}}
+\index{distance@{distance}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{distance()}{distance()}}
+{\footnotesize\ttfamily f32 VGAIL\+::distance (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&}]{v1,  }\item[{const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&}]{v2 }\end{DoxyParamCaption})}
+
+
+
+Calculates the Euclidean distance between two Vec2f objects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v1} & First Vec2f object. \\
+\hline
+{\em v2} & Second Vec2f object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+f32 Distance between the two vectors. 
+\end{DoxyReturn}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a5c133ee5072fb8cdc21ad83e1ecaecad}\label{_vienna_game_a_i_library_8hpp_a5c133ee5072fb8cdc21ad83e1ecaecad} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily std\+::ostream \& VGAIL\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} \&}]{vec }\end{DoxyParamCaption})}
+
+
+
+Prints out a Vec2f object. 
+
+Usage\+: {\ttfamily std\+::cout \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} vec \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} std\+::endl;}
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & \\
+\hline
+{\em vec} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::ostream\& 
+\end{DoxyReturn}
+\Hypertarget{_vienna_game_a_i_library_8hpp_acbd1cb2223679a73e4f45e20431fb9df}\label{_vienna_game_a_i_library_8hpp_acbd1cb2223679a73e4f45e20431fb9df} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily std\+::ostream \& VGAIL\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}} \&}]{vec }\end{DoxyParamCaption})}
+
+
+
+Prints out a Vec2ui object. 
+
+Usage\+: {\ttfamily std\+::cout \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} vec \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} std\+::endl;}
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & \\
+\hline
+{\em vec} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::ostream\& 
+\end{DoxyReturn}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a8f80e4ca017e0810b8a88774bd8ac9f8}\label{_vienna_game_a_i_library_8hpp_a8f80e4ca017e0810b8a88774bd8ac9f8} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!randomFloat@{randomFloat}}
+\index{randomFloat@{randomFloat}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{randomFloat()}{randomFloat()}}
+{\footnotesize\ttfamily f32 VGAIL\+::random\+Float (\begin{DoxyParamCaption}\item[{f32}]{min,  }\item[{f32}]{max }\end{DoxyParamCaption})}
+
+
+
+Generates a random float value between a range. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min} & Minimum value of the range. \\
+\hline
+{\em max} & Maximum value of the range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+f32 Randomly generated value. 
+\end{DoxyReturn}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a94291ebe4321f7421edd2dcc4665f9f5}\label{_vienna_game_a_i_library_8hpp_a94291ebe4321f7421edd2dcc4665f9f5} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!randomInt@{randomInt}}
+\index{randomInt@{randomInt}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{randomInt()}{randomInt()}}
+{\footnotesize\ttfamily i32 VGAIL\+::random\+Int (\begin{DoxyParamCaption}\item[{i32}]{min,  }\item[{i32}]{max }\end{DoxyParamCaption})}
+
+
+
+Generates a random signed integer value between a range. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min} & Minimum value of the range. \\
+\hline
+{\em max} & Maximum value of the range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+i32 Randomly generated value. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}\label{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18} 
+\index{ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}!PI@{PI}}
+\index{PI@{PI}!ViennaGameAILibrary.hpp@{ViennaGameAILibrary.hpp}}
+\doxysubsubsection{\texorpdfstring{PI}{PI}}
+{\footnotesize\ttfamily constexpr float VGAIL\+::\+PI = 3.\+14159265358979f\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+The value of π computed at compile time 

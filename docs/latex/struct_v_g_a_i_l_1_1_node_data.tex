@@ -1,0 +1,127 @@
+\doxysection{VGAIL\+::Node\+Data Struct Reference}
+\hypertarget{struct_v_g_a_i_l_1_1_node_data}{}\label{struct_v_g_a_i_l_1_1_node_data}\index{VGAIL::NodeData@{VGAIL::NodeData}}
+
+
+Custom struct to hold node data.  
+
+
+
+
+{\ttfamily \#include $<$Vienna\+Game\+AILibrary.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a4bdf9b7cc7a0a55909bcdb9408f39b64}{Node\+Data}} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}} \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a441cbfc8420c947de2440bfe887c0c30}{pos}}, \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{Node\+State}} node\+State=Node\+State\+::\+WALKABLE)
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object. \end{DoxyCompactList}\item 
+f32 \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a54926019f99d56051379a4d0452994b3}{f}} () const
+\begin{DoxyCompactList}\small\item\em Calculates the total cost estimate of the most efficient path from the start node to the end node. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_ae25b44ac98daf1073d68e3ca25f165ab}{operator==}} (const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data}} \&other)
+\begin{DoxyCompactList}\small\item\em Compares this \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object to another \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}} \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a441cbfc8420c947de2440bfe887c0c30}{pos}}
+\item 
+\Hypertarget{struct_v_g_a_i_l_1_1_node_data_a33a0fd7c9ce29a205113ce664229f092}\label{struct_v_g_a_i_l_1_1_node_data_a33a0fd7c9ce29a205113ce664229f092} 
+f32 {\bfseries g}
+\item 
+f32 \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a6d93e7b74d0a208aaa98ec300f45732c}{h}}
+\item 
+ui32 \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_ac54fb54f4b2c473ae2d51fa945142ba9}{region\+ID}}
+\item 
+\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{Node\+State}} \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data_a76feca85576494f844fec45b6e95c722}{state}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Custom struct to hold node data. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_v_g_a_i_l_1_1_node_data_a4bdf9b7cc7a0a55909bcdb9408f39b64}\label{struct_v_g_a_i_l_1_1_node_data_a4bdf9b7cc7a0a55909bcdb9408f39b64} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!NodeData@{NodeData}}
+\index{NodeData@{NodeData}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{NodeData()}{NodeData()}}
+{\footnotesize\ttfamily VGAIL\+::\+Node\+Data\+::\+Node\+Data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}}}]{pos,  }\item[{\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{Node\+State}}}]{node\+State = {\ttfamily NodeState\+:\+:WALKABLE} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs a new \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & 2D position of the node. \\
+\hline
+{\em node\+State} & \doxylink{class_v_g_a_i_l_1_1_state}{State} of the node; by default is {\ttfamily walkable}. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_v_g_a_i_l_1_1_node_data_a54926019f99d56051379a4d0452994b3}\label{struct_v_g_a_i_l_1_1_node_data_a54926019f99d56051379a4d0452994b3} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!f@{f}}
+\index{f@{f}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{f()}{f()}}
+{\footnotesize\ttfamily f32 VGAIL\+::\+Node\+Data\+::f (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Calculates the total cost estimate of the most efficient path from the start node to the end node. 
+
+\begin{DoxyReturn}{Returns}
+f32 Total cost estimate. 
+\end{DoxyReturn}
+\Hypertarget{struct_v_g_a_i_l_1_1_node_data_ae25b44ac98daf1073d68e3ca25f165ab}\label{struct_v_g_a_i_l_1_1_node_data_ae25b44ac98daf1073d68e3ca25f165ab} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!operator==@{operator==}}
+\index{operator==@{operator==}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{operator==()}{operator==()}}
+{\footnotesize\ttfamily bool VGAIL\+::\+Node\+Data\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data}} \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Compares this \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object to another \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} object. 
+
+Compares the {\ttfamily region\+ID}, {\ttfamily state} and {\ttfamily g} and {\ttfamily h} values of two \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} objects for equality.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} to compare against. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the \doxylink{struct_v_g_a_i_l_1_1_node_data}{Node\+Data} objects are equal, {\ttfamily false} otherwise. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_v_g_a_i_l_1_1_node_data_a6d93e7b74d0a208aaa98ec300f45732c}\label{struct_v_g_a_i_l_1_1_node_data_a6d93e7b74d0a208aaa98ec300f45732c} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!h@{h}}
+\index{h@{h}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{h}{h}}
+{\footnotesize\ttfamily f32 VGAIL\+::\+Node\+Data\+::h}
+
+\begin{quote}
+The cost of the path from the start node to the current node. \end{quote}
+The heuristic function. \Hypertarget{struct_v_g_a_i_l_1_1_node_data_a441cbfc8420c947de2440bfe887c0c30}\label{struct_v_g_a_i_l_1_1_node_data_a441cbfc8420c947de2440bfe887c0c30} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!pos@{pos}}
+\index{pos@{pos}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{pos}{pos}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2ui}{Vec2ui}} VGAIL\+::\+Node\+Data\+::pos}
+
+2D position of the node. \Hypertarget{struct_v_g_a_i_l_1_1_node_data_ac54fb54f4b2c473ae2d51fa945142ba9}\label{struct_v_g_a_i_l_1_1_node_data_ac54fb54f4b2c473ae2d51fa945142ba9} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!regionID@{regionID}}
+\index{regionID@{regionID}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{regionID}{regionID}}
+{\footnotesize\ttfamily ui32 VGAIL\+::\+Node\+Data\+::region\+ID}
+
+The id of the region this node is part of. \Hypertarget{struct_v_g_a_i_l_1_1_node_data_a76feca85576494f844fec45b6e95c722}\label{struct_v_g_a_i_l_1_1_node_data_a76feca85576494f844fec45b6e95c722} 
+\index{VGAIL::NodeData@{VGAIL::NodeData}!state@{state}}
+\index{state@{state}!VGAIL::NodeData@{VGAIL::NodeData}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a4d85c666adcfd4ba0cfb7152f24f9c7e}{Node\+State}} VGAIL\+::\+Node\+Data\+::state}
+
+\doxylink{class_v_g_a_i_l_1_1_state}{State} of this node. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Uni\+Vie/\+Sem 5/\+Master/\+Vienna\+Game\+AILibrary/include/\mbox{\hyperlink{_vienna_game_a_i_library_8hpp}{Vienna\+Game\+AILibrary.\+hpp}}\end{DoxyCompactItemize}

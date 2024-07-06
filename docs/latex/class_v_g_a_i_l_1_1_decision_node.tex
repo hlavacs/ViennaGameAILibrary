@@ -1,0 +1,113 @@
+\doxysection{VGAIL\+::Decision\+Node Class Reference}
+\hypertarget{class_v_g_a_i_l_1_1_decision_node}{}\label{class_v_g_a_i_l_1_1_decision_node}\index{VGAIL::DecisionNode@{VGAIL::DecisionNode}}
+
+
+Custom class that manages the nodes of a decision tree.  
+
+
+
+
+{\ttfamily \#include $<$Vienna\+Game\+AILibrary.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_decision_node_ac3a149f6d30f9a04e590d48e341f4769}\label{class_v_g_a_i_l_1_1_decision_node_ac3a149f6d30f9a04e590d48e341f4769} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Decision\+Node} ()
+\begin{DoxyCompactList}\small\item\em Destroys the \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object and its child nodes. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_adedff53500e8b98fc3e75c1016517ba6}{make\+Decision}} (float delta\+Time)=0
+\begin{DoxyCompactList}\small\item\em The implementation of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_a83c342425f497b4124e212702414f4f8}{get\+Child}} (VGAIL\+::ui32 index)
+\begin{DoxyCompactList}\small\item\em Get the child node of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object at a given index. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T , typename... Args$>$ }\\\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_a7e4308de9ab827e235e2d5eebe43b5d0}{add\+Child}} (Args \&\&...args)
+\begin{DoxyCompactList}\small\item\em Creates a new \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object and adds it to the list of child nodes of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. \end{DoxyCompactList}\item 
+ui32 \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_a5704d1af88844a5ee961c48c22814f13}{get\+Children\+Size}} ()
+\begin{DoxyCompactList}\small\item\em Get the number of child nodes of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Custom class that manages the nodes of a decision tree. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_v_g_a_i_l_1_1_decision_node_a7e4308de9ab827e235e2d5eebe43b5d0}\label{class_v_g_a_i_l_1_1_decision_node_a7e4308de9ab827e235e2d5eebe43b5d0} 
+\index{VGAIL::DecisionNode@{VGAIL::DecisionNode}!addChild@{addChild}}
+\index{addChild@{addChild}!VGAIL::DecisionNode@{VGAIL::DecisionNode}}
+\doxysubsubsection{\texorpdfstring{addChild()}{addChild()}}
+{\footnotesize\ttfamily template$<$class T , typename... Args$>$ \\
+\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& VGAIL\+::\+Decision\+Node\+::add\+Child (\begin{DoxyParamCaption}\item[{Args \&\&...}]{args }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates a new \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object and adds it to the list of child nodes of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. 
+
+This is a templated method, meaning any custom class can be added as a child node as long as it inherits from \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}. ~\newline
+ Any number of variables can be passed, but if there is a mismatch of variables with the T constructor then there will be a compile time error.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Generic class. \\
+\hline
+{\em Args} & Variadic variables. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Variadic variables. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}\& The newly created \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. 
+\end{DoxyReturn}
+\Hypertarget{class_v_g_a_i_l_1_1_decision_node_a83c342425f497b4124e212702414f4f8}\label{class_v_g_a_i_l_1_1_decision_node_a83c342425f497b4124e212702414f4f8} 
+\index{VGAIL::DecisionNode@{VGAIL::DecisionNode}!getChild@{getChild}}
+\index{getChild@{getChild}!VGAIL::DecisionNode@{VGAIL::DecisionNode}}
+\doxysubsubsection{\texorpdfstring{getChild()}{getChild()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& VGAIL\+::\+Decision\+Node\+::get\+Child (\begin{DoxyParamCaption}\item[{VGAIL\+::ui32}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the child node of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object at a given index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the child node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}\& The child node of the \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. 
+\end{DoxyReturn}
+\Hypertarget{class_v_g_a_i_l_1_1_decision_node_a5704d1af88844a5ee961c48c22814f13}\label{class_v_g_a_i_l_1_1_decision_node_a5704d1af88844a5ee961c48c22814f13} 
+\index{VGAIL::DecisionNode@{VGAIL::DecisionNode}!getChildrenSize@{getChildrenSize}}
+\index{getChildrenSize@{getChildrenSize}!VGAIL::DecisionNode@{VGAIL::DecisionNode}}
+\doxysubsubsection{\texorpdfstring{getChildrenSize()}{getChildrenSize()}}
+{\footnotesize\ttfamily ui32 VGAIL\+::\+Decision\+Node\+::get\+Children\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the number of child nodes of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. 
+
+\begin{DoxyReturn}{Returns}
+ui32 The number of child nodes. 
+\end{DoxyReturn}
+\Hypertarget{class_v_g_a_i_l_1_1_decision_node_adedff53500e8b98fc3e75c1016517ba6}\label{class_v_g_a_i_l_1_1_decision_node_adedff53500e8b98fc3e75c1016517ba6} 
+\index{VGAIL::DecisionNode@{VGAIL::DecisionNode}!makeDecision@{makeDecision}}
+\index{makeDecision@{makeDecision}!VGAIL::DecisionNode@{VGAIL::DecisionNode}}
+\doxysubsubsection{\texorpdfstring{makeDecision()}{makeDecision()}}
+{\footnotesize\ttfamily virtual void VGAIL\+::\+Decision\+Node\+::make\+Decision (\begin{DoxyParamCaption}\item[{float}]{delta\+Time }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+The implementation of this \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node} object. 
+
+This method either carries out a list of given actions or it delegates work to its child nodes based on some criteria.
+
+
+\begin{DoxyParams}{Parameters}
+{\em delta\+Time} & Elapsed time between last frame and current frame. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Uni\+Vie/\+Sem 5/\+Master/\+Vienna\+Game\+AILibrary/include/\mbox{\hyperlink{_vienna_game_a_i_library_8hpp}{Vienna\+Game\+AILibrary.\+hpp}}\end{DoxyCompactItemize}

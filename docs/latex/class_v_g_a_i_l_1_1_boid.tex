@@ -1,0 +1,73 @@
+\doxysection{VGAIL\+::Boid Class Reference}
+\hypertarget{class_v_g_a_i_l_1_1_boid}{}\label{class_v_g_a_i_l_1_1_boid}\index{VGAIL::Boid@{VGAIL::Boid}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a3273c9b41d7908e1c935882e78574302}\label{class_v_g_a_i_l_1_1_boid_a3273c9b41d7908e1c935882e78574302} 
+{\bfseries Boid} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} position, \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} velocity, f32 max\+Speed, ui32 id=0)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_aa2c8ca5fde5bb6a70fd2e68b2a92b76f}\label{class_v_g_a_i_l_1_1_boid_aa2c8ca5fde5bb6a70fd2e68b2a92b76f} 
+void {\bfseries set\+Position} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} position)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}\label{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries get\+Position} () const
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_af013614d0c102da491eafe99df45d6ad}\label{class_v_g_a_i_l_1_1_boid_af013614d0c102da491eafe99df45d6ad} 
+void {\bfseries set\+Velocity} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} velocity)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a68236421861626b056b5971af3b4d109}\label{class_v_g_a_i_l_1_1_boid_a68236421861626b056b5971af3b4d109} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries get\+Velocity} () const
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_acfc74563edb9c61361ea843724dfe987}\label{class_v_g_a_i_l_1_1_boid_acfc74563edb9c61361ea843724dfe987} 
+ui32 {\bfseries get\+ID} () const
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_ac08ce90ea7ee3caa8f85b43b0f7193f9}\label{class_v_g_a_i_l_1_1_boid_ac08ce90ea7ee3caa8f85b43b0f7193f9} 
+f32 {\bfseries get\+Rotation\+In\+Degrees} ()
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a5b9aa66f3e2ad227a6ee9d15ea777144}\label{class_v_g_a_i_l_1_1_boid_a5b9aa66f3e2ad227a6ee9d15ea777144} 
+void {\bfseries set\+Min\+Speed} (f32 min\+Speed)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a0633daa7d9c42d4e47c147444806bfed}\label{class_v_g_a_i_l_1_1_boid_a0633daa7d9c42d4e47c147444806bfed} 
+void {\bfseries set\+Max\+Speed} (f32 max\+Speed)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_af8f7e83997609e555eaf07c1b59abe43}\label{class_v_g_a_i_l_1_1_boid_af8f7e83997609e555eaf07c1b59abe43} 
+void {\bfseries flocking} (f32 dt, f32 separation\+Range, f32 perception\+Range, f32 avoid\+Factor, f32 matching\+Factor, f32 centering\+Factor, const std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ \&flock)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_ac7410bfe2766557f2d662b448ab9aa58}\label{class_v_g_a_i_l_1_1_boid_ac7410bfe2766557f2d662b448ab9aa58} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries separation} (f32 separation\+Range, f32 avoid\+Factor, const std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ \&flock)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_aa647479585ea32d7982c04d55d1a3720}\label{class_v_g_a_i_l_1_1_boid_aa647479585ea32d7982c04d55d1a3720} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries align} (f32 perception\+Range, f32 matching\+Factor, const std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ \&flock)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_aab7d357b26360c1e1bd59abaa211080e}\label{class_v_g_a_i_l_1_1_boid_aab7d357b26360c1e1bd59abaa211080e} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries cohesion} (f32 perception\+Range, f32 centering\+Factor, const std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ \&flock)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_ab0c1b665d06bb4a6e10abf991883083d}\label{class_v_g_a_i_l_1_1_boid_ab0c1b665d06bb4a6e10abf991883083d} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries seek} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} target\+Position, f32 max\+Acceleration)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a4063d6134b089b6ea48c8c3c8e4ccfa8}\label{class_v_g_a_i_l_1_1_boid_a4063d6134b089b6ea48c8c3c8e4ccfa8} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries flee} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} target\+Position, f32 max\+Acceleration)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a2353bc43dec55f74aeaf1608f7dfd919}\label{class_v_g_a_i_l_1_1_boid_a2353bc43dec55f74aeaf1608f7dfd919} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries pursue} (const \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*}target, f32 max\+Acceleration, f32 max\+Prediction)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a0a44dd412d416540bbd463b9db0c4d3a}\label{class_v_g_a_i_l_1_1_boid_a0a44dd412d416540bbd463b9db0c4d3a} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries evade} (const \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*}target, f32 max\+Acceleration, f32 max\+Prediction)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_ac0e58b64cd4aca445a95f5faa34e2920}\label{class_v_g_a_i_l_1_1_boid_ac0e58b64cd4aca445a95f5faa34e2920} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries arrive} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} target\+Position, f32 slow\+Radius, f32 max\+Acceleration)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_ab9a88b9a55b2f85eb7ddc508a09adb7d}\label{class_v_g_a_i_l_1_1_boid_ab9a88b9a55b2f85eb7ddc508a09adb7d} 
+\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} {\bfseries wander} (f32 circle\+Distance, f32 circle\+Radius, f32 displace\+Range, f32 max\+Acceleration)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a69945d89a17b5776a17ae5cf77a51db6}\label{class_v_g_a_i_l_1_1_boid_a69945d89a17b5776a17ae5cf77a51db6} 
+void {\bfseries apply\+Steering\+Force} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} steering\+Force)
+\item 
+\Hypertarget{class_v_g_a_i_l_1_1_boid_a0633bdec0bd941b62159ed6c1cc6eeaf}\label{class_v_g_a_i_l_1_1_boid_a0633bdec0bd941b62159ed6c1cc6eeaf} 
+void {\bfseries update\+Position} (f32 dt)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Uni\+Vie/\+Sem 5/\+Master/\+Vienna\+Game\+AILibrary/include/\mbox{\hyperlink{_vienna_game_a_i_library_8hpp}{Vienna\+Game\+AILibrary.\+hpp}}\end{DoxyCompactItemize}

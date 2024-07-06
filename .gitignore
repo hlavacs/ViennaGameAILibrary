@@ -31,10 +31,13 @@
 *.out
 *.app
 
-# Build and Doxygen files
+# Build files
 build/
+
+# Doxygen files except index.html
 Demo/docs/html/
 Demo/docs/latex/
+!Demo/docs/html/index.html
 
 # VS code
 .vscode

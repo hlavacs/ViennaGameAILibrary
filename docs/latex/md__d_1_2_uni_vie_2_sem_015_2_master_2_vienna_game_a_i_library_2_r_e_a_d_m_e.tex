@@ -1,0 +1,534 @@
+\chapter{Vienna\+Game\+AILibrary}
+\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e}{}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e}\index{ViennaGameAILibrary@{ViennaGameAILibrary}}
+\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md0}%
+ Vienna Game AI Library is a single-\/header, comprehensive C++ library that encompasses popular AI algorithms to be used in creating 2D Real-\/\+Time Strategy games with a focus on Non-\/\+Player Character management.
+
+The library was created due to the lack of toolkits written in the C++ programming language that contains all algorithms required to develop RTS games. It started as a Master thesis by Lavinia-\/\+Elena Lehaci under the supervision of Univ.-\/Prof. Dipl.-\/Ing. Dr. Helmut Hlavacs. This project is intended to be worked on during future theses and it will be expanded by other algorithms.
+
+From path finding, to state machines, decision trees and steering algorithms, Vienna Game AI Library should encompass everything a game developer might need in creating a 2D RTS game. In order to show its efficiency and applicability, each implemented feature is showcased in a respective demo created with the help of the \href{https://github.com/raysan5/raylib}{\texttt{ raylib}} library.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{Project structure}{Project structure}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md1}
+
+\begin{DoxyItemize}
+\item {\itshape assets} -\/ Resource folder containing media files used for {\ttfamily README.\+md}
+\item {\itshape Demo}
+\begin{DoxyItemize}
+\item \href{https://github.com/raysan5/raylib}{\texttt{ raylib}}
+\item {\itshape src} -\/ Source folder containing the code for the demos
+\item {\itshape res} -\/ Resource folder containing assets used in demos
+\item {\itshape docs} -\/ Code documentation
+\item {\ttfamily CMake\+Lists.\+txt}
+\end{DoxyItemize}
+\item {\itshape include} -\/ {\ttfamily \doxylink{_vienna_game_a_i_library_8hpp}{Vienna\+Game\+AILibrary.\+hpp}}
+\item {\ttfamily build\+\_\+demo\+\_\+win.\+bat} -\/ Script to build the project on Windows
+\item {\ttfamily run\+\_\+demo\+\_\+win.\+bat} -\/ Script to run the project on Windows
+\item {\ttfamily CMake\+Lists.\+txt}
+\item {\ttfamily README.\+md}
+\end{DoxyItemize}\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md2}{}\doxysection{\texorpdfstring{Setup -\/ Windows}{Setup -\/ Windows}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md2}
+\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md3}{}\doxysubsection{\texorpdfstring{Prerequisites}{Prerequisites}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md3}
+
+\begin{DoxyItemize}
+\item \href{https://www.doxygen.nl/index.html}{\texttt{ Doxygen}}
+\item \href{https://ninja-build.org/}{\texttt{ Ninja}}
+\item \href{https://www.msys2.org/}{\texttt{ Msys2}} -\/ CMake and Clang need to be installed through msys2.
+\begin{DoxyItemize}
+\item CMake (minimum version required\+: 3.\+28.\+1)
+\item Clang
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md4}{}\doxysubsection{\texorpdfstring{Build and run the project}{Build and run the project}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md4}
+
+\begin{DoxyEnumerate}
+\item Clone the project.
+\item Run {\ttfamily git submodule init} and {\ttfamily git submodule update} to fetch raylib.
+\item Update the location of {\ttfamily clang++.exe} in the {\ttfamily build\+\_\+demo\+\_\+win.\+bat} file based on the location of the msys2 folder.
+\item Add {\itshape msys64/ucrt64/bin} and {\itshape doxygen/bin} to the path environment variable.
+\item Run {\ttfamily build\+\_\+demo\+\_\+win.\+bat} to build the project. The output will be stored in the build folder.
+\end{DoxyEnumerate}
+
+Make sure Clang and Ninja are used by this project. Once the build process starts, the first two lines should be the following\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{-\/-\/\ Building\ for:\ Ninja}
+\DoxyCodeLine{-\/-\/\ The\ CXX\ compiler\ identification\ is\ Clang\ 17.0.6\ //\ or\ any\ other\ version}
+
+\end{DoxyCode}
+
+\begin{DoxyEnumerate}
+\item Run {\ttfamily run\+\_\+demo\+\_\+win.\+bat} to start the project.
+\end{DoxyEnumerate}\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md5}{}\doxysubsection{\texorpdfstring{To run different demos}{To run different demos}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md5}
+In {\itshape Demo/{\ttfamily CMake\+Lists.\+txt}}, change the path of the .cpp file that you want to run. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{add\_executable(Demo\ src/demo\_PathFinding.cpp\ \$\{PROJECT\_SOURCE\_DIR\}/include/ViennaGameAILibrary.hpp)}
+
+\end{DoxyCode}
+\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md6}{}\doxysection{\texorpdfstring{Code documentation}{Code documentation}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md6}
+Documentation is generated using Doxygen. To see it, open {\ttfamily index.\+html} which can be found in the {\itshape Demo/docs/html} folder.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md7}{}\doxysection{\texorpdfstring{How to use each feature the library provides}{How to use each feature the library provides}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md7}
+\begin{quote}
+{\bfseries{Note}} \+: When implementing any features, keep in mind that you will need to transform the library coordinates into screen coordinates. The demos contain examples of how to do this. \end{quote}
+\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md8}{}\doxysubsection{\texorpdfstring{1. {\bfseries{Data structures and data types}}}{1. {\bfseries{Data structures and data types}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md8}
+{\itshape Vienna Game AI Library} uses two custom made vectors\+: {\ttfamily Vec2ui} and {\ttfamily Vec2f}. Both represent 2D vectors, with {\ttfamily Vec2ui} made of unsigned integers, and {\ttfamily Vec2f} of floats. The navigation mesh uses {\ttfamily Vec2ui}, while Boids use {\ttfamily Vec2f} due to required mathematical operations. Other data structures used in the library are {\ttfamily std\+::vector} and {\ttfamily std\+::unordered\+\_\+map}.
+
+The data types used in the library are\+: {\ttfamily uint32\+\_\+t}, {\ttfamily uint64\+\_\+t}, {\ttfamily int32\+\_\+t} and {\ttfamily float}. Each has a typedef declaration to make the code more readable ({\ttfamily uint32\+\_\+t} -\/\texorpdfstring{$>$}{>} {\ttfamily ui32}, {\ttfamily uint64\+\_\+t} -\/\texorpdfstring{$>$}{>} {\ttfamily ui64}, {\ttfamily int32\+\_\+t} -\/\texorpdfstring{$>$}{>} {\ttfamily i32}, {\ttfamily float} -\/\texorpdfstring{$>$}{>} {\ttfamily f32}).
+
+There are custom structs also defined in the library. The {\ttfamily Nav\+Mesh} class is represented by a {\ttfamily std\+::vector} of {\ttfamily Node\+Data} objects. If geometric preprocessing is used for path finding, the {\ttfamily Region} struct is also used to store the nodes inside each region, and {\ttfamily Region\+List} to manage all regions.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md9}{}\doxysubsection{\texorpdfstring{2. {\bfseries{Path finding}}}{2. {\bfseries{Path finding}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md9}
+\begin{quote}
+Demo example\+: {\itshape Demo/src/demo\+\_\+\+Pathfinding.\+cpp} \end{quote}
+
+\begin{DoxyItemize}
+\item Create a navigation mesh
+\end{DoxyItemize}
+
+To generate it randomly, pass the desired width and height, as well as a percentage which will limit the amount of obstacles spawned within the navigation mesh. To load it from a file, simply call the constructor with the file path as the argument. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//\ Generate\ it\ randomly}
+\DoxyCodeLine{VGAIL::NavMesh*\ navmesh\ =\ new\ VGAIL::NavMesh(navmeshWidth,\ navmeshHeight,\ 30.0f);}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Or\ load\ it\ from\ a\ file}
+\DoxyCodeLine{VGAIL::NavMesh*\ navmesh\ =\ new\ VGAIL::NavMesh("{}Demo/res/navmesh.txt"{});}
+
+\end{DoxyCode}
+ The navmesh file can be created either manually or by the game itself. The file has the following structure\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{navmeshWidth}
+\DoxyCodeLine{navmeshHeight}
+\DoxyCodeLine{owwwwoowwowww...}
+
+\end{DoxyCode}
+ Both {\ttfamily navmesh\+Width} and {\ttfamily navmesh\+Height} need to be positive integers. The third line describes the pattern of the navigation mesh, where {\ttfamily w} is a walkable area and {\ttfamily o} is an obstacle. Make sure that the number of characters are equal to {\ttfamily navmesh\+Width} \texorpdfstring{$\ast$}{*} {\ttfamily navmesh\+Height}.
+
+There is also the option to save a randomly generated navmesh. This can be done by calling {\ttfamily save\+To\+File(const std\+::string\& filepath)} ({\itshape Vienna\+Game\+AILibrary} \+: 453-\/466) and by passing a filepath. If the file doesn\textquotesingle{}t exist, it will be created automatically.
+
+
+\begin{DoxyItemize}
+\item Create start and end positions for the A\texorpdfstring{$\ast$}{*} algorithm
+\end{DoxyItemize}
+
+The start and end positions need to be {\ttfamily Vec2ui}. Inside the application, they can be converted to screen coordinates by multiplying to a number of your choice. {\itshape See the demo for pathfinding for more details, specifically calculations that use {\ttfamily grid\+Stride}}. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::Vec2ui\ startPosition\ =\ VGAIL::Vec2ui(1,\ 1);}
+\DoxyCodeLine{VGAIL::Vec2ui\ endPosition\ =\ VGAIL::Vec2ui(15,\ 15);}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Optional\+: start geometric preprocessing
+\end{DoxyItemize}
+
+While A\texorpdfstring{$\ast$}{*} ensures finding the shortest path, it sometimes can be quite slow. In video games, it is preferred that the path is retrieved as fast as possible, so if that means that the path returned is not the shortest one, it will most likely not have a big impact on the game. A path that is found fast but is not necessarily the shortest from all options, is called an optimal path. Geometric preprocessing ensures finding an optimal path, so not necessarily the shortest one.
+
+This process can be called while setting up the application (before the game loop) in order to perform all calculations before the application starts. It can be done in two ways\+: with single or multiple threads. The call for this process is as follows\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{void\ preprocess(bool\ multithreading\ =\ false,\ ui32\ numThreads\ =\ 4)}
+
+\end{DoxyCode}
+ The boolean specifies whether to use multithreading (default\+: false), and {\ttfamily num\+Threads} is the number of threads needed to run in parallel (default\+: 4).
+
+This process will work on the Regions defined when the navmesh is created (see {\itshape Vienna\+Game\+AILibrary} \+: 514-\/537). The number of regions depends on the navmesh size, and by default they are set to each contain 9 \texorpdfstring{$\ast$}{*} 9 nodes (9 on the {\itshape x} axis, 9 on the {\itshape y} axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives {\ttfamily total\+Number\+Of\+Regions / num\+Threads} regions.
+
+The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
+
+  
+
+During this process, the {\ttfamily AStar} method is called to calculate the distance between each nodes and each region. Therefore, at the end of the process, the {\ttfamily m\+\_\+adj\+List} from the {\ttfamily Nav\+Mesh} class will contain the best path from one node to a region at {\ttfamily m\+\_\+adj\+List\mbox{[}node\+Index\mbox{]}\mbox{[}region\+ID\mbox{]}}.
+
+
+\begin{DoxyItemize}
+\item Find the most optimal path
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//\ Without\ geometric\ preprocessing}
+\DoxyCodeLine{std::vector<VGAIL::Vec2ui>\ path\ =\ navmesh-\/>findPath(startPosition,\ endPosition);}
+\DoxyCodeLine{}
+\DoxyCodeLine{//\ Using\ geometric\ preprocessing\ with/without\ multithreading}
+\DoxyCodeLine{std::vector<VGAIL::Vec2ui>\ path\ =\ navmesh-\/>findPreprocessedPath(startPosition,\ endPosition);}
+
+\end{DoxyCode}
+
+
+The {\ttfamily find\+Path()} method calculates the path by using A\texorpdfstring{$\ast$}{*}, while {\ttfamily find\+Preprocessed\+Path()} retrieves the stored path if geometric preprocessing has been done.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md10}{}\doxysubsection{\texorpdfstring{3. {\bfseries{Decision trees}}}{3. {\bfseries{Decision trees}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md10}
+\begin{quote}
+Demo example\+: {\itshape Demo/src/demo\+\_\+\+Decision\+Tree.\+cpp} \end{quote}
+
+\begin{DoxyItemize}
+\item Create the decision tree
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::DecisionTree\ tree;}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item For each node of the tree (and recursively its children) a custom class needs to be implemented to delegate actions to its children based on some criteria.
+\end{DoxyItemize}
+
+Each decision node needs to implement its own {\ttfamily make\+Decision(float dt)} method, in which it either delegates further actions to its children or implements game logic. In the example below, the {\ttfamily is\+Enemy\+Close} class is responsible for checking the distance between the player and an enemy. Depending on this distance, it calls a child decision node. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//\ Example:\ a\ character\ makes\ decisions\ based\ on\ the\ distance\ to\ an\ enemy}
+\DoxyCodeLine{class\ isEnemyClose\ :\ public\ VGAIL::DecisionNode}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{public:}
+\DoxyCodeLine{\ \ \ \ isEnemyClose(VGAIL::Vec2f\&\ enemyPos)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ :\ enemyPos(enemyPos)\ \{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \string~isEnemyClose()\ \{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ void\ makeDecision(float\ dt)\ override}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ float\ dist\ =\ VGAIL::distance(position,\ enemyPos);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ if\ (dist\ <=\ 100.0f)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ getChild(0).makeDecision(dt);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ else\ if\ (dist\ >\ 100.0f\ \&\&\ dist\ <\ 150.0f)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ getChild(1).makeDecision(dt);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ else}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ getChild(2).makeDecision(dt);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ VGAIL::Vec2f\ position;}
+\DoxyCodeLine{\ \ \ \ VGAIL::Vec2f\&\ enemyPos;}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Create the root of the tree
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//\ Example\ for\ the\ code\ shown\ above}
+\DoxyCodeLine{VGAIL::DecisionNode\&\ root\ =\ tree.createRoot<isEnemyClose>(...args);}
+
+\end{DoxyCode}
+
+
+→ {\ttfamily ...args} refers to any arguments that need to be passed to the custom class.
+
+
+\begin{DoxyItemize}
+\item Add nodes and their children
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::DecisionNode\&\ node1\ =\ root.addChild<Class1>(...args);}
+\DoxyCodeLine{VGAIL::DecisionNode\&\ node2\ =\ root.addChild<Class2>(...args);}
+\DoxyCodeLine{...}
+\DoxyCodeLine{VGAIL::DecisionNode\&\ node1\_child1\ =\ node1.addChild<ClassX>(...args);}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+
+
+The order in which the child nodes are instantiated is important, as it will matter when calling it from the parent node. In the example above, in the {\ttfamily is\+Enemy\+Close} class, {\ttfamily get\+Child(0)} will call the first child node that was created, in this case {\ttfamily node1\+\_\+child1}.
+
+
+\begin{DoxyItemize}
+\item In the game loop, update the decision tree
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{tree.update(deltaTime);}
+
+\end{DoxyCode}
+
+
+In the example from {\itshape demo\+\_\+\+Decision\+Tree.\+cpp}, both characters have their own decision tree and each chosen decision is displayed every frame on the screen.
+
+  
+
+The logic behind the decision trees is displayed in the following picture.
+
+  
+
+In this example, the decision nodes are represented by the rectangular objects ({\itshape is\+Guard\+Close}, {\itshape is\+Burglar\+Close}, etc.).\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md11}{}\doxysubsection{\texorpdfstring{4. {\bfseries{State machines}}}{4. {\bfseries{State machines}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md11}
+\begin{quote}
+Demo example\+: {\itshape Demo/src/demo\+\_\+\+State\+Machine.\+cpp} \end{quote}
+
+\begin{DoxyItemize}
+\item Create a state machine
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::StateMachine\ stateMachine;}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item Create states
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::State*\ walking\ =\ stateMachine.createState();}
+\DoxyCodeLine{VGAIL::State*\ sleeping\ =\ stateMachine.createState();}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item Implement the state in the update callback
+\end{DoxyItemize}
+
+The {\ttfamily on\+Update\+Callback()} method is called every frame, so the game logic for the state should be implemented in this method. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{walking-\/>onUpdateCallback\ =\ [\&](float\ deltaTime)\ \{}
+\DoxyCodeLine{\ \ \ \ //\ walk,\ play\ walking\ animation...}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item If needed, add actions at the start and/or end of a state
+\end{DoxyItemize}
+
+Each state has {\ttfamily on\+Enter\+Callback()} and {\ttfamily on\+Exit\+Callback()} methods. {\ttfamily on\+Enter\+Callback()} is called at the beginning of a state, and {\ttfamily on\+Exit\+Callback()} is called at the end when the state is completed. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sleeping-\/>onEnterCallback\ =\ [\&]()\ \{}
+\DoxyCodeLine{\ \ \ \ //\ play\ sleeping\ animation}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Create transitions between states
+\end{DoxyItemize}
+
+Transitions are responsible with changing the current state by checking a certain condition. If the condition is met, the {\ttfamily on\+Enter\+Callback()} of the next state is called. If {\ttfamily on\+Enter\+Callback()} is not implemented, it will go to {\ttfamily on\+Update\+Callback()}. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{walking-\/>addTransition(sleeping,\ [\&]()\ \{}
+\DoxyCodeLine{\ \ \ \ return\ health\ <=\ 2;}
+\DoxyCodeLine{\});}
+
+\end{DoxyCode}
+ In the example above, the transition is responsible with choosing the correct state based on the character\textquotesingle{}s health. Once the health is less than or equal to 2, it will trigger the {\ttfamily on\+Enter\+Callback()} / {\ttfamily on\+Update\+Callback()} method of the {\itshape sleeping} state.
+
+
+\begin{DoxyItemize}
+\item In the game loop, update the state machine
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{stateMachine.update(deltaTime);}
+
+\end{DoxyCode}
+
+
+This method is responsible with managing the states and transitions between them every frame.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md12}{}\doxysubsection{\texorpdfstring{5. {\bfseries{Steering behaviors}}}{5. {\bfseries{Steering behaviors}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md12}
+Demo examples\+:
+
+\texorpdfstring{$>$}{>}{\itshape Demo/src/demo\+\_\+\+Steering\+Behaviors.\+cpp} (all steering behaviors combined)
+
+\texorpdfstring{$>$}{>}{\itshape Demo/src/\+Steering\+Behaviors} (each steering behavior with its own demo)
+
+The steering behaviors can only be used on instances of the {\ttfamily VGAIL\+::\+Boids} class.
+
+
+\begin{DoxyItemize}
+\item Create the boid
+\end{DoxyItemize}
+
+Each boid needs a position, a velocity and a maximum speed when instantiated. By default, the maximum speed is 5.\+0f, and the position and velocity are both 0. Each boid also has an id, used in the flocking algorithm, but since it is not relevant for the rest of the steering behaviors, it is set to 0 by default.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::Boid*\ agent\ =\ new\ VGAIL::Boid(position,\ velocity,\ maxSpeed);}
+
+\end{DoxyCode}
+
+\begin{DoxyItemize}
+\item Calculate the steering force 
+\end{DoxyItemize}\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md13}{}\doxysubsubsection{\texorpdfstring{5.\+1. {\bfseries{Seek}}}{5.\+1. {\bfseries{Seek}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md13}
+\begin{quote}
+Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Seek\+And\+Flee.\+cpp} \end{quote}
+The {\itshape seek} steering behavior allows for a realistic movement towards a given target. The method takes as arguments {\ttfamily target\+Position} ({\ttfamily Vec2f} -\/ position of the target) and {\ttfamily max\+Acceleration} ({\ttfamily float} -\/ the maximum rate at which the velocity can change per unit of time).
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::Vec2f\ steeringForce\ =\ agent-\/>seek(targetPosition,\ maxAcceleration);}
+
+\end{DoxyCode}
+
+
+  
+
+In the example above, the blue object is seeking the player (yellow object).\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md14}{}\doxysubsubsection{\texorpdfstring{5.\+2. {\bfseries{Flee}}}{5.\+2. {\bfseries{Flee}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md14}
+\texorpdfstring{$>$}{>} Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Seek\+And\+Flee.\+cpp}
+
+The {\itshape flee} steering behavior is the opposite of {\itshape seek}, as it moves away from and not towards a target. The arguments are the same as for the {\itshape seek} behavior.
+
+{\ttfamily  \doxylink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f} steering\+Force = agent-\/\texorpdfstring{$>$}{>}flee(target\+Position, max\+Acceleration); }
+
+  
+
+In the example above, the green object is fleeing the player (yellow object), while also staying inside the borders of the window.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md15}{}\doxysubsubsection{\texorpdfstring{5.\+3. {\bfseries{Arrive}}}{5.\+3. {\bfseries{Arrive}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md15}
+\texorpdfstring{$>$}{>} Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Arrive.\+cpp}
+
+The {\itshape arrive} steering behavior is responsible for slowing down the character before it reaches its destination such that it can stop smoothly. If the character is far from the destination, it uses the {\itshape seek} behavior to move towards it, and once it gets close enough, it starts slowing down until it eventually reaches the target.
+
+In the library, it takes three arguments\+: {\ttfamily target\+Position} ({\ttfamily Vec2f} -\/ destination), {\ttfamily slow\+Radius} ({\ttfamily float} -\/ the radius of the slowing area), and {\ttfamily max\+Acceleration} ({\ttfamily float} -\/ the maximum rate at which the velocity can change per unit of time).
+
+{\ttfamily  \doxylink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f} steering\+Force = agent-\/\texorpdfstring{$>$}{>}arrive(target\+Position, slow\+Radius, max\+Acceleration); }
+
+  
+
+In this example, the blue object uses the {\itshape arrive} steering behavior to get to the green dot and it slows down once it enters the area shown by the red circle.
+
+This behavior is useful in cases when it is important to show that a character reached its target destination. The {\itshape seek} behavior, used alone, will make the character bounce back and forth around the target, but the {\itshape arrive} behavior will ensure that the character will not move through the target by slowing down so it can stop once it reaches it.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md16}{}\doxysubsubsection{\texorpdfstring{5.\+4. {\bfseries{Pursue}}}{5.\+4. {\bfseries{Pursue}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md16}
+\texorpdfstring{$>$}{>} Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Pursue\+And\+Evade.\+cpp}
+
+{\itshape Pursue} is very similar to the {\itshape seek} behavior in the sense that it follows a given target. The difference is that the pursuer tries to "{}catch"{} the target by anticipating its movement, which is done by predicting the target\textquotesingle{}s future positions. That is done such that it avoids taking unnecessary paths as it will estimate where the target will be within the next few seconds and move towards that new position.
+
+The method takes three arguments\+: {\ttfamily target\+Boid} ({\ttfamily Boid} -\/ the target to pursue), {\ttfamily max\+Acceleration} ({\ttfamily float} -\/ the maximum rate at which the velocity can change per unit of time), and {\ttfamily max\+Prediction} ({\ttfamily float} -\/ the maximum prediction time used to estimate where the target will be in the future).
+
+{\ttfamily  \doxylink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f} steering\+Force = agent-\/\texorpdfstring{$>$}{>}pursue(target\+Boid, max\+Acceleration, max\+Prediction); }
+
+  
+
+In this example, the purple object is following the player (yellow object).\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md17}{}\doxysubsubsection{\texorpdfstring{5.\+5. {\bfseries{Evade}}}{5.\+5. {\bfseries{Evade}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md17}
+\texorpdfstring{$>$}{>} Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Pursue\+And\+Evade.\+cpp}
+
+{\itshape Evade} is the opposite of {\itshape pursue}, as it uses prediction to "{}escape"{} a given target. The same arguments as for the {\itshape pursue} behavior are used.
+
+{\ttfamily  \doxylink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f} steering\+Force = agent-\/\texorpdfstring{$>$}{>}evade(target\+Boid, max\+Acceleration, max\+Prediction); }
+
+  
+
+In this example, the pink object is following the player (yellow object), while also staying inside the borders of the window.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md18}{}\doxysubsubsection{\texorpdfstring{5.\+6. {\bfseries{Wander}}}{5.\+6. {\bfseries{Wander}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md18}
+\texorpdfstring{$>$}{>} Demo example\+: {\itshape Demo/src/\+Steering\+Behaviors/demo\+\_\+\+Wander.\+cpp}
+
+The {\itshape wander} steering behavior produces a natural-\/looking movement of a character "{}casually"{} walking around. Its implementation, following Craig Reynold\textquotesingle{}s proposal, uses a circle defined in front of the character from which the steering force is calculated.
+
+  
+
+In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a {\ttfamily circle\+Distance} from the character and has a {\ttfamily circle\+Radius}. Every frame, a random point is chosen from the outline of the circle which will the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving abruptly left and right), a {\ttfamily displacement\+Range} is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, {\ttfamily max\+Acceleration} is the maximum rate at which the velocity can change per unit of time.
+
+{\ttfamily  \doxylink{struct_v_g_a_i_l_1_1_vec2f}{VGAIL\+::\+Vec2f} steering\+Force = agent-\/\texorpdfstring{$>$}{>}wander(circle\+Distance, circle\+Radius, displace\+Range, max\+Acceleration); }
+
+  
+
+In this example, the red line is the character\textquotesingle{}s velocity which changes every frame depending on the randomly chosen point.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md19}{}\doxysubsubsection{\texorpdfstring{5.\+7. {\bfseries{Steer}}}{5.\+7. {\bfseries{Steer}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md19}
+The {\ttfamily get\+Rotation\+In\+Degrees()} method from the {\ttfamily Boid} class calculates the rotation of the boid in degrees and can be used to show in which direction the boid is moving. Steering is already implemented in each already mentioned behavior, therefore this method is only needed for rendering.
+
+Each texture needs a texture rotation as per the {\ttfamily Draw\+Texture\+Pro} method from {\itshape raylib}. In the demos for the steering behaviors, the {\ttfamily get\+Rotation\+In\+Degrees()} method is simply called when drawing the texture on the screen such that the texture is always facing the direction it is moving.
+
+The library also provides implementation for the three steering behaviors used usually in flocking ({\itshape separation}, {\itshape alignment}, {\itshape cohesion}). They are detailed in the next section.
+\begin{DoxyItemize}
+\item Apply the steering force and update the position.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{agent-\/>applySteeringForce(steeringForce);}
+\DoxyCodeLine{agent-\/>updatePosition(deltaTime);}
+
+\end{DoxyCode}
+
+
+→ {\ttfamily steering\+Force} is the output vector resulted from any of the methods shown above.
+
+Please note that the {\ttfamily update\+Position()} method must be called after applying the steering force, otherwise the boid\textquotesingle{}s position will not change according to the new calculations.\hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md20}{}\doxysubsection{\texorpdfstring{6. {\bfseries{Flocking}}}{6. {\bfseries{Flocking}}}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md20}
+The flocking behavior only works on {\ttfamily \doxylink{class_v_g_a_i_l_1_1_boid}{VGAIL\+::\+Boid}} instances. The implementation follows Craig Reynolds\textquotesingle{}s proposal.
+
+
+\begin{DoxyItemize}
+\item Create the flock
+\end{DoxyItemize}
+
+This is responsible for managing all boids such that they respect the three steering behaviors\+: separation, alignment and cohesion.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{VGAIL::Flocking*\ flock\ =\ new\ VGAIL::Flocking();}
+
+\end{DoxyCode}
+
+
+Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding. Alignment is responsible for calculating the average velocity of the boids and steer them accordingly. Cohesion is steering the boids towards the average position of the boids from the same group.
+
+
+\begin{DoxyItemize}
+\item Set the separation and perception ranges
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{flock-\/>setRanges(separationRange,\ perceptionRange);}
+
+\end{DoxyCode}
+
+
+→ {\ttfamily separation\+Range} is used in the {\ttfamily separation} behavior. Each boid needs such a range to avoid colliding with other boids. The algorithm checks for each boid if any fellow boid is at a distance smaller than this range, in which case it will steer the boid away such that it creates space between them.
+
+→ {\ttfamily perception\+Range} is used in both {\ttfamily alignment} and {\ttfamily cohesion}. This range represents the distance within which a boid considers neighboring boids, or in simpler terms, how far a boid "{}sees"{} other nearby boids. Once other boids are in this range, the algorithm will use {\ttfamily alignment} and {\ttfamily cohesion} to match its velocity to the other boids\textquotesingle{} velocity and to position the boid within the group.
+
+
+\begin{DoxyItemize}
+\item Add boids to the flock
+\end{DoxyItemize}
+
+To add a boid to the flock, simply call the following method\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{flock-\/>addBoid(position,\ velocity,\ minSpeed,\ maxSpeed);}
+
+\end{DoxyCode}
+
+
+Both {\ttfamily position} and {\ttfamily velocity} are {\ttfamily Vec2f}, while {\ttfamily min\+Speed} and {\ttfamily max\+Speed} are {\ttfamily float}.
+
+
+\begin{DoxyItemize}
+\item In the game loop, update the flock
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{flock-\/>update(deltaTime,\ avoidFactor,\ matchingFactor,\ centeringFactor);}
+
+\end{DoxyCode}
+
+
+To update the flock, {\ttfamily delta\+Time} is needed such that smooth movement is ensured. On top of that, three different factors are required as well.
+
+→ {\ttfamily avoid\+Factor} determines how strongly boids react to possible collisions.
+
+→ {\ttfamily matching\+Factor} determines how strongly boids steer to match the average velocity of their neighbours.
+
+→ {\ttfamily centering\+Factor} determines how strongly boids steer to match the average position of their neighbours.
+
+  \hypertarget{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md21}{}\doxysection{\texorpdfstring{Resources}{Resources}}\label{md__d_1_2_uni_vie_2_sem_015_2_master_2_vienna_game_a_i_library_2_r_e_a_d_m_e_autotoc_md21}
+
+\begin{DoxyItemize}
+\item Textures
+\begin{DoxyItemize}
+\item \href{https://kenney.nl/assets/platformer-pack-medieval}{\texttt{ https\+://kenney.\+nl/assets/platformer-\/pack-\/medieval}}
+\item \href{https://kenney.nl/assets/toon-characters-1}{\texttt{ https\+://kenney.\+nl/assets/toon-\/characters-\/1}}
+\item \href{https://kenney.nl/assets/medieval-rts}{\texttt{ https\+://kenney.\+nl/assets/medieval-\/rts}}
+\item \href{https://kenney.nl/assets/shape-characters}{\texttt{ https\+://kenney.\+nl/assets/shape-\/characters}}
+\item \href{https://kenney.nl/assets/animal-pack-redux}{\texttt{ https\+://kenney.\+nl/assets/animal-\/pack-\/redux}}
+\item \href{https://kenney.nl/assets/tiny-town}{\texttt{ https\+://kenney.\+nl/assets/tiny-\/town}}
+\item \href{https://p3d.in/JeRJE}{\texttt{ https\+://p3d.\+in/\+Je\+RJE}}
+\end{DoxyItemize}
+\item Fonts
+\begin{DoxyItemize}
+\item \href{https://www.dafont.com/pixelplay.font}{\texttt{ https\+://www.\+dafont.\+com/pixelplay.\+font}}
+\item \href{https://www.dafont.com/sunny-spells-basic.font}{\texttt{ https\+://www.\+dafont.\+com/sunny-\/spells-\/basic.\+font}} 
+\end{DoxyItemize}
+\end{DoxyItemize}

@@ -1,7 +1,3 @@
-// Resources
-	// https://kenney.nl/assets/shape-characters
-	// https://www.youtube.com/watch?v=ujsR2vcJlLk&t
-
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
@@ -72,10 +68,10 @@ int main(int argc, char* argv[])
 		);
 
 		DrawLine(
-			agent->getPosition().x * tileSize, 
+			agent->getPosition().x * tileSize,
 			agent->getPosition().y * tileSize,
-			agent->getPosition().x * tileSize + agent->getVelocity().x  * tileSize,
-			agent->getPosition().y * tileSize + agent->getVelocity().y  * tileSize,
+			agent->getPosition().x * tileSize + agent->getVelocity().x * tileSize,
+			agent->getPosition().y * tileSize + agent->getVelocity().y * tileSize,
 			RED
 		);
 

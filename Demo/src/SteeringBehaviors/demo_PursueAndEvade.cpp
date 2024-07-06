@@ -1,10 +1,5 @@
-// Resources
-	// https://kenney.nl/assets/shape-characters
-
 #include "ViennaGameAILibrary.hpp"
-
 #include "raylib.h"
-#include "raymath.h"
 
 int screenWidth = 1200;
 int screenHeight = 800;

@@ -1,13 +1,7 @@
-// Resources
-	// https://kenney.nl/assets/medieval-rts
-	// https://www.dafont.com/pixelplay.font
-	// https://www.dafont.com/sunny-spells-basic.font
-
 #include "ViennaGameAILibrary.hpp"
-
 #include "raylib.h"
-#include "raymath.h"
 #include "Timer.h"
+
 #include <sstream>
 #include <string>
 
@@ -173,7 +167,7 @@ int main(int argc, char* argv[])
 		currentStateIndex = 1;
 
 		VGAIL::Vec2ui workerPos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tileSize), static_cast<uint32_t>(worker.y / tileSize) };
-		path = navmesh->A_Star(workerPos, homePosition);
+		path = navmesh->findPath(workerPos, homePosition);
 
 		if (path.size() > 0)
 		{
@@ -222,7 +216,7 @@ int main(int argc, char* argv[])
 			if (mines[i]->size == 0)
 				continue;
 
-			path = navmesh->A_Star(workerPos, mines[i]->position);
+			path = navmesh->findPath(workerPos, mines[i]->position);
 
 			if (path.size() > 0)
 			{
@@ -236,7 +230,7 @@ int main(int argc, char* argv[])
 
 		currentMine = mines[closestMineIndex];
 		currentPathIndex = 0;
-		path = navmesh->A_Star(workerPos, currentMine->position);
+		path = navmesh->findPath(workerPos, currentMine->position);
 		};
 
 	locateMineState->onUpdateCallback = [&](float delta) {
@@ -381,6 +375,9 @@ int main(int argc, char* argv[])
 	UnloadTexture(homeTexture);
 	UnloadTexture(mineTexture);
 	UnloadTexture(workerTexture);
+
+	UnloadFont(stateFont);
+	UnloadFont(loadFont);
 
 	CloseWindow();
 
