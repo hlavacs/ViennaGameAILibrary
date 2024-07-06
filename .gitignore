@@ -35,9 +35,9 @@
 build/
 
 # Doxygen files except index.html
-docs/html/
-docs/latex/
+docs/
 !docs/html/index.html
+!docs/Doxyfile
 
 # VS code
 .vscode
