@@ -1,5 +1,3 @@
-// References: https://www.raylib.com/examples/text/loader.html?name=text_input_box
-
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 

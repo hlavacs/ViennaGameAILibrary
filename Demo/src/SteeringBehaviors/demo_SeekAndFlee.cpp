@@ -1,6 +1,3 @@
-// Resources
-	// https://kenney.nl/assets/shape-characters
-
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 

@@ -1,11 +1,5 @@
-// Resources
-	// https://kenney.nl/assets/platformer-pack-medieval
-	// https://kenney.nl/assets/toon-characters-1
-
 #include "ViennaGameAILibrary.hpp"
-
 #include "raylib.h"
-#include "Timer.h"
 
 #include <sstream>
 #include <string>
@@ -538,6 +532,9 @@ int main(int argc, char* argv[])
 	UnloadTexture(guardFightingTexture);
 	UnloadTexture(guardPatrollingTexture);
 	UnloadTexture(guardRunningTexture);
+
+	UnloadFont(sunnyFont);
+	UnloadFont(pixelFont);
 
 	return 0;
 }

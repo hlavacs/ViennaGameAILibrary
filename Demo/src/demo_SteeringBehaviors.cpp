@@ -1,9 +1,6 @@
-// Resources
-	// https://kenney.nl/assets/animal-pack-redux
-	// https://kenney.nl/assets/tiny-town
-
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
+
 #include <sstream>
 #include <string>
 #include <iomanip>
@@ -336,6 +333,7 @@ int main(int argc, char* argv[])
 	UnloadTexture(groundTextureNight);
 	UnloadTexture(grassTexture);
 	UnloadTexture(grassTextureNight);
+
 	CloseWindow();
 
 	return 0;

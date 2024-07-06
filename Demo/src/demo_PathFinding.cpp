@@ -1,7 +1,6 @@
 #include "ViennaGameAILibrary.hpp"
 
 #include "raylib.h"
-#include "raymath.h"
 #include "Timer.h"
 
 #include <chrono>
