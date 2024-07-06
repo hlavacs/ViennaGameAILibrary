@@ -877,407 +877,408 @@
 \DoxyCodeLine{01387\ \ \ \ \ \ \ \ \ std::vector<DecisionNode*>\ m\_children;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
 \DoxyCodeLine{01388\ \ \ \ \ \};}
 \DoxyCodeLine{01389\ }
-\DoxyCodeLine{01390\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree}{DecisionTree}}}
-\DoxyCodeLine{01391\ \ \ \ \ \{}
-\DoxyCodeLine{01392\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{01393\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree}{DecisionTree}}()\ \{\}}
-\DoxyCodeLine{01394\ }
-\DoxyCodeLine{01395\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree}{\string~DecisionTree}}()}
-\DoxyCodeLine{01396\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01397\ \ \ \ \ \ \ \ \ \ \ \ \ resetTree();}
-\DoxyCodeLine{01398\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01399\ }
-\DoxyCodeLine{01400\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ update(\textcolor{keywordtype}{float}\ dt)}
-\DoxyCodeLine{01401\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01402\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
-\DoxyCodeLine{01403\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01404\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_root-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_adedff53500e8b98fc3e75c1016517ba6}{makeDecision}}(dt);}
-\DoxyCodeLine{01405\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01406\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01407\ }
-\DoxyCodeLine{01408\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }T,\ \textcolor{keyword}{typename}...\ Args>}
-\DoxyCodeLine{01409\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{DecisionNode}}\&\ createRoot(Args\&\&\ ...args)}
-\DoxyCodeLine{01410\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01411\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
-\DoxyCodeLine{01412\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01413\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resetTree();}
-\DoxyCodeLine{01414\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01415\ }
-\DoxyCodeLine{01416\ \ \ \ \ \ \ \ \ \ \ \ \ m\_root\ =\ \textcolor{keyword}{new}\ T(args...);}
-\DoxyCodeLine{01417\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *m\_root;}
-\DoxyCodeLine{01418\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01419\ }
-\DoxyCodeLine{01420\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{01421\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resetTree()}
-\DoxyCodeLine{01422\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01423\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
-\DoxyCodeLine{01424\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01425\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_root;}
-\DoxyCodeLine{01426\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01427\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01428\ }
-\DoxyCodeLine{01429\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{01430\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{DecisionNode}}*\ m\_root\ =\ \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{01431\ \ \ \ \ \};}
-\DoxyCodeLine{01432\ }
-\DoxyCodeLine{01433\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}}
-\DoxyCodeLine{01434\ \ \ \ \ \{}
-\DoxyCodeLine{01435\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{01436\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position,\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity,\ f32\ maxSpeed,\ ui32\ \textcolor{keywordtype}{id}\ =\ 0)}
-\DoxyCodeLine{01437\ \ \ \ \ \ \ \ \ \ \ \ \ :\ m\_position(position)}
-\DoxyCodeLine{01438\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_velocity(velocity)}
-\DoxyCodeLine{01439\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_maxSpeed(maxSpeed)}
-\DoxyCodeLine{01440\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_id(\textcolor{keywordtype}{id})}
-\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \{\}}
-\DoxyCodeLine{01442\ }
-\DoxyCodeLine{01443\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{\string~Boid}}()\ \{\}}
-\DoxyCodeLine{01444\ }
-\DoxyCodeLine{01445\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setPosition(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position)}
-\DoxyCodeLine{01446\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01447\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ position;}
+\DoxyCodeLine{01394\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree}{DecisionTree}}}
+\DoxyCodeLine{01395\ \ \ \ \ \{}
+\DoxyCodeLine{01396\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01401\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_a3d9bdbdf09cecc947b832460fc6d191d}{DecisionTree}}()\ \{\}}
+\DoxyCodeLine{01402\ }
+\DoxyCodeLine{01407\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_aea92cd19c1b8f1862252f0f0cf5f76a8}{\string~DecisionTree}}()}
+\DoxyCodeLine{01408\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01409\ \ \ \ \ \ \ \ \ \ \ \ \ resetTree();}
+\DoxyCodeLine{01410\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01411\ }
+\DoxyCodeLine{01419\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_a77405565a12e4a9ca1c4cab1b1b65615}{update}}(\textcolor{keywordtype}{float}\ deltaTime)}
+\DoxyCodeLine{01420\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01421\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
+\DoxyCodeLine{01422\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01423\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_root-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node_adedff53500e8b98fc3e75c1016517ba6}{makeDecision}}(deltaTime);}
+\DoxyCodeLine{01424\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01425\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01426\ }
+\DoxyCodeLine{01438\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }T,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01439\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{DecisionNode}}\&\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_a19e44583f0a74238e74a209e1a5ab72f}{createRoot}}(Args\&\&\ ...args)}
+\DoxyCodeLine{01440\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
+\DoxyCodeLine{01442\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01443\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ resetTree();}
+\DoxyCodeLine{01444\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01445\ }
+\DoxyCodeLine{01446\ \ \ \ \ \ \ \ \ \ \ \ \ m\_root\ =\ \textcolor{keyword}{new}\ T(args...);}
+\DoxyCodeLine{01447\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *m\_root;}
 \DoxyCodeLine{01448\ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01449\ }
-\DoxyCodeLine{01450\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ getPosition()\textcolor{keyword}{\ const}}
-\DoxyCodeLine{01451\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
-\DoxyCodeLine{01452\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_position;}
-\DoxyCodeLine{01453\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01454\ }
-\DoxyCodeLine{01455\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setVelocity(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity)}
+\DoxyCodeLine{01450\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01455\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ resetTree()}
 \DoxyCodeLine{01456\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01457\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ velocity;}
-\DoxyCodeLine{01458\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01459\ }
-\DoxyCodeLine{01460\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ getVelocity()\textcolor{keyword}{\ const}}
-\DoxyCodeLine{01461\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
-\DoxyCodeLine{01462\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_velocity;}
-\DoxyCodeLine{01463\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01464\ }
-\DoxyCodeLine{01465\ \ \ \ \ \ \ \ \ ui32\ getID()\textcolor{keyword}{\ const}}
-\DoxyCodeLine{01466\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
-\DoxyCodeLine{01467\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_id;}
-\DoxyCodeLine{01468\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01469\ }
-\DoxyCodeLine{01470\ \ \ \ \ \ \ \ \ f32\ getRotationInDegrees()}
-\DoxyCodeLine{01471\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01472\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <\ 0.01f)}
-\DoxyCodeLine{01473\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_lastRotation;}
-\DoxyCodeLine{01475\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01476\ }
-\DoxyCodeLine{01477\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ target\ =\ m\_position\ +\ m\_velocity;}
-\DoxyCodeLine{01478\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ radians\ =\ std::atan2(target.y\ -\/\ m\_position.y,\ target.x\ -\/\ m\_position.x);}
-\DoxyCodeLine{01479\ \ \ \ \ \ \ \ \ \ \ \ \ m\_lastRotation\ =\ radians\ *\ (180.0f\ /\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}{PI}});}
-\DoxyCodeLine{01480\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_lastRotation;}
-\DoxyCodeLine{01481\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01482\ }
-\DoxyCodeLine{01483\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setMinSpeed(f32\ minSpeed)}
-\DoxyCodeLine{01484\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01485\ \ \ \ \ \ \ \ \ \ \ \ \ m\_minSpeed\ =\ minSpeed;}
-\DoxyCodeLine{01486\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01487\ }
-\DoxyCodeLine{01488\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setMaxSpeed(f32\ maxSpeed)}
-\DoxyCodeLine{01489\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01490\ \ \ \ \ \ \ \ \ \ \ \ \ m\_maxSpeed\ =\ maxSpeed;}
-\DoxyCodeLine{01491\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01492\ }
-\DoxyCodeLine{01493\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ flocking(f32\ dt,\ f32\ separationRange,\ f32\ perceptionRange,\ f32\ avoidFactor,\ f32\ matchingFactor,\ f32\ centeringFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
-\DoxyCodeLine{01494\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01495\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ separationVector,\ alignVector,\ cohesionVector;}
-\DoxyCodeLine{01496\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
-\DoxyCodeLine{01497\ }
-\DoxyCodeLine{01498\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
-\DoxyCodeLine{01499\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01500\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (other-\/>getID()\ !=\ m\_id)}
-\DoxyCodeLine{01501\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01502\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
-\DoxyCodeLine{01503\ }
-\DoxyCodeLine{01504\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (dist\ <\ separationRange)}
-\DoxyCodeLine{01505\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01506\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ separationVector\ =\ separationVector\ +\ (m\_position\ -\/\ other-\/>getPosition());}
-\DoxyCodeLine{01507\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01508\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (dist\ <\ perceptionRange)}
-\DoxyCodeLine{01509\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01510\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ +\ other-\/>getVelocity();}
-\DoxyCodeLine{01511\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ +\ other-\/>getPosition();}
-\DoxyCodeLine{01512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
-\DoxyCodeLine{01513\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01514\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01515\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01516\ }
-\DoxyCodeLine{01517\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
-\DoxyCodeLine{01518\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(neighbors);}
-\DoxyCodeLine{01520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(neighbors);}
-\DoxyCodeLine{01521\ }
-\DoxyCodeLine{01522\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ (alignVector\ -\/\ m\_velocity)\ *\ matchingFactor\ +\ (cohesionVector\ -\/\ m\_position)\ *\ centeringFactor;}
-\DoxyCodeLine{01523\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01457\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_root)}
+\DoxyCodeLine{01458\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01459\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ m\_root;}
+\DoxyCodeLine{01460\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01461\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01462\ }
+\DoxyCodeLine{01463\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01464\ \ \ \ \ \ \ \ \ DecisionNode*\ m\_root\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01465\ \ \ \ \ \};}
+\DoxyCodeLine{01466\ }
+\DoxyCodeLine{01471\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}}
+\DoxyCodeLine{01472\ \ \ \ \ \{}
+\DoxyCodeLine{01473\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01482\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a3273c9b41d7908e1c935882e78574302}{Boid}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position,\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity,\ f32\ maxSpeed,\ ui32\ \textcolor{keywordtype}{id}\ =\ 0)}
+\DoxyCodeLine{01483\ \ \ \ \ \ \ \ \ \ \ \ \ :\ m\_position(position)}
+\DoxyCodeLine{01484\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_velocity(velocity)}
+\DoxyCodeLine{01485\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_maxSpeed(maxSpeed)}
+\DoxyCodeLine{01486\ \ \ \ \ \ \ \ \ \ \ \ \ ,\ m\_id(id)}
+\DoxyCodeLine{01487\ \ \ \ \ \ \ \ \ \{\}}
+\DoxyCodeLine{01488\ }
+\DoxyCodeLine{01493\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a532784da299474e002670682c448277d}{\string~Boid}}()\ \{\}}
+\DoxyCodeLine{01494\ }
+\DoxyCodeLine{01500\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_aa2c8ca5fde5bb6a70fd2e68b2a92b76f}{setPosition}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position)}
+\DoxyCodeLine{01501\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01502\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ position;}
+\DoxyCodeLine{01503\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01504\ }
+\DoxyCodeLine{01510\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}{getPosition}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{01511\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{01512\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_position;}
+\DoxyCodeLine{01513\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01514\ }
+\DoxyCodeLine{01520\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_af013614d0c102da491eafe99df45d6ad}{setVelocity}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity)}
+\DoxyCodeLine{01521\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01522\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ velocity;}
+\DoxyCodeLine{01523\ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01524\ }
-\DoxyCodeLine{01525\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ (separationVector\ *\ avoidFactor);}
-\DoxyCodeLine{01526\ }
-\DoxyCodeLine{01527\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01528\ }
-\DoxyCodeLine{01529\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <\ m\_minSpeed)}
-\DoxyCodeLine{01530\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01531\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ speed)\ *\ m\_minSpeed;}
-\DoxyCodeLine{01532\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01533\ }
-\DoxyCodeLine{01534\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ >\ m\_maxSpeed)}
-\DoxyCodeLine{01535\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01536\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ speed)\ *\ m\_maxSpeed;}
-\DoxyCodeLine{01537\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01538\ }
-\DoxyCodeLine{01539\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ m\_position\ +\ m\_velocity\ *\ dt;}
-\DoxyCodeLine{01540\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01541\ }
-\DoxyCodeLine{01542\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ separation(f32\ separationRange,\ f32\ avoidFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
-\DoxyCodeLine{01543\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01544\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ separationVector;}
+\DoxyCodeLine{01530\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a68236421861626b056b5971af3b4d109}{getVelocity}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{01531\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{01532\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_velocity;}
+\DoxyCodeLine{01533\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01534\ }
+\DoxyCodeLine{01535\ }
+\DoxyCodeLine{01541\ \ \ \ \ \ \ \ \ ui32\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_acfc74563edb9c61361ea843724dfe987}{getID}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{01542\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{01543\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_id;}
+\DoxyCodeLine{01544\ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01545\ }
-\DoxyCodeLine{01546\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
-\DoxyCodeLine{01547\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01548\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
-\DoxyCodeLine{01549\ }
-\DoxyCodeLine{01550\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (other-\/>getID()\ !=\ m\_id\ \&\&\ dist\ <\ separationRange)}
-\DoxyCodeLine{01551\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01552\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ separationVector\ =\ m\_position\ -\/\ other-\/>getPosition();}
-\DoxyCodeLine{01553\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01554\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01555\ }
-\DoxyCodeLine{01556\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ separationVector\ *\ avoidFactor;}
-\DoxyCodeLine{01557\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01558\ }
-\DoxyCodeLine{01559\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ align(f32\ perceptionRange,\ f32\ matchingFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
-\DoxyCodeLine{01560\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01561\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ alignVector;}
-\DoxyCodeLine{01562\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
+\DoxyCodeLine{01551\ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ac08ce90ea7ee3caa8f85b43b0f7193f9}{getRotationInDegrees}}()}
+\DoxyCodeLine{01552\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01553\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <\ 0.01f)}
+\DoxyCodeLine{01554\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01555\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_lastRotation;}
+\DoxyCodeLine{01556\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01557\ }
+\DoxyCodeLine{01558\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ target\ =\ m\_position\ +\ m\_velocity;}
+\DoxyCodeLine{01559\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ radians\ =\ std::atan2(target.y\ -\/\ m\_position.y,\ target.x\ -\/\ m\_position.x);}
+\DoxyCodeLine{01560\ \ \ \ \ \ \ \ \ \ \ \ \ m\_lastRotation\ =\ radians\ *\ (180.0f\ /\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}{PI}});}
+\DoxyCodeLine{01561\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ m\_lastRotation;}
+\DoxyCodeLine{01562\ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01563\ }
-\DoxyCodeLine{01564\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
-\DoxyCodeLine{01565\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01566\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
-\DoxyCodeLine{01567\ }
-\DoxyCodeLine{01568\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_id\ !=\ other-\/>getID()\ \&\&\ dist\ <\ perceptionRange)}
-\DoxyCodeLine{01569\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01570\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ +\ other-\/>getVelocity();}
-\DoxyCodeLine{01571\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
-\DoxyCodeLine{01572\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01573\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01574\ }
-\DoxyCodeLine{01575\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
-\DoxyCodeLine{01576\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01577\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ /\ neighbors;}
-\DoxyCodeLine{01578\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01579\ }
-\DoxyCodeLine{01580\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (alignVector\ -\/\ m\_velocity)\ *\ matchingFactor;}
-\DoxyCodeLine{01581\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01582\ }
-\DoxyCodeLine{01583\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ cohesion(f32\ perceptionRange,\ f32\ centeringFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
-\DoxyCodeLine{01584\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01585\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ cohesionVector;}
-\DoxyCodeLine{01586\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
-\DoxyCodeLine{01587\ }
-\DoxyCodeLine{01588\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
-\DoxyCodeLine{01589\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01590\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
-\DoxyCodeLine{01591\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_id\ !=\ other-\/>getID()\ \&\&\ dist\ <\ perceptionRange)}
-\DoxyCodeLine{01592\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ +\ other-\/>getPosition();}
-\DoxyCodeLine{01594\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
-\DoxyCodeLine{01595\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01596\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01597\ }
-\DoxyCodeLine{01598\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
-\DoxyCodeLine{01599\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01600\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ /\ neighbors;}
-\DoxyCodeLine{01601\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01602\ }
-\DoxyCodeLine{01603\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (cohesionVector\ -\/\ m\_velocity)\ *\ centeringFactor;}
-\DoxyCodeLine{01604\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01605\ }
-\DoxyCodeLine{01606\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ seek(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ maxAcceleration)}
-\DoxyCodeLine{01607\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01608\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ targetPosition\ -\/\ m\_position;}
-\DoxyCodeLine{01609\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
-\DoxyCodeLine{01610\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
-\DoxyCodeLine{01611\ }
-\DoxyCodeLine{01612\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
-\DoxyCodeLine{01613\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01614\ }
-\DoxyCodeLine{01615\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ flee(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ maxAcceleration)}
-\DoxyCodeLine{01616\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01617\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ m\_position\ -\/\ targetPosition;}
-\DoxyCodeLine{01618\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
-\DoxyCodeLine{01619\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
+\DoxyCodeLine{01569\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a5b9aa66f3e2ad227a6ee9d15ea777144}{setMinSpeed}}(f32\ minSpeed)}
+\DoxyCodeLine{01570\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01571\ \ \ \ \ \ \ \ \ \ \ \ \ m\_minSpeed\ =\ minSpeed;}
+\DoxyCodeLine{01572\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01573\ }
+\DoxyCodeLine{01579\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a0633daa7d9c42d4e47c147444806bfed}{setMaxSpeed}}(f32\ maxSpeed)}
+\DoxyCodeLine{01580\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01581\ \ \ \ \ \ \ \ \ \ \ \ \ m\_maxSpeed\ =\ maxSpeed;}
+\DoxyCodeLine{01582\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01583\ }
+\DoxyCodeLine{01597\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a46dd7f117d6cb6cea9749daab9890ad7}{flocking}}(f32\ deltaTime,\ f32\ separationRange,\ f32\ perceptionRange,\ f32\ avoidFactor,\ f32\ matchingFactor,\ f32\ centeringFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
+\DoxyCodeLine{01598\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01599\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ separationVector,\ alignVector,\ cohesionVector;}
+\DoxyCodeLine{01600\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
+\DoxyCodeLine{01601\ }
+\DoxyCodeLine{01602\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
+\DoxyCodeLine{01603\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (other-\/>getID()\ !=\ m\_id)}
+\DoxyCodeLine{01605\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01606\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
+\DoxyCodeLine{01607\ }
+\DoxyCodeLine{01608\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (dist\ <\ separationRange)}
+\DoxyCodeLine{01609\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01610\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ separationVector\ =\ separationVector\ +\ (m\_position\ -\/\ other-\/>getPosition());}
+\DoxyCodeLine{01611\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01612\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (dist\ <\ perceptionRange)}
+\DoxyCodeLine{01613\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01614\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ +\ other-\/>getVelocity();}
+\DoxyCodeLine{01615\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ +\ other-\/>getPosition();}
+\DoxyCodeLine{01616\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
+\DoxyCodeLine{01617\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01618\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01619\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01620\ }
-\DoxyCodeLine{01621\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
-\DoxyCodeLine{01622\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01623\ }
-\DoxyCodeLine{01624\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ pursue(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ target,\ f32\ maxAcceleration,\ f32\ maxPrediction)}
-\DoxyCodeLine{01625\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01626\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01627\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ direction\ =\ target-\/>getPosition()\ -\/\ m\_position;}
-\DoxyCodeLine{01628\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ direction.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01629\ }
-\DoxyCodeLine{01630\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
-\DoxyCodeLine{01631\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01632\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
-\DoxyCodeLine{01633\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01634\ }
-\DoxyCodeLine{01635\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ prediction;}
-\DoxyCodeLine{01636\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <=\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ maxPrediction)}
-\DoxyCodeLine{01637\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ maxPrediction;}
-\DoxyCodeLine{01638\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
-\DoxyCodeLine{01639\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ speed;}
-\DoxyCodeLine{01640\ }
-\DoxyCodeLine{01641\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ newPosition\ =\ target-\/>getPosition()\ +\ target-\/>getVelocity()\ *\ prediction;}
-\DoxyCodeLine{01642\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ seek(newPosition,\ maxAcceleration);}
-\DoxyCodeLine{01643\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01644\ }
-\DoxyCodeLine{01645\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ evade(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ target,\ f32\ maxAcceleration,\ f32\ maxPrediction)}
-\DoxyCodeLine{01646\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01647\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01648\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ direction\ =\ target-\/>getPosition()\ -\/\ m\_position;}
-\DoxyCodeLine{01649\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ direction.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01650\ }
-\DoxyCodeLine{01651\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
-\DoxyCodeLine{01652\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01653\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
-\DoxyCodeLine{01654\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01655\ }
-\DoxyCodeLine{01656\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ prediction;}
-\DoxyCodeLine{01657\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <=\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ maxPrediction)}
-\DoxyCodeLine{01658\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ maxPrediction;}
-\DoxyCodeLine{01659\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
-\DoxyCodeLine{01660\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ speed;}
-\DoxyCodeLine{01661\ }
-\DoxyCodeLine{01662\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ newPosition\ =\ target-\/>getPosition()\ +\ target-\/>getVelocity()\ *\ prediction;}
-\DoxyCodeLine{01663\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ flee(newPosition,\ maxAcceleration);}
-\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01665\ }
-\DoxyCodeLine{01666\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ arrive(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ slowRadius,\ f32\ maxAcceleration)}
-\DoxyCodeLine{01667\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01668\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ desiredVelocity\ =\ targetPosition\ -\/\ m\_position;}
-\DoxyCodeLine{01669\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ desiredVelocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
-\DoxyCodeLine{01670\ }
-\DoxyCodeLine{01671\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
-\DoxyCodeLine{01672\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01673\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
-\DoxyCodeLine{01674\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01675\ }
-\DoxyCodeLine{01676\ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
-\DoxyCodeLine{01677\ }
-\DoxyCodeLine{01678\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ >\ slowRadius)}
-\DoxyCodeLine{01679\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01680\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity\ =\ desiredVelocity\ *\ m\_maxSpeed;}
-\DoxyCodeLine{01681\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01682\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
-\DoxyCodeLine{01683\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01684\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity\ =\ desiredVelocity\ *\ m\_maxSpeed\ *\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ slowRadius;}
-\DoxyCodeLine{01685\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01686\ }
-\DoxyCodeLine{01687\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ desiredVelocity\ -\/\ m\_velocity;}
-\DoxyCodeLine{01688\ }
-\DoxyCodeLine{01689\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ >\ maxAcceleration)}
-\DoxyCodeLine{01690\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01691\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
-\DoxyCodeLine{01692\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
-\DoxyCodeLine{01693\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01694\ }
-\DoxyCodeLine{01695\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
-\DoxyCodeLine{01696\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01697\ }
-\DoxyCodeLine{01698\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ wander(f32\ circleDistance,\ f32\ circleRadius,\ f32\ displaceRange,\ f32\ maxAcceleration)}
-\DoxyCodeLine{01699\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01700\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <=\ 0.01f)}
-\DoxyCodeLine{01701\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01702\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
-\DoxyCodeLine{01703\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01704\ }
-\DoxyCodeLine{01705\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ desired\ =\ m\_velocity;}
-\DoxyCodeLine{01706\ \ \ \ \ \ \ \ \ \ \ \ \ desired.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_ab99b34f3ea75d33bad357326cf478a7f}{setMagnitude}}(circleDistance);}
-\DoxyCodeLine{01707\ \ \ \ \ \ \ \ \ \ \ \ \ desired\ =\ desired\ +\ m\_position;}
-\DoxyCodeLine{01708\ }
-\DoxyCodeLine{01709\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ theta\ =\ m\_theta\ +\ getRotationInDegrees();}
-\DoxyCodeLine{01710\ }
-\DoxyCodeLine{01711\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ x\ =\ circleRadius\ *\ cos(theta);}
-\DoxyCodeLine{01712\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ y\ =\ circleRadius\ *\ sin(theta);}
-\DoxyCodeLine{01713\ }
-\DoxyCodeLine{01714\ \ \ \ \ \ \ \ \ \ \ \ \ desired\ =\ desired\ +\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\ x,\ y\ \};}
-\DoxyCodeLine{01715\ }
-\DoxyCodeLine{01716\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ desired\ -\/\ m\_position;}
-\DoxyCodeLine{01717\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
-\DoxyCodeLine{01718\ }
-\DoxyCodeLine{01719\ \ \ \ \ \ \ \ \ \ \ \ \ m\_theta\ =\ m\_theta\ +\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a8f80e4ca017e0810b8a88774bd8ac9f8}{randomFloat}}(-\/displaceRange,\ displaceRange);}
+\DoxyCodeLine{01621\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
+\DoxyCodeLine{01622\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01623\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(neighbors);}
+\DoxyCodeLine{01624\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ /\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>}(neighbors);}
+\DoxyCodeLine{01625\ }
+\DoxyCodeLine{01626\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ (alignVector\ -\/\ m\_velocity)\ *\ matchingFactor\ +\ (cohesionVector\ -\/\ m\_position)\ *\ centeringFactor;}
+\DoxyCodeLine{01627\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01628\ }
+\DoxyCodeLine{01629\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ (separationVector\ *\ avoidFactor);}
+\DoxyCodeLine{01630\ }
+\DoxyCodeLine{01631\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01632\ }
+\DoxyCodeLine{01633\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <\ m\_minSpeed)}
+\DoxyCodeLine{01634\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01635\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ speed)\ *\ m\_minSpeed;}
+\DoxyCodeLine{01636\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01637\ }
+\DoxyCodeLine{01638\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ >\ m\_maxSpeed)}
+\DoxyCodeLine{01639\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01640\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ speed)\ *\ m\_maxSpeed;}
+\DoxyCodeLine{01641\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01642\ }
+\DoxyCodeLine{01643\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ m\_position\ +\ m\_velocity\ *\ deltaTime;}
+\DoxyCodeLine{01644\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01645\ }
+\DoxyCodeLine{01656\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ac7410bfe2766557f2d662b448ab9aa58}{separation}}(f32\ separationRange,\ f32\ avoidFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
+\DoxyCodeLine{01657\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01658\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ separationVector;}
+\DoxyCodeLine{01659\ }
+\DoxyCodeLine{01660\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
+\DoxyCodeLine{01661\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01662\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
+\DoxyCodeLine{01663\ }
+\DoxyCodeLine{01664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (other-\/>getID()\ !=\ m\_id\ \&\&\ dist\ <\ separationRange)}
+\DoxyCodeLine{01665\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01666\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ separationVector\ =\ m\_position\ -\/\ other-\/>getPosition();}
+\DoxyCodeLine{01667\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01668\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01669\ }
+\DoxyCodeLine{01670\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ separationVector\ *\ avoidFactor;}
+\DoxyCodeLine{01671\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01672\ }
+\DoxyCodeLine{01683\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_aa647479585ea32d7982c04d55d1a3720}{align}}(f32\ perceptionRange,\ f32\ matchingFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
+\DoxyCodeLine{01684\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01685\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ alignVector;}
+\DoxyCodeLine{01686\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
+\DoxyCodeLine{01687\ }
+\DoxyCodeLine{01688\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
+\DoxyCodeLine{01689\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01690\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
+\DoxyCodeLine{01691\ }
+\DoxyCodeLine{01692\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_id\ !=\ other-\/>getID()\ \&\&\ dist\ <\ perceptionRange)}
+\DoxyCodeLine{01693\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01694\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ +\ other-\/>getVelocity();}
+\DoxyCodeLine{01695\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
+\DoxyCodeLine{01696\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01697\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01698\ }
+\DoxyCodeLine{01699\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
+\DoxyCodeLine{01700\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01701\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ alignVector\ =\ alignVector\ /\ neighbors;}
+\DoxyCodeLine{01702\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01703\ }
+\DoxyCodeLine{01704\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (alignVector\ -\/\ m\_velocity)\ *\ matchingFactor;}
+\DoxyCodeLine{01705\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01706\ }
+\DoxyCodeLine{01707\ }
+\DoxyCodeLine{01716\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_aab7d357b26360c1e1bd59abaa211080e}{cohesion}}(f32\ perceptionRange,\ f32\ centeringFactor,\ \textcolor{keyword}{const}\ std::vector<Boid*>\&\ flock)}
+\DoxyCodeLine{01717\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01718\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ cohesionVector;}
+\DoxyCodeLine{01719\ \ \ \ \ \ \ \ \ \ \ \ \ ui32\ neighbors\ =\ 0;}
 \DoxyCodeLine{01720\ }
-\DoxyCodeLine{01721\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce\ *\ maxAcceleration;}
-\DoxyCodeLine{01722\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01723\ }
-\DoxyCodeLine{01724\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ applySteeringForce(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce)}
-\DoxyCodeLine{01725\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01726\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ steeringForce;}
-\DoxyCodeLine{01727\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01728\ }
-\DoxyCodeLine{01729\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updatePosition(f32\ dt)}
-\DoxyCodeLine{01730\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01731\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ >\ m\_maxSpeed)}
+\DoxyCodeLine{01721\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ other\ :\ flock)}
+\DoxyCodeLine{01722\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01723\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ f32\ dist\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}(m\_position,\ other-\/>getPosition());}
+\DoxyCodeLine{01724\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_id\ !=\ other-\/>getID()\ \&\&\ dist\ <\ perceptionRange)}
+\DoxyCodeLine{01725\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01726\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ +\ other-\/>getPosition();}
+\DoxyCodeLine{01727\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ neighbors++;}
+\DoxyCodeLine{01728\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01729\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01730\ }
+\DoxyCodeLine{01731\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (neighbors\ >\ 0)}
 \DoxyCodeLine{01732\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01733\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}())\ *\ m\_maxSpeed;}
+\DoxyCodeLine{01733\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cohesionVector\ =\ cohesionVector\ /\ neighbors;}
 \DoxyCodeLine{01734\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01735\ }
-\DoxyCodeLine{01736\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <=\ 0.01f)}
-\DoxyCodeLine{01737\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01738\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ 0.0f;}
-\DoxyCodeLine{01739\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01740\ }
-\DoxyCodeLine{01741\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ m\_position\ +\ m\_velocity\ *\ dt;}
-\DoxyCodeLine{01742\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01743\ }
-\DoxyCodeLine{01744\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{01745\ \ \ \ \ \ \ \ \ ui32\ m\_id;}
-\DoxyCodeLine{01746\ \ \ \ \ \ \ \ \ f32\ m\_lastRotation\ =\ 0.0f;}
-\DoxyCodeLine{01747\ \ \ \ \ \ \ \ \ f32\ m\_theta\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}{PI}}\ /\ 2.0f;}
-\DoxyCodeLine{01748\ \ \ \ \ \ \ \ \ f32\ m\_minSpeed\ =\ 1.0f,\ m\_maxSpeed\ =\ 5.0f;}
-\DoxyCodeLine{01749\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ m\_position,\ m\_velocity;}
-\DoxyCodeLine{01750\ \ \ \ \ \};}
-\DoxyCodeLine{01751\ }
-\DoxyCodeLine{01752\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking}{Flocking}}}
-\DoxyCodeLine{01753\ \ \ \ \ \{}
-\DoxyCodeLine{01754\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{01755\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking}{Flocking}}()\ \{\}}
+\DoxyCodeLine{01736\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (cohesionVector\ -\/\ m\_velocity)\ *\ centeringFactor;}
+\DoxyCodeLine{01737\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01738\ }
+\DoxyCodeLine{01748\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ab0c1b665d06bb4a6e10abf991883083d}{seek}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ maxAcceleration)}
+\DoxyCodeLine{01749\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01750\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ targetPosition\ -\/\ m\_position;}
+\DoxyCodeLine{01751\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
+\DoxyCodeLine{01752\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
+\DoxyCodeLine{01753\ }
+\DoxyCodeLine{01754\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
+\DoxyCodeLine{01755\ \ \ \ \ \ \ \ \ \}}
 \DoxyCodeLine{01756\ }
-\DoxyCodeLine{01757\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking}{\string~Flocking}}()}
-\DoxyCodeLine{01758\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01759\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (ui32\ i\ =\ 0;\ i\ <\ boids.size();\ i++)}
-\DoxyCodeLine{01760\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01761\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ boids[i];}
-\DoxyCodeLine{01762\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01763\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01764\ }
-\DoxyCodeLine{01765\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ addBoid(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position,\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity,\ f32\ minSpeed,\ f32\ maxSpeed)}
-\DoxyCodeLine{01766\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01767\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ boid\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}(position,\ velocity,\ maxSpeed,\ boids.size());}
-\DoxyCodeLine{01768\ \ \ \ \ \ \ \ \ \ \ \ \ boid-\/>setMinSpeed(minSpeed);}
-\DoxyCodeLine{01769\ \ \ \ \ \ \ \ \ \ \ \ \ boids.push\_back(boid);}
-\DoxyCodeLine{01770\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01766\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a4063d6134b089b6ea48c8c3c8e4ccfa8}{flee}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ maxAcceleration)}
+\DoxyCodeLine{01767\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01768\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ m\_position\ -\/\ targetPosition;}
+\DoxyCodeLine{01769\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
+\DoxyCodeLine{01770\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
 \DoxyCodeLine{01771\ }
-\DoxyCodeLine{01772\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setRanges(f32\ separationRange,\ f32\ perceptionRange)}
-\DoxyCodeLine{01773\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01774\ \ \ \ \ \ \ \ \ \ \ \ \ m\_separationRange\ =\ separationRange;}
-\DoxyCodeLine{01775\ \ \ \ \ \ \ \ \ \ \ \ \ m\_perceptionRange\ =\ perceptionRange;}
-\DoxyCodeLine{01776\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01777\ }
-\DoxyCodeLine{01778\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ update(f32\ dt,\ f32\ avoidFactor,\ f32\ matchingFactor,\ f32\ centeringFactor)}
-\DoxyCodeLine{01779\ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01780\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ boid\ :\ boids)}
-\DoxyCodeLine{01781\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
-\DoxyCodeLine{01782\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ boid-\/>flocking(dt,\ m\_separationRange,\ m\_perceptionRange,\ avoidFactor,\ matchingFactor,\ centeringFactor,\ boids);}
-\DoxyCodeLine{01783\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01784\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{01785\ }
-\DoxyCodeLine{01786\ \ \ \ \ \ \ \ \ std::vector<Boid*>\ boids;}
-\DoxyCodeLine{01787\ }
-\DoxyCodeLine{01788\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{01789\ \ \ \ \ \ \ \ \ f32\ m\_separationRange\ =\ 0.0f,\ m\_perceptionRange\ =\ 0.0f;}
-\DoxyCodeLine{01790\ \ \ \ \ \};}
-\DoxyCodeLine{01791\ \}}
+\DoxyCodeLine{01772\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
+\DoxyCodeLine{01773\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01774\ }
+\DoxyCodeLine{01786\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a2353bc43dec55f74aeaf1608f7dfd919}{pursue}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ target,\ f32\ maxAcceleration,\ f32\ maxPrediction)}
+\DoxyCodeLine{01787\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01788\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01789\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ direction\ =\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}{getPosition}}()\ -\/\ m\_position;}
+\DoxyCodeLine{01790\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ direction.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01791\ }
+\DoxyCodeLine{01792\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
+\DoxyCodeLine{01793\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01794\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
+\DoxyCodeLine{01795\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01796\ }
+\DoxyCodeLine{01797\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ prediction;}
+\DoxyCodeLine{01798\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <=\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ maxPrediction)}
+\DoxyCodeLine{01799\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ maxPrediction;}
+\DoxyCodeLine{01800\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ speed;}
+\DoxyCodeLine{01802\ }
+\DoxyCodeLine{01803\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ newPosition\ =\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}{getPosition}}()\ +\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a68236421861626b056b5971af3b4d109}{getVelocity}}()\ *\ prediction;}
+\DoxyCodeLine{01804\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ab0c1b665d06bb4a6e10abf991883083d}{seek}}(newPosition,\ maxAcceleration);}
+\DoxyCodeLine{01805\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01806\ }
+\DoxyCodeLine{01818\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a0a44dd412d416540bbd463b9db0c4d3a}{evade}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ target,\ f32\ maxAcceleration,\ f32\ maxPrediction)}
+\DoxyCodeLine{01819\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01820\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ speed\ =\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01821\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ direction\ =\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}{getPosition}}()\ -\/\ m\_position;}
+\DoxyCodeLine{01822\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ direction.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01823\ }
+\DoxyCodeLine{01824\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
+\DoxyCodeLine{01825\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01826\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
+\DoxyCodeLine{01827\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01828\ }
+\DoxyCodeLine{01829\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ prediction;}
+\DoxyCodeLine{01830\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (speed\ <=\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ maxPrediction)}
+\DoxyCodeLine{01831\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ maxPrediction;}
+\DoxyCodeLine{01832\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01833\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ prediction\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ speed;}
+\DoxyCodeLine{01834\ }
+\DoxyCodeLine{01835\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ newPosition\ =\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_afabcf4efc56f55b8cad89b1ff766691c}{getPosition}}()\ +\ target-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a68236421861626b056b5971af3b4d109}{getVelocity}}()\ *\ prediction;}
+\DoxyCodeLine{01836\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a4063d6134b089b6ea48c8c3c8e4ccfa8}{flee}}(newPosition,\ maxAcceleration);}
+\DoxyCodeLine{01837\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01838\ }
+\DoxyCodeLine{01849\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ac0e58b64cd4aca445a95f5faa34e2920}{arrive}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ targetPosition,\ f32\ slowRadius,\ f32\ maxAcceleration)}
+\DoxyCodeLine{01850\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01851\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ desiredVelocity\ =\ targetPosition\ -\/\ m\_position;}
+\DoxyCodeLine{01852\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ =\ desiredVelocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}();}
+\DoxyCodeLine{01853\ }
+\DoxyCodeLine{01854\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ <=\ 0.01f)}
+\DoxyCodeLine{01855\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01856\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
+\DoxyCodeLine{01857\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01858\ }
+\DoxyCodeLine{01859\ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
+\DoxyCodeLine{01860\ }
+\DoxyCodeLine{01861\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ >\ slowRadius)}
+\DoxyCodeLine{01862\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01863\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity\ =\ desiredVelocity\ *\ m\_maxSpeed;}
+\DoxyCodeLine{01864\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01865\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01866\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01867\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ desiredVelocity\ =\ desiredVelocity\ *\ m\_maxSpeed\ *\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a824a34b745779ee0f6d6012dba553fcf}{distance}}\ /\ slowRadius;}
+\DoxyCodeLine{01868\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01869\ }
+\DoxyCodeLine{01870\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ desiredVelocity\ -\/\ m\_velocity;}
+\DoxyCodeLine{01871\ }
+\DoxyCodeLine{01872\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ >\ maxAcceleration)}
+\DoxyCodeLine{01873\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01874\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
+\DoxyCodeLine{01875\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce\ =\ steeringForce\ *\ maxAcceleration;}
+\DoxyCodeLine{01876\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01877\ }
+\DoxyCodeLine{01878\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce;}
+\DoxyCodeLine{01879\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01880\ }
+\DoxyCodeLine{01894\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a5dab470e1453436e6794c8d05e58461d}{wander}}(f32\ circleDistance,\ f32\ circleRadius,\ f32\ displacementRange,\ f32\ maxAcceleration)}
+\DoxyCodeLine{01895\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01896\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <=\ 0.01f)}
+\DoxyCodeLine{01897\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01898\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\};}
+\DoxyCodeLine{01899\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01900\ }
+\DoxyCodeLine{01901\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ desired\ =\ m\_velocity;}
+\DoxyCodeLine{01902\ \ \ \ \ \ \ \ \ \ \ \ \ desired.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_ab99b34f3ea75d33bad357326cf478a7f}{setMagnitude}}(circleDistance);}
+\DoxyCodeLine{01903\ \ \ \ \ \ \ \ \ \ \ \ \ desired\ =\ desired\ +\ m\_position;}
+\DoxyCodeLine{01904\ }
+\DoxyCodeLine{01905\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ theta\ =\ m\_theta\ +\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_ac08ce90ea7ee3caa8f85b43b0f7193f9}{getRotationInDegrees}}();}
+\DoxyCodeLine{01906\ }
+\DoxyCodeLine{01907\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ x\ =\ circleRadius\ *\ cos(theta);}
+\DoxyCodeLine{01908\ \ \ \ \ \ \ \ \ \ \ \ \ f32\ y\ =\ circleRadius\ *\ sin(theta);}
+\DoxyCodeLine{01909\ }
+\DoxyCodeLine{01910\ \ \ \ \ \ \ \ \ \ \ \ \ desired\ =\ desired\ +\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\{\ x,\ y\ \};}
+\DoxyCodeLine{01911\ }
+\DoxyCodeLine{01912\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce\ =\ desired\ -\/\ m\_position;}
+\DoxyCodeLine{01913\ \ \ \ \ \ \ \ \ \ \ \ \ steeringForce.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a2b6c46565205733619d75925df57db4a}{normalize}}();}
+\DoxyCodeLine{01914\ }
+\DoxyCodeLine{01915\ \ \ \ \ \ \ \ \ \ \ \ \ m\_theta\ =\ m\_theta\ +\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a8f80e4ca017e0810b8a88774bd8ac9f8}{randomFloat}}(-\/displacementRange,\ displacementRange);}
+\DoxyCodeLine{01916\ }
+\DoxyCodeLine{01917\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ steeringForce\ *\ maxAcceleration;}
+\DoxyCodeLine{01918\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01919\ }
+\DoxyCodeLine{01925\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a69945d89a17b5776a17ae5cf77a51db6}{applySteeringForce}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ steeringForce)}
+\DoxyCodeLine{01926\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01927\ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ m\_velocity\ +\ steeringForce;}
+\DoxyCodeLine{01928\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01929\ }
+\DoxyCodeLine{01937\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a38098360dd50f2edd8d3dc8f18fce02d}{updatePosition}}(f32\ deltaTime)}
+\DoxyCodeLine{01938\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01939\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ >\ m\_maxSpeed)}
+\DoxyCodeLine{01940\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01941\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ (m\_velocity\ /\ m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}())\ *\ m\_maxSpeed;}
+\DoxyCodeLine{01942\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01943\ }
+\DoxyCodeLine{01944\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (m\_velocity.\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f_a82241ee89deda8eb9bb7cbea6472e610}{getMagnitude}}()\ <=\ 0.01f)}
+\DoxyCodeLine{01945\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01946\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ m\_velocity\ =\ 0.0f;}
+\DoxyCodeLine{01947\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01948\ }
+\DoxyCodeLine{01949\ \ \ \ \ \ \ \ \ \ \ \ \ m\_position\ =\ m\_position\ +\ m\_velocity\ *\ deltaTime;}
+\DoxyCodeLine{01950\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01951\ }
+\DoxyCodeLine{01952\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01953\ \ \ \ \ \ \ \ \ ui32\ m\_id;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01954\ \ \ \ \ \ \ \ \ f32\ m\_lastRotation\ =\ 0.0f;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01955\ \ \ \ \ \ \ \ \ f32\ m\_theta\ =\ \mbox{\hyperlink{_vienna_game_a_i_library_8hpp_a18cdda7b48c5f0547ec090c160a83c18}{PI}}\ /\ 2.0f;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01956\ \ \ \ \ \ \ \ \ f32\ m\_minSpeed\ =\ 1.0f,\ m\_maxSpeed\ =\ 5.0f;\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01957\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ m\_position,\ m\_velocity;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01958\ \ \ \ \ \};}
+\DoxyCodeLine{01959\ }
+\DoxyCodeLine{01964\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking}{Flocking}}}
+\DoxyCodeLine{01965\ \ \ \ \ \{}
+\DoxyCodeLine{01966\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01971\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_acab4192e59d64ebe4affcc450c04d3d5}{Flocking}}()\ \{\}}
+\DoxyCodeLine{01972\ }
+\DoxyCodeLine{01977\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a97ce489ed466b1da9050462d013d67c5}{\string~Flocking}}()}
+\DoxyCodeLine{01978\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01979\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (ui32\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}}.size();\ i++)}
+\DoxyCodeLine{01980\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01981\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}}[i];}
+\DoxyCodeLine{01982\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01983\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01984\ }
+\DoxyCodeLine{01993\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf}{addBoid}}(\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ position,\ \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}\ velocity,\ f32\ minSpeed,\ f32\ maxSpeed)}
+\DoxyCodeLine{01994\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01995\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ boid\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}(position,\ velocity,\ maxSpeed,\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}}.size());}
+\DoxyCodeLine{01996\ \ \ \ \ \ \ \ \ \ \ \ \ boid-\/>\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid_a5b9aa66f3e2ad227a6ee9d15ea777144}{setMinSpeed}}(minSpeed);}
+\DoxyCodeLine{01997\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}}.push\_back(boid);}
+\DoxyCodeLine{01998\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01999\ }
+\DoxyCodeLine{02006\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c}{setRanges}}(f32\ separationRange,\ f32\ perceptionRange)}
+\DoxyCodeLine{02007\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{02008\ \ \ \ \ \ \ \ \ \ \ \ \ m\_separationRange\ =\ separationRange;}
+\DoxyCodeLine{02009\ \ \ \ \ \ \ \ \ \ \ \ \ m\_perceptionRange\ =\ perceptionRange;}
+\DoxyCodeLine{02010\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{02011\ }
+\DoxyCodeLine{02022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a014aba0b26ebb018806d49d09ea1ef53}{update}}(f32\ deltaTime,\ f32\ avoidFactor,\ f32\ matchingFactor,\ f32\ centeringFactor)}
+\DoxyCodeLine{02023\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{02024\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}*\ boid\ :\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}})}
+\DoxyCodeLine{02025\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{02026\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ boid-\/>flocking(deltaTime,\ m\_separationRange,\ m\_perceptionRange,\ avoidFactor,\ matchingFactor,\ centeringFactor,\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}});}
+\DoxyCodeLine{02027\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{02028\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{02029\ }
+\DoxyCodeLine{02030\ \ \ \ \ \ \ \ \ std::vector<Boid*>\ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{02032\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{02033\ \ \ \ \ \ \ \ \ f32\ m\_separationRange\ =\ 0.0f,\ m\_perceptionRange\ =\ 0.0f;\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{02034\ \ \ \ \ \};}
+\DoxyCodeLine{02035\ \}}
 
 \end{DoxyCode}

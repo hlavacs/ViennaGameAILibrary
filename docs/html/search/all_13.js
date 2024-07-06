@@ -8,5 +8,6 @@ var searchData=
   ['project_5',['Build and run the project',['../index.html#autotoc_md4',1,'']]],
   ['project_20structure_6',['Project structure',['../index.html#autotoc_md1',1,'']]],
   ['provides_7',['How to use each feature the library provides',['../index.html#autotoc_md7',1,'']]],
-  ['pursue_20strong_8',['5.4. &lt;strong&gt;Pursue&lt;/strong&gt;',['../index.html#autotoc_md16',1,'']]]
+  ['pursue_8',['pursue',['../class_v_g_a_i_l_1_1_boid.html#a2353bc43dec55f74aeaf1608f7dfd919',1,'VGAIL::Boid']]],
+  ['pursue_20strong_9',['5.4. &lt;strong&gt;Pursue&lt;/strong&gt;',['../index.html#autotoc_md16',1,'']]]
 ];

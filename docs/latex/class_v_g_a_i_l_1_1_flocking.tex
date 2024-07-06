@@ -1,24 +1,112 @@
 \doxysection{VGAIL\+::Flocking Class Reference}
 \hypertarget{class_v_g_a_i_l_1_1_flocking}{}\label{class_v_g_a_i_l_1_1_flocking}\index{VGAIL::Flocking@{VGAIL::Flocking}}
+
+
+Custom class that is responsible for managing the flocking behavior for a group of \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} objects.  
+
+
+
+
+{\ttfamily \#include $<$Vienna\+Game\+AILibrary.\+hpp$>$}
+
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf}\label{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf} 
-void {\bfseries add\+Boid} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} position, \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} velocity, f32 min\+Speed, f32 max\+Speed)
-\item 
-\Hypertarget{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c}\label{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c} 
-void {\bfseries set\+Ranges} (f32 separation\+Range, f32 perception\+Range)
-\item 
-\Hypertarget{class_v_g_a_i_l_1_1_flocking_ad6a665411ad127e9d975cf4ac653b2d9}\label{class_v_g_a_i_l_1_1_flocking_ad6a665411ad127e9d975cf4ac653b2d9} 
-void {\bfseries update} (f32 dt, f32 avoid\+Factor, f32 matching\+Factor, f32 centering\+Factor)
-\end{DoxyCompactItemize}
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_acab4192e59d64ebe4affcc450c04d3d5}\label{class_v_g_a_i_l_1_1_flocking_acab4192e59d64ebe4affcc450c04d3d5} 
+{\bfseries Flocking} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_v_g_a_i_l_1_1_flocking}{Flocking} object. \end{DoxyCompactList}\item 
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_a97ce489ed466b1da9050462d013d67c5}\label{class_v_g_a_i_l_1_1_flocking_a97ce489ed466b1da9050462d013d67c5} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Flocking} ()
+\begin{DoxyCompactList}\small\item\em Destroys the \doxylink{class_v_g_a_i_l_1_1_flocking}{Flocking} object and its associated boids. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf}{add\+Boid}} (\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} position, \mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}} velocity, f32 min\+Speed, f32 max\+Speed)
+\begin{DoxyCompactList}\small\item\em Adds a \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object to the flock (list of Boids). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c}{set\+Ranges}} (f32 separation\+Range, f32 perception\+Range)
+\begin{DoxyCompactList}\small\item\em Sets the separation and perception ranges to be used by each \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_a014aba0b26ebb018806d49d09ea1ef53}{update}} (f32 delta\+Time, f32 avoid\+Factor, f32 matching\+Factor, f32 centering\+Factor)
+\begin{DoxyCompactList}\small\item\em Performs the flocking steering behavior. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}\label{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78} 
-std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries boids}
+std\+::vector$<$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}} \texorpdfstring{$\ast$}{*} $>$ \mbox{\hyperlink{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}{boids}}
 \end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+Custom class that is responsible for managing the flocking behavior for a group of \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} objects. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf}\label{class_v_g_a_i_l_1_1_flocking_a38b85baaf8230a12761c358774e7dbdf} 
+\index{VGAIL::Flocking@{VGAIL::Flocking}!addBoid@{addBoid}}
+\index{addBoid@{addBoid}!VGAIL::Flocking@{VGAIL::Flocking}}
+\doxysubsubsection{\texorpdfstring{addBoid()}{addBoid()}}
+{\footnotesize\ttfamily void VGAIL\+::\+Flocking\+::add\+Boid (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}}]{position,  }\item[{\mbox{\hyperlink{struct_v_g_a_i_l_1_1_vec2f}{Vec2f}}}]{velocity,  }\item[{f32}]{min\+Speed,  }\item[{f32}]{max\+Speed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Adds a \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object to the flock (list of Boids). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & The position of the new \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. \\
+\hline
+{\em velocity} & The velocity of the new \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. \\
+\hline
+{\em min\+Speed} & The minimum speed of the new \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. \\
+\hline
+{\em max\+Speed} & The maximum speed of the new \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c}\label{class_v_g_a_i_l_1_1_flocking_a6d567e1f50fe76f3fad537d477e1bf4c} 
+\index{VGAIL::Flocking@{VGAIL::Flocking}!setRanges@{setRanges}}
+\index{setRanges@{setRanges}!VGAIL::Flocking@{VGAIL::Flocking}}
+\doxysubsubsection{\texorpdfstring{setRanges()}{setRanges()}}
+{\footnotesize\ttfamily void VGAIL\+::\+Flocking\+::set\+Ranges (\begin{DoxyParamCaption}\item[{f32}]{separation\+Range,  }\item[{f32}]{perception\+Range }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the separation and perception ranges to be used by each \doxylink{class_v_g_a_i_l_1_1_boid}{Boid} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em separation\+Range} & The range within which a boid avoids colliding with other boids. \\
+\hline
+{\em perception\+Range} & The range within which a boid considers other boids as part of the flock. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_a014aba0b26ebb018806d49d09ea1ef53}\label{class_v_g_a_i_l_1_1_flocking_a014aba0b26ebb018806d49d09ea1ef53} 
+\index{VGAIL::Flocking@{VGAIL::Flocking}!update@{update}}
+\index{update@{update}!VGAIL::Flocking@{VGAIL::Flocking}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void VGAIL\+::\+Flocking\+::update (\begin{DoxyParamCaption}\item[{f32}]{delta\+Time,  }\item[{f32}]{avoid\+Factor,  }\item[{f32}]{matching\+Factor,  }\item[{f32}]{centering\+Factor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Performs the flocking steering behavior. 
+
+It loops through the list of boids and calls their individual implementation of the algorithm.
+
+
+\begin{DoxyParams}{Parameters}
+{\em delta\+Time} & Elapsed time between last frame and current frame. ~\newline
+ \\
+\hline
+{\em avoid\+Factor} & How strongly boids react to possible collisions. \\
+\hline
+{\em matching\+Factor} & How strongly boids steer to match the average velocity of their neighbours. \\
+\hline
+{\em centering\+Factor} & How strongly boids steer to match the average position of their neighbours. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78}\label{class_v_g_a_i_l_1_1_flocking_abb710cad1de3e4de1825a5a1f3cd7f78} 
+\index{VGAIL::Flocking@{VGAIL::Flocking}!boids@{boids}}
+\index{boids@{boids}!VGAIL::Flocking@{VGAIL::Flocking}}
+\doxysubsubsection{\texorpdfstring{boids}{boids}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{class_v_g_a_i_l_1_1_boid}{Boid}}\texorpdfstring{$\ast$}{*}$>$ VGAIL\+::\+Flocking\+::boids}
+
+The flock of boids. 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

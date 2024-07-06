@@ -1,14 +1,79 @@
 \doxysection{VGAIL\+::Decision\+Tree Class Reference}
 \hypertarget{class_v_g_a_i_l_1_1_decision_tree}{}\label{class_v_g_a_i_l_1_1_decision_tree}\index{VGAIL::DecisionTree@{VGAIL::DecisionTree}}
+
+
+Custom class that manages the nodes of a decision tree.  
+
+
+
+
+{\ttfamily \#include $<$Vienna\+Game\+AILibrary.\+hpp$>$}
+
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{class_v_g_a_i_l_1_1_decision_tree_a119ad24e4adc13082d3832e694074851}\label{class_v_g_a_i_l_1_1_decision_tree_a119ad24e4adc13082d3832e694074851} 
-void {\bfseries update} (float dt)
-\item 
+\Hypertarget{class_v_g_a_i_l_1_1_decision_tree_a3d9bdbdf09cecc947b832460fc6d191d}\label{class_v_g_a_i_l_1_1_decision_tree_a3d9bdbdf09cecc947b832460fc6d191d} 
+{\bfseries Decision\+Tree} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new \doxylink{class_v_g_a_i_l_1_1_decision_tree}{Decision\+Tree} object. \end{DoxyCompactList}\item 
+\Hypertarget{class_v_g_a_i_l_1_1_decision_tree_aea92cd19c1b8f1862252f0f0cf5f76a8}\label{class_v_g_a_i_l_1_1_decision_tree_aea92cd19c1b8f1862252f0f0cf5f76a8} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Decision\+Tree} ()
+\begin{DoxyCompactList}\small\item\em Destroys the \doxylink{class_v_g_a_i_l_1_1_decision_tree}{Decision\+Tree} object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_a77405565a12e4a9ca1c4cab1b1b65615}{update}} (float delta\+Time)
+\begin{DoxyCompactList}\small\item\em Loops through the decision tree and performs the decision-\/making process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T , typename... Args$>$ }\\\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& \mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_tree_a19e44583f0a74238e74a209e1a5ab72f}{create\+Root}} (Args \&\&...args)
+\begin{DoxyCompactList}\small\item\em Creates and returns the root of the decision tree. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Custom class that manages the nodes of a decision tree. 
+
+\doxysubsection{Member Function Documentation}
 \Hypertarget{class_v_g_a_i_l_1_1_decision_tree_a19e44583f0a74238e74a209e1a5ab72f}\label{class_v_g_a_i_l_1_1_decision_tree_a19e44583f0a74238e74a209e1a5ab72f} 
-{\footnotesize template$<$class T , typename... Args$>$ }\\\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& {\bfseries create\+Root} (Args \&\&...args)
-\end{DoxyCompactItemize}
+\index{VGAIL::DecisionTree@{VGAIL::DecisionTree}!createRoot@{createRoot}}
+\index{createRoot@{createRoot}!VGAIL::DecisionTree@{VGAIL::DecisionTree}}
+\doxysubsubsection{\texorpdfstring{createRoot()}{createRoot()}}
+{\footnotesize\ttfamily template$<$class T , typename... Args$>$ \\
+\mbox{\hyperlink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}} \& VGAIL\+::\+Decision\+Tree\+::create\+Root (\begin{DoxyParamCaption}\item[{Args \&\&...}]{args }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and returns the root of the decision tree. 
+
+This is a templated method, meaning any custom class can be used as a root node as it inherits from \doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}. ~\newline
+ Any number of variables can be passed, but if there is a mismatch of variables with the {\ttfamily T} constructor then there will be a compile time error.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Generic class. \\
+\hline
+{\em Args} & Variadic variables. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Variadic variables. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{class_v_g_a_i_l_1_1_decision_node}{Decision\+Node}\& The newly created root of the decision tree. 
+\end{DoxyReturn}
+\Hypertarget{class_v_g_a_i_l_1_1_decision_tree_a77405565a12e4a9ca1c4cab1b1b65615}\label{class_v_g_a_i_l_1_1_decision_tree_a77405565a12e4a9ca1c4cab1b1b65615} 
+\index{VGAIL::DecisionTree@{VGAIL::DecisionTree}!update@{update}}
+\index{update@{update}!VGAIL::DecisionTree@{VGAIL::DecisionTree}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void VGAIL\+::\+Decision\+Tree\+::update (\begin{DoxyParamCaption}\item[{float}]{delta\+Time }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Loops through the decision tree and performs the decision-\/making process. 
+
+Starts from the root node and calls the {\ttfamily make\+Decision()} method on its child nodes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em delta\+Time} & Elapsed time between last frame and current frame. \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

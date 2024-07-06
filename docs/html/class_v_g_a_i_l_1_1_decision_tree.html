@@ -81,17 +81,112 @@ $(function() {
   <div class="headertitle"><div class="title">VGAIL::DecisionTree Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Custom class that manages the nodes of a decision tree.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_vienna_game_a_i_library_8hpp_source.html">ViennaGameAILibrary.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a119ad24e4adc13082d3832e694074851" id="r_a119ad24e4adc13082d3832e694074851"><td class="memItemLeft" align="right" valign="top"><a id="a119ad24e4adc13082d3832e694074851" name="a119ad24e4adc13082d3832e694074851"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (float dt)</td></tr>
-<tr class="separator:a119ad24e4adc13082d3832e694074851"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19e44583f0a74238e74a209e1a5ab72f" id="r_a19e44583f0a74238e74a209e1a5ab72f"><td class="memTemplParams" colspan="2"><a id="a19e44583f0a74238e74a209e1a5ab72f" name="a19e44583f0a74238e74a209e1a5ab72f"></a>
-template&lt;class T , typename... Args&gt; </td></tr>
-<tr class="memitem:a19e44583f0a74238e74a209e1a5ab72f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_v_g_a_i_l_1_1_decision_node.html">DecisionNode</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>createRoot</b> (Args &amp;&amp;...args)</td></tr>
+<tr class="memitem:a3d9bdbdf09cecc947b832460fc6d191d" id="r_a3d9bdbdf09cecc947b832460fc6d191d"><td class="memItemLeft" align="right" valign="top"><a id="a3d9bdbdf09cecc947b832460fc6d191d" name="a3d9bdbdf09cecc947b832460fc6d191d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DecisionTree</b> ()</td></tr>
+<tr class="memdesc:a3d9bdbdf09cecc947b832460fc6d191d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new <a class="el" href="class_v_g_a_i_l_1_1_decision_tree.html" title="Custom class that manages the nodes of a decision tree.">DecisionTree</a> object. <br /></td></tr>
+<tr class="separator:a3d9bdbdf09cecc947b832460fc6d191d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea92cd19c1b8f1862252f0f0cf5f76a8" id="r_aea92cd19c1b8f1862252f0f0cf5f76a8"><td class="memItemLeft" align="right" valign="top"><a id="aea92cd19c1b8f1862252f0f0cf5f76a8" name="aea92cd19c1b8f1862252f0f0cf5f76a8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>~DecisionTree</b> ()</td></tr>
+<tr class="memdesc:aea92cd19c1b8f1862252f0f0cf5f76a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the <a class="el" href="class_v_g_a_i_l_1_1_decision_tree.html" title="Custom class that manages the nodes of a decision tree.">DecisionTree</a> object. <br /></td></tr>
+<tr class="separator:aea92cd19c1b8f1862252f0f0cf5f76a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77405565a12e4a9ca1c4cab1b1b65615" id="r_a77405565a12e4a9ca1c4cab1b1b65615"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77405565a12e4a9ca1c4cab1b1b65615">update</a> (float deltaTime)</td></tr>
+<tr class="memdesc:a77405565a12e4a9ca1c4cab1b1b65615"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loops through the decision tree and performs the decision-making process.  <br /></td></tr>
+<tr class="separator:a77405565a12e4a9ca1c4cab1b1b65615"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19e44583f0a74238e74a209e1a5ab72f" id="r_a19e44583f0a74238e74a209e1a5ab72f"><td class="memTemplParams" colspan="2">template&lt;class T , typename... Args&gt; </td></tr>
+<tr class="memitem:a19e44583f0a74238e74a209e1a5ab72f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="class_v_g_a_i_l_1_1_decision_node.html">DecisionNode</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a19e44583f0a74238e74a209e1a5ab72f">createRoot</a> (Args &amp;&amp;...args)</td></tr>
+<tr class="memdesc:a19e44583f0a74238e74a209e1a5ab72f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and returns the root of the decision tree.  <br /></td></tr>
 <tr class="separator:a19e44583f0a74238e74a209e1a5ab72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Custom class that manages the nodes of a decision tree. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a19e44583f0a74238e74a209e1a5ab72f" name="a19e44583f0a74238e74a209e1a5ab72f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19e44583f0a74238e74a209e1a5ab72f">&#9670;&#160;</a></span>createRoot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_v_g_a_i_l_1_1_decision_node.html">DecisionNode</a> &amp; VGAIL::DecisionTree::createRoot </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...</td>          <td class="paramname"><span class="paramname"><em>args</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates and returns the root of the decision tree. </p>
+<p>This is a templated method, meaning any custom class can be used as a root node as it inherits from <a class="el" href="class_v_g_a_i_l_1_1_decision_node.html" title="Custom class that manages the nodes of a decision tree.">DecisionNode</a>. <br  />
+ Any number of variables can be passed, but if there is a mismatch of variables with the <code>T</code> constructor then there will be a compile time error.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Generic class. </td></tr>
+    <tr><td class="paramname">Args</td><td>Variadic variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Variadic variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_v_g_a_i_l_1_1_decision_node.html" title="Custom class that manages the nodes of a decision tree.">DecisionNode</a>&amp; The newly created root of the decision tree. </dd></dl>
+
+</div>
+</div>
+<a id="a77405565a12e4a9ca1c4cab1b1b65615" name="a77405565a12e4a9ca1c4cab1b1b65615"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77405565a12e4a9ca1c4cab1b1b65615">&#9670;&#160;</a></span>update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VGAIL::DecisionTree::update </td>
+          <td>(</td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>deltaTime</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loops through the decision tree and performs the decision-making process. </p>
+<p>Starts from the root node and calls the <code>makeDecision()</code> method on its child nodes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">deltaTime</td><td>Elapsed time between last frame and current frame. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>D:/UniVie/Sem 5/Master/ViennaGameAILibrary/include/<a class="el" href="_vienna_game_a_i_library_8hpp_source.html">ViennaGameAILibrary.hpp</a></li>
 </ul>
