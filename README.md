@@ -85,7 +85,7 @@ The navmesh file can be created either manually or by the game itself. The file 
 ```
 Both ```navmeshWidth``` and ```navmeshHeight``` need to be positive integers. The third line describes the pattern of the navigation mesh, where ```w``` is a walkable area and ```o``` is an obstacle. Make sure that the number of characters are equal to ```navmeshWidth``` * ```navmeshHeight```.
 
-There is also the option to save a randomly generated navmesh. This can be done by calling ```saveToFile(const std::string& filepath)``` (*ViennaGameAILibrary* : 453-466) and by passing a filepath. If the file doesn't exist, it will be created automatically.
+There is also the option to save a randomly generated navmesh. This can be done by calling ```saveToFile(const std::string& filepath)``` (see lines 763-776) and by passing a filepath. If the file doesn't exist, it will be created automatically.
 
 - Create start and end positions for the A* algorithm
 
@@ -104,7 +104,7 @@ This process can be called while setting up the application (before the game loo
 ```
 The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (default: 4).
 
-This process will work on the Regions defined when the navmesh is created (see *ViennaGameAILibrary* : 514-537). The number of regions depends on the navmesh size, and by default they are set to each contain 9 * 9 nodes (9 on the *x* axis, 9 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
+This process will work on the Regions defined when the navmesh is created (see lines 871-894). The number of regions depends on the navmesh size, and by default they are set to each contain 9 * 9 nodes (9 on the *x* axis, 9 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
 
 The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
 
