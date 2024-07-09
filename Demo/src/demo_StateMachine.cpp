@@ -1,3 +1,10 @@
+/**
+* The Vienna Game AI Library
+*
+* (c) bei Lavinia-Elena Lehaci, University of Vienna, 2024
+*
+*/
+
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 #include "Timer.h"

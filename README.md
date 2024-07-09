@@ -463,3 +463,7 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 - Fonts
 	- https://www.dafont.com/pixelplay.font
 	- https://www.dafont.com/sunny-spells-basic.font
+- Steering behaviors
+	- Craig Reynold's proposals: https://www.red3d.com/cwr/steer/
+	- Wander behavior: https://www.youtube.com/watch?v=ujsR2vcJlLk
+	- Flocking algorithm: https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html

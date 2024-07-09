@@ -1,3 +1,10 @@
+/**
+* The Vienna Game AI Library
+*
+* (c) bei Lavinia-Elena Lehaci, University of Vienna, 2024
+*
+*/
+
 #pragma once
 #include <iostream>
 #include <chrono>
