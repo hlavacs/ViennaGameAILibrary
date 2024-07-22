@@ -1181,7 +1181,7 @@ namespace VGAIL
 		std::function<void(float)> onUpdateCallback;
 
 		/**
-		 * @brief Adds an outgoing transition from this State object to another State object.
+		 * @brief Creates an outgoing transition from this State object to another State object.
 		 *
 		 * This method adds a transition between this State object and another given one. It is given a condition which,
 		 * if triggered, will activate the target state.
