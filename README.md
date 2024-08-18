@@ -31,7 +31,7 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 	- Check: CMake minimum version required: 3.28.0.
 
 - Add the following folders to the PATH environment variable:
-	- *msys64/MINGW64/bin*
+	- *msys64/mingw64/bin*
 	- *doxygen/bin*
 	- *ninja*
 
