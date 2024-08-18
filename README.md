@@ -26,7 +26,7 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 - [Ninja](https://ninja-build.org/)
 - [Msys2](https://www.msys2.org/) - CMake and Clang need to be installed through it.
 	- After it is installed, run ```pacman -Syu``` from the *MSYS2* terminal to update the package database.
-	- Open the *MINGW64* terminal from the *msys64* folder and run the following commands:
+	- Open the *MINGW64* terminal from the *msys64* folder and run the following command:
 		- ```pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-cmake```
 	- Check: CMake minimum version required: 3.28.0.
 
@@ -52,7 +52,7 @@ In *Demo/```CMakeLists.txt```*, change the path of the .cpp file that you want t
 ```
 add_executable(Demo src/demo_PathFinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
 ```
-
+In the line above, the pathfinding example is used as the running demo.
 # Code documentation
 Documentation is generated using Doxygen. To see it, open ```index.html``` which can be found in the *docs* folder.
 
