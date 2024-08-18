@@ -25,10 +25,10 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 - [Doxygen](https://www.doxygen.nl/index.html)
 - [Ninja](https://ninja-build.org/)
 - [Msys2](https://www.msys2.org/) - CMake and Clang need to be installed through it.
-	- After it is installed, run ```pacman -Syu``` from the *MSYS2* terminal. (to update the package database)
+	- After it is installed, run ```pacman -Syu``` from the *MSYS2* terminal to update the package database.
 	- Open the *MINGW64* terminal from the *msys64* folder and run the following commands:
 		- ```pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-cmake```
-	- Check: CMake minimum version required: 3.28.1
+	- Check: CMake minimum version required: 3.28.0.
 
 - Add the following folders to the PATH environment variable:
 	- *msys64/MINGW64/bin*
@@ -40,10 +40,10 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 2. Run ```git submodule init``` and ```git submodule update``` to fetch raylib.
 3. Run ```build_demo_win.bat``` to build the project. The output will be stored in the build folder.
 
-Make sure Clang and Ninja are used by this project. Once the build process starts, the first two lines should be the following:
+Make sure Clang and Ninja are used by this project. The first time you build the process, once the process starts, the first two lines should be the following:
 ```
 -- Building for: Ninja
--- The CXX compiler identification is Clang 17.0.6 // or any other version
+-- The CXX compiler identification is Clang ...
 ```
 4. Run ```run_demo_win.bat``` to start the project.
 
