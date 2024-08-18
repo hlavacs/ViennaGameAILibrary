@@ -24,7 +24,7 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 ## Prerequisites
 - [Doxygen](https://www.doxygen.nl/index.html)
 - [Ninja](https://ninja-build.org/)
-- [Msys2](https://www.msys2.org/) - CMake and Clang need to be installed through it.
+- [MSYS2](https://www.msys2.org/) - CMake and Clang need to be installed through it.
 	- After it is installed, run ```pacman -Syu``` from the *MSYS2* terminal to update the package database.
 	- Open the *MINGW64* terminal from the *msys64* folder and run the following command:
 		- ```pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-cmake```
