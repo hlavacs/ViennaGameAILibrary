@@ -1952,7 +1952,7 @@ namespace VGAIL
 	private:
 		ui32 m_id;											/*!< The ID of this Boid object. */
 		f32 m_lastRotation = 0.0f;							/*!< The last stored rotation of this Boid object. */
-		f32 m_theta = PI / 2.0f;							/*!< The angle between the randomly chosen point and the horizontal axis. */
+		f32 m_theta = PI / 2.0f;							/*!< The angle between the randomly chosen point and the horizontal axis used in the wander behavior. */
 		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;			/*!< The minimum and maximum speed of this Boid object. */
 		Vec2f m_position, m_velocity;						/*!< The position and velocity of this Boid object. */
 	};
