@@ -1348,7 +1348,7 @@ namespace VGAIL
 		 * @param index The index of the child node.
 		 * @return DecisionNode& The child node of the DecisionNode object.
 		 */
-		DecisionNode& getChild(VGAIL::ui32 index)
+		DecisionNode& getChild(ui32 index)
 		{
 			VGAIL_ASSERT(index < m_children.size(), "Index out of bounds!");
 			return *m_children[index];
