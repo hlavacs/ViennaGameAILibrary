@@ -899,7 +899,7 @@ namespace VGAIL
 		 * Done after generating or loading a navmesh.
 		 * It determines the neighbors of each node and stores them at `m_neighbors[nodeIndex]`.
 		 *
-		 * @param nodeIndex
+		 * @param nodeIndex The index of the node within the navmesh.
 		 */
 		void setNeighbors(ui32 nodeIndex)
 		{
@@ -1178,7 +1178,7 @@ namespace VGAIL
 		 *
 		 * While the State is active, this method is called to carry out a list of given actions.
 		 */
-		std::function<void(float)> onUpdateCallback;
+		std::function<void(f32)> onUpdateCallback;
 
 		/**
 		 * @brief Creates an outgoing transition from this State object to another State object.
@@ -1254,7 +1254,7 @@ namespace VGAIL
 		 *
 		 * @param deltaTime Elapsed time between last frame and current frame.
 		 */
-		void update(float deltaTime)
+		void update(f32 deltaTime)
 		{
 			if (m_states.size() <= 0)
 				return;
@@ -1340,7 +1340,7 @@ namespace VGAIL
 		 *
 		 * @param deltaTime Elapsed time between last frame and current frame.
 		 */
-		virtual void makeDecision(float deltaTime) = 0;
+		virtual void makeDecision(f32 deltaTime) = 0;
 
 		/**
 		 * @brief Get the child node of this DecisionNode object at a given index.
@@ -1416,7 +1416,7 @@ namespace VGAIL
 		 *
 		 * @param deltaTime Elapsed time between last frame and current frame.
 		 */
-		void update(float deltaTime)
+		void update(f32 deltaTime)
 		{
 			if (m_root)
 			{
@@ -1620,8 +1620,8 @@ namespace VGAIL
 
 			if (neighbors > 0)
 			{
-				alignVector = alignVector / static_cast<float>(neighbors);
-				cohesionVector = cohesionVector / static_cast<float>(neighbors);
+				alignVector = alignVector / static_cast<f32>(neighbors);
+				cohesionVector = cohesionVector / static_cast<f32>(neighbors);
 
 				m_velocity = m_velocity + (alignVector - m_velocity) * matchingFactor + (cohesionVector - m_position) * centeringFactor;
 			}
