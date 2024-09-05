@@ -114,7 +114,7 @@ This process will work on the Regions defined when the navmesh is created (see l
 The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
 
 <div align="center">
-	<img src="assets/pathfinding.jpg">
+	<img src="assets/pathfinding.png">
 </div>
 
 During this process, the ```AStar``` method is called to calculate the distance between each nodes and each region. Therefore, at the end of the process, the ```m_adjList``` from the ```NavMesh``` class will contain the best path from one node to a region at ```m_adjList[nodeIndex][regionID]```. 
@@ -205,13 +205,13 @@ The order in which the child nodes are instantiated is important, as it will mat
 In the example from *demo_DecisionTree.cpp*, both characters have their own decision tree and each chosen decision is displayed every frame on the screen.
 
 <div align="center">
-	<img src="assets/decisionTreeDemo.png">
+	<img src="assets/decisionTrees.png">
 </div>
 
 The logic behind the decision trees is displayed in the following picture.
 
 <div align="center">
-	<img src="assets/decisionTree.jpg">
+	<img src="assets/decisionTreeDiagram.jpg">
 </div>
 
 In this example, the decision nodes are represented by the rectangular objects (*isGuardClose*, *isBurglarClose*, etc.).
