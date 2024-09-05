@@ -15,13 +15,13 @@
 
 int main(int argc, char* argv[])
 {
-	uint32_t screenWidth = 1200;
-	uint32_t screenHeight = 800;
+	constexpr uint32_t screenWidth = 1200;
+	constexpr uint32_t screenHeight = 800;
 
 	bool pathFound = false;
 
-	float gridStride = 50.0f;
-	float tileSize = 35.0f;
+	float gridStride = 30.0f;
+	float tileSize = 25.0f;
 
 	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / gridStride);
 	uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / gridStride);

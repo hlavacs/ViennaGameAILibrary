@@ -11,8 +11,8 @@
 #include <sstream>
 #include <string>
 
-int screenWidth = 1200;
-int screenHeight = 900;
+constexpr uint32_t screenWidth = 1200;
+constexpr uint32_t screenHeight = 900;
 
 float tileSize = 50.0f;
 float playerSpeed = 100.0f;
@@ -266,17 +266,17 @@ public:
 	float takeDamageTimeCooldown = 2.0f;
 
 	float timeLeft = 0.0f;
-	float timeLeftCooldown = 8.0f;
+	float timeLeftCooldown = 7.0f;
 
 };
 
 uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
-uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
+uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / tileSize);
 VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 0.0f);
 
 int main(int argc, char* argv[])
 {
-	Burglar* burglar = new Burglar(VGAIL::Vec2ui{ 22, 8 }, 3, BurglarMode::WAITING);
+	Burglar* burglar = new Burglar(VGAIL::Vec2ui{ 23, 8 }, 3, BurglarMode::WAITING);
 	Guard* guard = new Guard(VGAIL::Vec2ui{ 7, 8 }, 3, GuardMode::PATROLLING);
 
 	std::string burglar_currentDecision = "";
@@ -319,18 +319,6 @@ int main(int argc, char* argv[])
 		float dt = GetFrameTime();
 		burglar_tree.update(dt);
 		guard_tree.update(dt);
-
-		if (IsKeyDown(KEY_LEFT))
-		{
-			float x = guard->position.x - dt * playerSpeed;
-			guard->position.x = x;
-		}
-
-		if (IsKeyDown(KEY_RIGHT))
-		{
-			float x = guard->position.x + dt * playerSpeed;
-			guard->position.x = x;
-		}
 
 		BeginDrawing();
 		ClearBackground(BLACK);
@@ -456,7 +444,7 @@ int main(int argc, char* argv[])
 				0.0f,
 				WHITE
 			);
-			guard_currentDecision = "Alerting the castle!";
+			guard_currentDecision = "Alerting the castle !!";
 			break;
 
 		case GuardMode::PATROLLING:
@@ -507,19 +495,19 @@ int main(int argc, char* argv[])
 		if (!entered)
 		{
 			ss.str(std::string());
-			ss << "Burglar decision: " << burglar_currentDecision;
-			DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 85.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+			ss << "Burglar decision -> " << burglar_currentDecision;
+			DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
 		}
 		else
 		{
 			ss.str(std::string());
-			ss << "The burglar entered the castle!";
-			DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 85.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+			ss << "The burglar entered the castle !!";
+			DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
 		}
 
 		ss.str(std::string());
-		ss << "Guard decision: " << guard_currentDecision;
-		DrawTextEx(pixelFont, ss.str().c_str(), Vector2{ 10.0f, screenHeight - 50.0f }, sunnyFont.baseSize, 1.0f, WHITE);
+		ss << "Guard decision -> " << guard_currentDecision;
+		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 10.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
 
 		EndDrawing();
 	}

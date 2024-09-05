@@ -8,8 +8,9 @@
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
-float screenWidth = 1200.0f;
-float screenHeight = 800.0f;
+constexpr uint32_t screenWidth = 1200;
+constexpr uint32_t screenHeight = 900;
+
 float margin = 50.0f;
 
 void stayWithinBorders(VGAIL::Boid* boid, float turnFactor)

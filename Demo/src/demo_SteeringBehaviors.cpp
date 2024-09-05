@@ -12,8 +12,9 @@
 #include <string>
 #include <iomanip>
 
-uint32_t screenWidth = 1500;
-uint32_t screenHeight = 960;
+constexpr uint32_t screenWidth = 1200;
+constexpr uint32_t screenHeight = 900;
+
 float tileSize = 30.0f;
 
 uint32_t screenMargin = 30;
@@ -176,7 +177,7 @@ int main(int argc, char* argv[])
 		if (!snakeSpawned && !dayTime)
 		{
 			snakeSpawned = true;
-			snake->setPosition({ VGAIL::randomInt(0, 50), VGAIL::randomInt(0, 30) });
+			snake->setPosition({ static_cast<float>(VGAIL::randomInt(0, 50)), static_cast<float>(VGAIL::randomInt(0, 30)) });
 			snake->setVelocity({ 0.1f });
 		}
 

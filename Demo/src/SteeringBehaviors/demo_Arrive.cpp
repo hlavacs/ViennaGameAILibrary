@@ -10,8 +10,8 @@
 
 int main(int argc, char* argv[])
 {
-	int screenWidth = 1200;
-	int screenHeight = 800;
+	constexpr uint32_t screenWidth = 1200;
+	constexpr uint32_t screenHeight = 900;
 
 	float targetX = 0.0f;
 	float targetY = 0.0f;

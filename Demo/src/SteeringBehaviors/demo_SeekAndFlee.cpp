@@ -8,8 +8,9 @@
 #include "ViennaGameAILibrary.hpp"
 #include "raylib.h"
 
-int screenWidth = 1200;
-int screenHeight = 800;
+constexpr uint32_t screenWidth = 1200;
+constexpr uint32_t screenHeight = 900;
+
 int screenMargin = 50;
 float tileSize = 50.0f;
 

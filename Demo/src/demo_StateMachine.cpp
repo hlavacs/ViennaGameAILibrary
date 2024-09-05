@@ -41,7 +41,7 @@ public:
 int main(int argc, char* argv[])
 {
 	// uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
-	// uint32_t navmeshHeight = static_cast<uint32_t>((screenHeight - 100) / tileSize);
+	// uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / tileSize);
 	// VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
 
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh("Demo/res/navmesh.txt");
@@ -333,17 +333,17 @@ int main(int argc, char* argv[])
 
 		std::stringstream ss;
 		ss << currentLoad;
-		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ worker.x + 7.0f, worker.y }, 15, 1.0f, BLACK);
+		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ worker.x - 5.0f, worker.y }, 25, 1.0f, BLACK);
 
 		ss.str(std::string());
 		ss << homeLoad;
-		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ home.x + 2.5f, home.y }, 15, 1.0f, BLACK);
+		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ home.x - 10.0f, home.y }, 25, 1.0f, BLACK);
 
 		for (Mine* mine : mines)
 		{
 			ss.str(std::string());
 			ss << mine->size;
-			DrawTextEx(loadFont, ss.str().c_str(), Vector2{ mine->position.x * tileSize + 3.0f, mine->position.y * tileSize }, 15, 1.0f, BLACK);
+			DrawTextEx(loadFont, ss.str().c_str(), Vector2{ mine->position.x * tileSize - 10.0f, mine->position.y * tileSize }, 25, 1.0f, BLACK);
 		}
 
 		std::string currentState = "";
@@ -370,9 +370,10 @@ int main(int argc, char* argv[])
 		}
 
 		ss.str(std::string());
-		ss << "Current state: " << currentState;
+		ss << "CURRENT STATE -> " << currentState;
 		const char* fullText = ss.str().c_str();
-		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 200.0f, screenHeight - 70.0f };
+		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 200.0f, 50.0f };
+		DrawRectangle(textPosition.x - 20.0f, textPosition.y, 500.0f, 30.0f, WHITE);
 		DrawTextEx(stateFont, fullText, textPosition, stateFont.baseSize, 3.0f, BLACK);
 		EndDrawing();
 	}
