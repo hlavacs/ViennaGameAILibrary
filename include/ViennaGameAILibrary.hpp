@@ -26,7 +26,6 @@ namespace VGAIL
 	constexpr float PI = 3.14159265358979f;			/*!< The value of π computed at compile time */
 
 	typedef uint32_t ui32;
-	typedef uint64_t ui64;
 	typedef int32_t i32;
 	typedef float f32;
 
@@ -1031,15 +1030,14 @@ namespace VGAIL
 		 */
 		std::vector<Vec2ui> AStar(Vec2ui start, Vec2ui target, std::vector<NodeData>& nodes)
 		{
-			std::vector<i32> parents(nodes.size(), -1);
+			std::vector<ui32> parents(nodes.size(), -1);
+			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> openSet;
 
 			for (NodeData& node : nodes)
 			{
 				node.g = INFINITY;
 				node.h = INFINITY;
 			}
-
-			std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> openSet;
 
 			ui32 startNodeIndex = getIndex(start);
 			ui32 targetNodeIndex = getIndex(target);
@@ -1071,8 +1069,7 @@ namespace VGAIL
 					return shortestPath;
 				}
 
-				std::vector<ui32> neighbors = m_neighbors[currentIndex];
-				for (ui32 neighborIndex : neighbors)
+				for (ui32 neighborIndex : m_neighbors[currentIndex])
 				{
 					NodeData& neighbor = nodes[neighborIndex];
 					if (neighbor.state == NodeState::OBSTRUCTABLE)

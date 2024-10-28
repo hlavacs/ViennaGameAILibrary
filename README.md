@@ -1,4 +1,4 @@
-# ViennaGameAILibrary
+# Vienna Game AI Library
 
 Vienna Game AI Library is a single-header, comprehensive C++ library that encompasses popular AI algorithms to be used in creating 2D Real-Time Strategy games with a focus on Non-Player Character management.
 
@@ -387,10 +387,8 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	
 	In this example, the red line is the character's velocity which changes every frame depending on the randomly chosen point.
 
-	### 5.7. **Steer**
-	The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to show in which direction the boid is moving. Steering is already implemented in each already mentioned behavior, therefore this method is only needed for rendering.
-
-	Each texture needs a texture rotation as per the ```DrawTexturePro``` method from *raylib*. In the demos for the steering behaviors, the ```getRotationInDegrees()``` method is simply called when drawing the texture on the screen such that the texture is always facing the direction it is moving.
+	### 5.7. **Face**
+	The ```getRotationInDegrees()``` method from the ```Boid``` class calculates the rotation of the boid in degrees and can be used to show in which direction the boid is moving.  Each texture needs a texture rotation as per the ```DrawTexturePro``` method from *raylib*. In the demos for the steering behaviors, the ```getRotationInDegrees()``` method is simply called when drawing the texture on the screen such that the texture is always facing the direction it is moving.
 
 The library also provides implementation for the three steering behaviors used usually in flocking (*separation*, *alignment*, *cohesion*). They are detailed in the next section.
 - Apply the steering force and update the position. 
@@ -472,5 +470,5 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 	- Craig Reynold's proposals: https://www.red3d.com/cwr/steer/
 	- Wander behavior: https://www.youtube.com/watch?v=ujsR2vcJlLk
 	- Flocking algorithm: https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html
-- User Interface
+- User Interface for Flocking
 	- https://www.raylib.com/examples/text/loader.html?name=text_input_box
