@@ -18,8 +18,8 @@ constexpr uint32_t screenHeight = 900;
 float tileSize = 30.0f;
 
 uint32_t screenMargin = 30;
-float maxSpeed_dog = 5.0f;
-float maxSpeed_snake = 3.5f;
+float maxSpeed_dog = 3.0f;
+float maxSpeed_snake = 2.5f;
 float maxSpeed_chicken = 2.0f;
 
 VGAIL::Vec2f barnPosition = { 15.0f, 15.0f };
@@ -30,6 +30,11 @@ bool dayTime;
 float countdown = 0.0f;
 
 bool snakeSpawned = false;
+bool chickenNearby = false;
+
+std::string chickenBehaviour = "Wander";
+std::string dogBehaviour = "Wander";
+std::string snakeBehaviour = "Not spawned";
 
 bool isOutsideTheBorders(VGAIL::Vec2f pos)
 {
@@ -98,6 +103,8 @@ public:
 			stayWithinBorders(boid, 3.0f);
 			goAroundBarn(boid);
 			boid->updatePosition(dt);
+
+			chickenBehaviour = "Wander";
 		}
 		else
 		{
@@ -113,6 +120,8 @@ public:
 				VGAIL::Vec2f steeringForce = boid->arrive(VGAIL::Vec2f{ barnPosition.x + (barnSize / tileSize / 2.0f), barnPosition.y + (barnSize / tileSize) }, 3.0f, 0.3f);
 				boid->applySteeringForce(steeringForce);
 				boid->updatePosition(dt);
+				
+				chickenBehaviour = "Arrive at barn";
 			}
 		}
 	}
@@ -183,10 +192,12 @@ int main(int argc, char* argv[])
 
 		if (snakeSpawned)
 		{
+			dogBehaviour = "Pursue snake";
 			dog->applySteeringForce(dog->pursue(snake, 5.0f, 0.1f));
 
 			if (VGAIL::distance(dog->getPosition(), snake->getPosition()) <= 3.0f)
 			{
+				snakeBehaviour = "Evade dog";
 				snake->applySteeringForce(snake->evade(dog, 10.0f, 0.1f));
 			}
 			else
@@ -198,7 +209,9 @@ int main(int argc, char* argv[])
 				{
 					if (VGAIL::distance(snake->getPosition(), chickens[i]->boid->getPosition()) <= 6.0f)
 					{
+						chickenNearby = true;
 						snake->applySteeringForce(snake->seek(chickens[i]->boid->getPosition(), 2.0f));
+						snakeBehaviour = "Seek chicken";
 
 						if (VGAIL::distance(snake->getPosition(), chickens[i]->boid->getPosition()) <= 0.5f)
 						{
@@ -206,6 +219,8 @@ int main(int argc, char* argv[])
 							index = i;
 							break;
 						}
+					} else {
+						chickenNearby = false;
 					}
 				}
 
@@ -215,16 +230,22 @@ int main(int argc, char* argv[])
 					delete target;
 				}
 
-				snake->applySteeringForce(snake->wander(500.0f, 100.0f, 0.2f, 2.0f));
+				if(!chickenNearby)
+				{
+					snake->applySteeringForce(snake->wander(500.0f, 100.0f, 0.2f, 2.0f));
+					snakeBehaviour = "Wander";
+				}
 			}
 
 			if (VGAIL::distance(dog->getPosition(), snake->getPosition()) <= 1.0f)
 			{
 				snakeSpawned = false;
+				snakeBehaviour = "Not spawned";
 			}
 		}
 		else
 		{
+			dogBehaviour = "Wander";
 			dog->applySteeringForce(dog->wander(500.0f, 100.0f, 0.2f, 5.0f));
 		}
 
@@ -236,6 +257,7 @@ int main(int argc, char* argv[])
 		if (isOutsideTheBorders(snake->getPosition()))
 		{
 			snakeSpawned = false;
+			snakeBehaviour = "Not spawned";
 		}
 
 		for (Chicken* chicken : chickens)
@@ -319,16 +341,30 @@ int main(int argc, char* argv[])
 			);
 		}
 
+		DrawRectangle(0, screenHeight - 900, screenWidth, 150, Color{255, 255, 255, 100});
+
 		std::stringstream ss;
 		if (dayTime)
-			ss << "Day. Countdown: " << std::fixed << std::setprecision(1) << countdown << " / 12.0";
+			ss << "Day time";
 		else
-			ss << "Night. Countdown: " << std::fixed << std::setprecision(1) << countdown << " / 24.0";
-		DrawText(ss.str().c_str(), 10, 10, 20, BLACK);
+			ss << "Night time";
+		DrawText(ss.str().c_str(), 20, 20, 30, BLACK);
 
 		ss.str(std::string());
 		ss << "Chickens: " << chickens.size();
-		DrawText(ss.str().c_str(), 1300, 10, 20, BLACK);
+		DrawText(ss.str().c_str(), 20, 60, 30, BLACK);
+
+		ss.str(std::string());
+		ss << "Chicken behaviour: " << chickenBehaviour;
+		DrawText(ss.str().c_str(), screenWidth - 550,  20, 30, BLACK);
+
+		ss.str(std::string());
+		ss << "Dog behaviour: " << dogBehaviour;
+		DrawText(ss.str().c_str(), screenWidth - 550, 60, 30, BLACK);
+
+		ss.str(std::string());
+		ss << "Snake behaviour: " << snakeBehaviour;
+		DrawText(ss.str().c_str(), screenWidth - 550, 100, 30, BLACK);
 
 		EndDrawing();
 	}

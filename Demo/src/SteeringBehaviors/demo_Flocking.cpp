@@ -51,19 +51,19 @@ int main(int argc, char* argv[])
 	// Avoid factor UI variables
 	char avoid_char[11] = "0.05\0";
 	int avoid_letterCount = 4;
-	Rectangle avoid_textBox = { 100, 50, 225, 30 };
+	Rectangle avoid_textBox = { 150, 70, 225, 40 };
 	bool avoid_mouseOnText = false;
 
 	// Matching factor UI variables
 	char matching_char[11] = "0.1\0";
 	int matching_letterCount = 4;
-	Rectangle matching_textBox = { 400, 50, 225, 30 };
+	Rectangle matching_textBox = { 450, 70, 225, 40 };
 	bool matching_mouseOnText = false;
 
 	// Centering factor UI variables
 	char centering_char[11] = "0.005\0";
 	int centering_letterCount = 6;
-	Rectangle centering_textBox = { 700, 50, 225, 30 };
+	Rectangle centering_textBox = { 750, 70, 225, 40 };
 	bool centering_mouseOnText = false;
 
 	VGAIL::Flocking* flock = new VGAIL::Flocking();
@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
 		}
 
 		// Avoid factor
-		DrawText("avoid factor", 100, 30, 20, GRAY);
+		DrawText("avoid factor", avoid_textBox.x, avoid_textBox.y - 35, 30, BLACK);
 
 		DrawRectangleRec(avoid_textBox, LIGHTGRAY);
 		if (avoid_mouseOnText)
@@ -232,10 +232,10 @@ int main(int argc, char* argv[])
 		else
 			DrawRectangleLines((int)avoid_textBox.x, (int)avoid_textBox.y, (int)avoid_textBox.width, (int)avoid_textBox.height, DARKGRAY);
 
-		DrawText(avoid_char, (int)avoid_textBox.x + 5, (int)avoid_textBox.y + 8, 20, BLACK);
+		DrawText(avoid_char, (int)avoid_textBox.x + 5, (int)avoid_textBox.y + 8, 25, BLACK);
 
 		// Matching factor
-		DrawText("matching factor", 400, 30, 20, GRAY);
+		DrawText("matching factor", matching_textBox.x, matching_textBox.y - 35, 30, BLACK);
 
 		DrawRectangleRec(matching_textBox, LIGHTGRAY);
 		if (matching_mouseOnText)
@@ -243,10 +243,10 @@ int main(int argc, char* argv[])
 		else
 			DrawRectangleLines((int)matching_textBox.x, (int)matching_textBox.y, (int)matching_textBox.width, (int)matching_textBox.height, DARKGRAY);
 
-		DrawText(matching_char, (int)matching_textBox.x + 5, (int)matching_textBox.y + 8, 20, BLACK);
+		DrawText(matching_char, (int)matching_textBox.x + 5, (int)matching_textBox.y + 8, 25, BLACK);
 
 		// Centering factor
-		DrawText("centering factor", 700, 30, 20, GRAY);
+		DrawText("centering factor", centering_textBox.x, centering_textBox.y - 35, 30, BLACK);
 
 		DrawRectangleRec(centering_textBox, LIGHTGRAY);
 		if (centering_mouseOnText)
@@ -254,7 +254,7 @@ int main(int argc, char* argv[])
 		else
 			DrawRectangleLines((int)centering_textBox.x, (int)centering_textBox.y, (int)centering_textBox.width, (int)centering_textBox.height, DARKGRAY);
 
-		DrawText(centering_char, (int)centering_textBox.x + 5, (int)centering_textBox.y + 8, 20, BLACK);
+		DrawText(centering_char, (int)centering_textBox.x + 5, (int)centering_textBox.y + 8, 25, BLACK);
 
 		EndDrawing();
 	}

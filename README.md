@@ -402,6 +402,12 @@ The library also provides implementation for the three steering behaviors used u
 
 Please note that the ```updatePosition()``` method must be called after applying the steering force, otherwise the boid's position will not change according to the new calculations.
 
+There is also a demo that uses all the steering behaviours covered in this section and it can be found in the *Demo/src/demo_SteeringBehaviors.cpp* file. A snippet of this example is given in the following picture.
+
+<div align="center">
+	<img src="assets/steeringBehaviors.png">
+</div>
+
 ## 6. **Flocking**
 
 The flocking behavior only works on ```VGAIL::Boid``` instances. The implementation follows Craig Reynolds's proposal.
