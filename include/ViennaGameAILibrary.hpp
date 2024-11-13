@@ -517,10 +517,10 @@ namespace VGAIL
 		 * @param width The width of the navigation mesh.
 		 * @param height The height of the navigation mesh.
 		 * @param obstaclePercentage The percentage to limit the amount of nodes with the state `obstructable` spawned within the navigation mesh.
-		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 9.
-		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 9.
+		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 5.
+		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 5.
 		 */
-		NavMesh(ui32 width, ui32 height, f32 obstaclePercentage, f32 regionLengthOnX = 9.0f, f32 regionLengthOnY = 9.0f)
+		NavMesh(ui32 width, ui32 height, f32 obstaclePercentage, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
 			: m_width(width)
 			, m_height(height)
 		{
@@ -555,10 +555,10 @@ namespace VGAIL
 		 * @brief Constructs a new NavMesh object by loading data from a file.
 		 *
 		 * @param filepath The relative path of the file.
-		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 9.
-		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 9.
+		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 5.
+		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 5.
 		 */
-		NavMesh(const std::string& filepath, f32 regionLengthOnX = 9.0f, f32 regionLengthOnY = 9.0f)
+		NavMesh(const std::string& filepath, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
 		{
 			std::ifstream stream(filepath);
 			std::string navmeshData;
