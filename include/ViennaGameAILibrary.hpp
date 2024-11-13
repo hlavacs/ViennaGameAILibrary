@@ -81,9 +81,22 @@ namespace VGAIL
 		 * @param other Vec2ui object to compare against.
 		 * @return `true` if the Vec2ui objects are equal, `false` otherwise.
 		 */
-		bool operator==(const Vec2ui& other)
+		bool operator==(const Vec2ui& other) const
 		{
 			return x == other.x && y == other.y;
+		}
+
+		/**
+		 * @brief  Checks whether this Vec2ui object is not equal to another Vec2ui object.
+		 *
+		 * Compares the `x` and `y` coordinates of two Vec2ui objects for inequality.
+		 *
+		 * @param other Vec2ui object to compare against.
+		 * @return `true` if the Vec2ui objects are not equal, `false` otherwise.
+		 */
+		bool operator!=(const Vec2ui& other) const
+		{
+			return x != other.x && y != other.y;
 		}
 	};
 
@@ -206,16 +219,29 @@ namespace VGAIL
 		}
 
 		/**
-			 * @brief  Checks if this Vec2f object is equal to another Vec2f object.
-			 *
-			 * Compares the `x` and `y` coordinates of two Vec2f objects for equality.
-			 *
-			 * @param other Vec2f object to compare against.
-			 * @return `true` if the Vec2f objects are equal, `false` otherwise.
-			 */
-		bool operator==(const Vec2f& other)
+		 * @brief  Checks if this Vec2f object is equal to another Vec2f object.
+		 *
+		 * Compares the `x` and `y` coordinates of two Vec2f objects for equality.
+		 *
+		 * @param other Vec2f object to compare against.
+		 * @return `true` if the Vec2f objects are equal, `false` otherwise.
+		 */
+		bool operator==(const Vec2f& other) const
 		{
 			return x == other.x && y == other.y;
+		}
+
+		/**
+		 * @brief  Checks whether this Vec2f object is not equal to another Vec2f object.
+		 *
+		 * Compares the `x` and `y` coordinates of two Vec2f objects for inequality.
+		 *
+		 * @param other Vec2f object to compare against.
+		 * @return `true` if the Vec2f objects are not equal, `false` otherwise.
+		 */
+		bool operator!=(const Vec2f& other) const
+		{
+			return x != other.x && y != other.y;
 		}
 
 		/**
