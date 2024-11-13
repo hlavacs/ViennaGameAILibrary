@@ -25,9 +25,9 @@ namespace VGAIL
 {
 	constexpr float PI = 3.14159265358979f;			/*!< The value of π computed at compile time */
 
-	typedef uint32_t ui32;
-	typedef int32_t i32;
-	typedef float f32;
+	typedef uint32_t ui32;							/*!< Unsigned 32-bit integer */
+	typedef int32_t i32;							/*!< Signed 32-bit integer */
+	typedef float f32;								/*!< 32-bit floating number */
 
 	/**
 	 * @brief Custom assertion macro.
@@ -44,7 +44,8 @@ namespace VGAIL
 	  */
 	struct Vec2ui
 	{
-		ui32 x, y;
+		ui32 x;										/*!< The `x` coordinate of the vector.*/
+		ui32 y;										/*!< The `y` coordinate of the vector.*/
 
 		/**
 		 * @brief Constructs a new Vec2ui object with default coordinates (0, 0).
@@ -105,7 +106,8 @@ namespace VGAIL
 	 */
 	struct Vec2f
 	{
-		f32 x, y;
+		f32 x;										/*!< The `x` coordinate of the vector.*/
+		f32 y;										/*!< The `y` coordinate of the vector.*/
 
 		/**
 		 * @brief Constructs a new Vec2f object with default coordinates (0.0f, 0.0f).
@@ -345,7 +347,8 @@ namespace VGAIL
 	struct RegionList
 	{
 		std::vector<Region*> regions;				/*!< 1D array of all regions. */
-		ui32 sizeX, sizeY;							/*!< Number of regions on the `x` and `y` axis. */
+		ui32 sizeX;									/*!< Number of regions on the `x` axis. */
+		ui32 sizeY;									/*!< Number of regions on the `y` axis. */
 
 		/**
 		 * @brief Constructs a new RegionList object.
@@ -410,7 +413,7 @@ namespace VGAIL
 	struct NodeData
 	{
 		Vec2ui pos;									/*!< 2D position of the node. */
-		f32 g;										/*!> The cost of the path from the start node to the current node. */
+		f32 g;										/*!< The cost of the path from the start node to the current node. */
 		f32 h;										/*!< The heuristic function. */
 		ui32 regionID;								/*!< The id of the region this node is part of. */
 		NodeState state;							/*!< State of this node. */
@@ -1884,7 +1887,7 @@ namespace VGAIL
 		 *
 		 * @param circleDistance The distance from this Boid object to the circle.
 		 * @param circleRadius The radius of the circle.
-		 * @param displaceRange The range within which the random point is chosen.
+		 * @param displacementRange The range within which the random point is chosen.
 		 * @param maxAcceleration The maximum rate at which the velocity can change per unit of time.
 		 * @return Vec2f The steering force used to wander.
 		 */
