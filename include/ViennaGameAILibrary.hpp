@@ -1130,6 +1130,7 @@ namespace VGAIL
 	};
 
 	class State;
+	
 	/**
 	 * @brief Custom class that manages the behavior of transitions between states.
 	 *
@@ -1189,24 +1190,6 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief Method called when a State object is entered from a transition.
-		 *
-		 */
-		std::function<void()> onEnterCallback;
-
-		/**
-		 * @brief Method called when a State object is exited.
-		 */
-		std::function<void()> onExitCallback;
-
-		/**
-		 * @brief Method called while a State object is active.
-		 *
-		 * While the State is active, this method is called to carry out a list of given actions.
-		 */
-		std::function<void(f32)> onUpdateCallback;
-
-		/**
 		 * @brief Creates an outgoing transition from this State object to another State object.
 		 *
 		 * This method adds a transition between this State object and another given one. It is given a condition which,
@@ -1229,6 +1212,24 @@ namespace VGAIL
 		{
 			return m_transitions;
 		}
+		
+		/**
+		 * @brief Method called when a State object is entered from a transition.
+		 *
+		 */
+		std::function<void()> onEnterCallback;
+
+		/**
+		 * @brief Method called when a State object is exited.
+		 */
+		std::function<void()> onExitCallback;
+
+		/**
+		 * @brief Method called while a State object is active.
+		 *
+		 * While the State is active, this method is called to carry out a list of given actions.
+		 */
+		std::function<void(f32)> onUpdateCallback;
 
 	private:
 		std::vector<Transition*> m_transitions;				/*!< The list of this state's outgoing transitions. */

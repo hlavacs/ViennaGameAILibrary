@@ -40,10 +40,6 @@ public:
 
 int main(int argc, char* argv[])
 {
-	// uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / tileSize);
-	// uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / tileSize);
-	// VGAIL::NavMesh* navmesh = new VGAIL::NavMesh(navmeshWidth, navmeshHeight, 30.0f);
-
 	VGAIL::NavMesh* navmesh = new VGAIL::NavMesh("Demo/res/navmesh.txt");
 	uint32_t navmeshWidth = navmesh->getWidth();
 	uint32_t navmeshHeight = navmesh->getHeight();
@@ -97,7 +93,6 @@ int main(int argc, char* argv[])
 	uint32_t maxLoadCapacity = 5;
 	float loadTime = 0.0f;
 	float loadTimeCooldown = 1.0f;
-
 	float workerSpeed = 100.0f;
 
 	std::vector<VGAIL::Vec2ui> path;
@@ -123,6 +118,7 @@ int main(int argc, char* argv[])
 	Texture2D obstacleTexture = LoadTexture("Demo/res/demo_StateMachine/obstacle.png");
 
 	VGAIL::StateMachine stateMachine;
+	uint32_t currentStateIndex = 0;
 
 	VGAIL::State* dropOffState = stateMachine.createState();
 	VGAIL::State* locateMineState = stateMachine.createState();
@@ -130,33 +126,31 @@ int main(int argc, char* argv[])
 	VGAIL::State* idleState = stateMachine.createState();
 	VGAIL::State* collectState = stateMachine.createState();
 
-	uint32_t currentStateIndex = 0;
-
-	dropOffState->addTransition(locateMineState, [&]() {
+	dropOffState->addTransition(locateMineState, [&currentLoad]() {
 		return currentLoad == 0;
 		});
 
-	locateMineState->addTransition(idleState, [&]() {
+	locateMineState->addTransition(idleState, [&currentMine, &path]() {
 		return currentMine->size == 0 || path.size() == 0;
 		});
 
-	locateMineState->addTransition(collectState, [&]() {
+	locateMineState->addTransition(collectState, [&currentPathIndex, &path]() {
 		return currentPathIndex == path.size() - 1;
 		});
 
-	collectState->addTransition(locateHomeState, [&]() {
+	collectState->addTransition(locateHomeState, [&currentLoad, &maxLoadCapacity, &currentMine]() {
 		return currentLoad == maxLoadCapacity || (currentMine->size == 0 && currentLoad > 0);
 		});
 
-	locateHomeState->addTransition(dropOffState, [&]() {
+	locateHomeState->addTransition(dropOffState, [&currentPathIndex, &path]() {
 		return currentPathIndex == path.size() - 1;
 		});
 
-	dropOffState->onEnterCallback = [&]() {
+	dropOffState->onEnterCallback = [&currentStateIndex]() {
 		currentStateIndex = 0;
 		};
 
-	dropOffState->onUpdateCallback = [&](float delta) {
+	dropOffState->onUpdateCallback = [&currentStateIndex, &currentLoad, &loadTime, &loadTimeCooldown, &homeLoad](float delta) {
 		currentStateIndex = 0;
 		if (currentLoad > 0)
 		{
@@ -170,7 +164,7 @@ int main(int argc, char* argv[])
 		}
 		};
 
-	locateHomeState->onEnterCallback = [&]() {
+	locateHomeState->onEnterCallback = [&currentStateIndex, &path, &navmesh, &homePosition, &worker, &currentPathIndex]() {
 		currentStateIndex = 1;
 
 		VGAIL::Vec2ui workerPos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tileSize), static_cast<uint32_t>(worker.y / tileSize) };
@@ -182,7 +176,7 @@ int main(int argc, char* argv[])
 		}
 		};
 
-	locateHomeState->onUpdateCallback = [&](float delta) {
+	locateHomeState->onUpdateCallback = [&currentPathIndex, &path, &worker, &workerSpeed](float delta) {
 		if (currentPathIndex < path.size() - 1)
 		{
 			VGAIL::Vec2ui targetNode = path[currentPathIndex];
@@ -205,12 +199,12 @@ int main(int argc, char* argv[])
 		}
 		};
 
-	locateHomeState->onExitCallback = [&]() {
+	locateHomeState->onExitCallback = [&path, &currentPathIndex]() {
 		path.clear();
 		currentPathIndex = -1;
 		};
 
-	locateMineState->onEnterCallback = [&]() {
+	locateMineState->onEnterCallback = [&currentStateIndex, &worker, &mines, &path, &navmesh, &currentMine, & currentPathIndex]() {
 		currentStateIndex = 2;
 
 		VGAIL::Vec2ui workerPos = VGAIL::Vec2ui{ static_cast<uint32_t>(worker.x / tileSize), static_cast<uint32_t>(worker.y / tileSize) };
@@ -240,7 +234,7 @@ int main(int argc, char* argv[])
 		path = navmesh->findPath(workerPos, currentMine->position);
 		};
 
-	locateMineState->onUpdateCallback = [&](float delta) {
+	locateMineState->onUpdateCallback = [&currentPathIndex, &path, &worker, &workerSpeed](float delta) {
 		if (currentPathIndex < path.size() - 1)
 		{
 			VGAIL::Vec2ui targetNode = path[currentPathIndex];
@@ -263,16 +257,16 @@ int main(int argc, char* argv[])
 		}
 		};
 
-	locateMineState->onExitCallback = [&]() {
+	locateMineState->onExitCallback = [&path, &currentPathIndex]() {
 		path.clear();
 		currentPathIndex = -1;
 		};
 
-	collectState->onEnterCallback = [&]() {
+	collectState->onEnterCallback = [&currentStateIndex]() {
 		currentStateIndex = 3;
 		};
 
-	collectState->onUpdateCallback = [&](float delta) {
+	collectState->onUpdateCallback = [&currentLoad, &maxLoadCapacity, &currentMine, &loadTime, &loadTimeCooldown](float delta) {
 		if (currentLoad <= maxLoadCapacity && currentMine->size > 0)
 		{
 			loadTime += delta;
@@ -285,14 +279,13 @@ int main(int argc, char* argv[])
 		}
 		};
 
-	idleState->onEnterCallback = [&]() {
+	idleState->onEnterCallback = [&currentStateIndex]() {
 		currentStateIndex = 4;
 		};
 
 	while (!WindowShouldClose())
 	{
 		float delta = GetFrameTime();
-
 		stateMachine.update(delta);
 
 		if (IsKeyDown(KEY_S))
@@ -347,7 +340,6 @@ int main(int argc, char* argv[])
 		}
 
 		std::string currentState = "";
-
 		switch (currentStateIndex)
 		{
 		case 0:
@@ -375,6 +367,7 @@ int main(int argc, char* argv[])
 		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 200.0f, 50.0f };
 		DrawRectangle(textPosition.x - 20.0f, textPosition.y, 500.0f, 30.0f, WHITE);
 		DrawTextEx(stateFont, fullText, textPosition, stateFont.baseSize, 3.0f, BLACK);
+		
 		EndDrawing();
 	}
 
