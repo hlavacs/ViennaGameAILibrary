@@ -7,12 +7,13 @@ The library was created due to the lack of toolkits written in the C++ programmi
 From path finding, to state machines, decision trees and steering algorithms, Vienna Game AI Library should encompass everything a game developer might need in creating a 2D RTS game. In order to show its efficiency and applicability, each implemented feature is showcased in a respective demo created with the help of the [raylib](https://github.com/raysan5/raylib) library.
 
 # Project structure
-- *assets* - Resource folder containing media files used for ```README.md```
+- *assets* - Resource folder containing media files used for the ```README``` file
 - *docs* - Code documentation
 - *Demo*
 	- [raylib](https://github.com/raysan5/raylib)
 	- *src* - Source folder containing the code for the demos
 	- *res* - Resource folder containing assets used in demos
+	- *testing* - Test folder containing the code used to test feature execution times 
 	- ```CMakeLists.txt```
 - *include* - ```ViennaGameAILibrary.hpp```
 - ```build_demo_win.bat``` - Script to build the project on Windows
@@ -38,7 +39,8 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 ## Build and run the project
 1. Clone the project.
 2. Run ```git submodule init``` and ```git submodule update``` to fetch raylib.
-3. Run ```build_demo_win.bat``` to build the project. The output will be stored in the build folder.
+3. Run ```build_demo_win.bat``` to build the project. The output will be stored in the build folder. 
+	- The ```-DCMAKE_BUILD_TYPE``` flag enable the build type. Currently set to ```Release```, but it can be also changed to ```Debug```.
 
 Make sure Clang and Ninja are used by this project. The first time you build the process, once the process starts, the first two lines should be the following:
 ```
@@ -50,7 +52,7 @@ Make sure Clang and Ninja are used by this project. The first time you build the
 ## To run different demos
 In *Demo/```CMakeLists.txt```*, change the path of the .cpp file that you want to run.
 ```
-add_executable(Demo src/demo_PathFinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
+add_executable(Demo src/demo_Pathfinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
 ```
 In the line above, the pathfinding example is used as the running demo.
 # Code documentation
