@@ -653,7 +653,7 @@ namespace VGAIL
 			{
 				for (ui32 i = 0; i < m_nodes.size(); i++)
 				{
-					std::cout << "Processing node " << i << "/" << m_nodes.size() - 1 << std::endl;
+					// std::cout << "Processing node " << i << "/" << m_nodes.size() - 1 << std::endl;
 
 					// Avoid unavailable nodes
 					if (m_nodes[i].state == NodeState::OBSTRUCTABLE)
@@ -999,7 +999,7 @@ namespace VGAIL
 
 			for (ui32 regionIndex = startIndex; regionIndex < regionList.size(); regionIndex += numThreads)
 			{
-				std::cout << "Preprocessing region " << regionIndex << "/" << regionList.size() << std::endl;
+				// std::cout << "Preprocessing region " << regionIndex << "/" << regionList.size() << std::endl;
 				for (ui32 i = 0; i < regionList[regionIndex]->nodes.size(); i++)
 				{
 					ui32 nodeIndex = regionList[regionIndex]->nodes[i];

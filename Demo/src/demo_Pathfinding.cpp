@@ -6,11 +6,7 @@
 */
 
 #include "ViennaGameAILibrary.hpp"
-
 #include "raylib.h"
-#include "Timer.h"
-
-#include <chrono>
 #include <string>
 
 int main(int argc, char* argv[])
@@ -47,13 +43,10 @@ int main(int argc, char* argv[])
 		navmesh->getNode(targetPosition).state = VGAIL::NodeState::WALKABLE;
 	}
 
-	std::vector<VGAIL::Vec2ui> path;
-	std::vector<VGAIL::Vec2ui> path2;
+	std::vector<VGAIL::Vec2ui> path_A;
+	std::vector<VGAIL::Vec2ui> path_GP;
 
-	{
-		Timer timer("Preprocess");
-		navmesh->preprocess(true, 4);
-	}
+	navmesh->preprocess(true, 4);
 
 	InitWindow(screenWidth, screenHeight, "Demo for Pathfinding");
 	SetTargetFPS(60);
@@ -67,8 +60,8 @@ int main(int argc, char* argv[])
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
-			path.clear();
-			path2.clear();
+			path_A.clear();
+			path_GP.clear();
 
 			startPosition = VGAIL::Vec2ui(x, y);
 			startRect.x = startPosition.x * gridStride;
@@ -77,25 +70,18 @@ int main(int argc, char* argv[])
 
 		if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
 		{
-			path.clear();
-			path2.clear();
+			path_A.clear();
+			path_GP.clear();
 
 			targetPosition = VGAIL::Vec2ui(x, y);
-			targetRect.y = targetPosition.y * gridStride;
 			targetRect.x = targetPosition.x * gridStride;
+			targetRect.y = targetPosition.y * gridStride;
 		}
 
 		if (IsKeyPressed(KEY_R))
 		{
-			std::cout << "------------------" << std::endl;
-			{
-				Timer timer("A* time");
-				path = navmesh->findPath(startPosition, targetPosition);
-			}
-			{
-				Timer timer("GP time");
-				path2 = navmesh->findPreprocessedPath(startPosition, targetPosition);
-			}
+			path_A = navmesh->findPath(startPosition, targetPosition);
+			path_GP = navmesh->findPreprocessedPath(startPosition, targetPosition);
 		}
 
 		BeginDrawing();
@@ -126,43 +112,43 @@ int main(int argc, char* argv[])
 		DrawRectangleRec(startRect, CLITERAL(Color) { 191, 64, 64, 255 });
 		DrawRectangleRec(targetRect, CLITERAL(Color) { 102, 119, 204, 255 });
 
-		if (path.size() > 0)
+		if (path_A.size() > 0)
 		{
-			for (uint32_t i = 1; i < path.size(); i++)
+			for (uint32_t i = 1; i < path_A.size(); i++)
 			{
 				DrawLineEx(
 					Vector2{ startPosition.x * gridStride + (tileSize / 2),
 								startPosition.y * gridStride + (tileSize / 2) },
-					Vector2{ path[0].x * gridStride + (tileSize / 2),
-								path[0].y * gridStride + (tileSize / 2) },
+					Vector2{ path_A[0].x * gridStride + (tileSize / 2),
+								path_A[0].y * gridStride + (tileSize / 2) },
 					3.0f,
 					CLITERAL(Color) { 89, 166, 140, 255 });
 				DrawLineEx(
-					Vector2{ path[i - 1].x * gridStride + (tileSize / 2),
-								path[i - 1].y * gridStride + (tileSize / 2) },
-					Vector2{ path[i].x * gridStride + (tileSize / 2),
-								path[i].y * gridStride + (tileSize / 2) },
+					Vector2{ path_A[i - 1].x * gridStride + (tileSize / 2),
+								path_A[i - 1].y * gridStride + (tileSize / 2) },
+					Vector2{ path_A[i].x * gridStride + (tileSize / 2),
+								path_A[i].y * gridStride + (tileSize / 2) },
 					3.0f,
 					CLITERAL(Color) { 89, 166, 140, 255 });
 			}
 		}
 
-		if (path2.size() > 0)
+		if (path_GP.size() > 0)
 		{
 			DrawLineEx(
 				Vector2{ startPosition.x * gridStride + (tileSize / 2),
 							startPosition.y * gridStride + (tileSize / 2) },
-				Vector2{ path2[0].x * gridStride + (tileSize / 2),
-							path2[0].y * gridStride + (tileSize / 2) },
+				Vector2{ path_GP[0].x * gridStride + (tileSize / 2),
+							path_GP[0].y * gridStride + (tileSize / 2) },
 				3.0f,
 				RED);
-			for (uint32_t i = 1; i < path2.size(); i++)
+			for (uint32_t i = 1; i < path_GP.size(); i++)
 			{
 				DrawLineEx(
-					Vector2{ path2[i - 1].x * gridStride + (tileSize / 2),
-								path2[i - 1].y * gridStride + (tileSize / 2) },
-					Vector2{ path2[i].x * gridStride + (tileSize / 2),
-								path2[i].y * gridStride + (tileSize / 2) },
+					Vector2{ path_GP[i - 1].x * gridStride + (tileSize / 2),
+								path_GP[i - 1].y * gridStride + (tileSize / 2) },
+					Vector2{ path_GP[i].x * gridStride + (tileSize / 2),
+								path_GP[i].y * gridStride + (tileSize / 2) },
 					3.0f,
 					RED);
 			}
