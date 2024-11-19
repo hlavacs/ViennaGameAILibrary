@@ -13,7 +13,7 @@ From path finding, to state machines, decision trees and steering algorithms, Vi
 	- [raylib](https://github.com/raysan5/raylib)
 	- *src* - Source folder containing the code for the demos
 	- *res* - Resource folder containing assets used in demos
-	- *testing* - Test folder containing the code used to test feature execution times 
+	- *testing* - Test folder containing the code used to measure feature execution times 
 	- ```CMakeLists.txt```
 - *include* - ```ViennaGameAILibrary.hpp```
 - ```build_demo_win.bat``` - Script to build the project on Windows
