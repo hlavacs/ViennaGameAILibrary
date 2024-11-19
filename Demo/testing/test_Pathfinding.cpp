@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 			navmesh->findPath(startPosition, targetPosition);
 			timer_A.end();
 			
-            total_A += timer_A.getDuration();
+			total_A += timer_A.getDuration();
 			count_A++;
 		}
 

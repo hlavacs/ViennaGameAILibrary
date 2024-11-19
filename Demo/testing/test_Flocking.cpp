@@ -11,7 +11,7 @@
 
 int main(int argc, char* argv[])
 {
-  	uint32_t screenWidth = 1200;
+	uint32_t screenWidth = 1200;
 	uint32_t screenHeight = 900;
 
 	float minSpeed = 50.0f;
@@ -25,15 +25,14 @@ int main(int argc, char* argv[])
 	float separationRange = 25.0f;
 	float perceptionRange = 50.0f;
 
-    VGAIL::Flocking* flock = new VGAIL::Flocking();
+	VGAIL::Flocking* flock = new VGAIL::Flocking();
 	flock->setRanges(separationRange, perceptionRange);
-    int boids = 1000;
+	int boids = 1000;
 	for (uint32_t i = 0; i < boids; i++)
 	{
-		flock->addBoid(VGAIL::Vec2f{ VGAIL::randomFloat(0.0f, screenWidth), VGAIL::randomFloat(0.0f, screenHeight) },
-			VGAIL::Vec2f{ VGAIL::randomFloat(0.5f, 1.0f) },
-			minSpeed,
-			maxSpeed);
+		VGAIL::Vec2f position{VGAIL::randomFloat(0.0f, screenWidth), VGAIL::randomFloat(0.0f, screenHeight)};
+		VGAIL::Vec2f velocity{VGAIL::randomFloat(0.5f, 1.0f)};
+		flock->addBoid(position, velocity, minSpeed, maxSpeed);
 	}
 
  	InitWindow(screenWidth, screenHeight, "Test for Flocking");
@@ -50,7 +49,7 @@ int main(int argc, char* argv[])
 		if(frameCount < 1000.0)
 		{
 			timer.start();
- 		    flock->update(GetFrameTime(), avoidFactor, matchingFactor, centeringFactor);
+			flock->update(GetFrameTime(), avoidFactor, matchingFactor, centeringFactor);
 			timer.end();
 			total += timer.getDuration();
 			frameCount++;

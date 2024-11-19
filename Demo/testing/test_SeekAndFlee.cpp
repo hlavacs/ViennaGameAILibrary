@@ -23,18 +23,15 @@ int main(int argc, char* argv[])
 	VGAIL::Vec2f playerStartPos = VGAIL::Vec2f{ 5.0f, 5.0f };
 	VGAIL::Boid* player = new VGAIL::Boid(playerStartPos, startVel, playerSpeed);
 
-    int entities = 10000;
-    std::vector<VGAIL::Boid*> boids;
-    for(int i = 0; i < entities; i++)
-    {
-	    VGAIL::Boid* boid = new VGAIL::Boid(
-            VGAIL::Vec2f{ VGAIL::randomFloat(0.0f, screenWidth / tileSize), VGAIL::randomFloat(0.0f, screenHeight / tileSize) },
-            startVel, 
-			maxSpeed, 
-			i);
-        boids.push_back(boid);        
-    }
- 
+	int entities = 10000;
+	std::vector<VGAIL::Boid*> boids;
+	for(int i = 0; i < entities; i++)
+	{
+		VGAIL::Vec2f position {VGAIL::randomFloat(0.0f, screenWidth / tileSize), VGAIL::randomFloat(0.0f, screenHeight / tileSize)};
+		VGAIL::Boid* boid = new VGAIL::Boid(position, startVel, maxSpeed, i);
+		boids.push_back(boid);        
+	}
+
  	InitWindow(screenWidth, screenHeight, "Test for Seek and Flee");
 	SetTargetFPS(60);
 
@@ -78,9 +75,9 @@ int main(int argc, char* argv[])
 			timer.start();
 			for(int i = 0; i < entities; i++)
 			{
-        		/*!<--- Seek --*/
+				/*!<--- Seek --*/
 				boids[i]->applySteeringForce(boids[i]->seek(player->getPosition(), maxAcceleration));
-        		/*!<--- Flee --*/
+				/*!<--- Flee --*/
 				// boids[i]->applySteeringForce(boids[i]->flee(player->getPosition(), maxAcceleration));
 
 				boids[i]->updatePosition(dt); 
@@ -99,17 +96,17 @@ int main(int argc, char* argv[])
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-        for(int i = 0; i < entities; i++)
-        {
-            DrawTexturePro(
-                agentTexture,
-                { 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
-                { boids[i]->getPosition().x * tileSize, boids[i]->getPosition().y * tileSize, 50.0f, 50.0f },
-                Vector2{ 25.0f, 25.0f },
-                boids[i]->getRotationInDegrees(),
-                WHITE
-            );
-        }
+		for(int i = 0; i < entities; i++)
+		{
+			DrawTexturePro(
+				agentTexture,
+				{ 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
+				{ boids[i]->getPosition().x * tileSize, boids[i]->getPosition().y * tileSize, 50.0f, 50.0f },
+				Vector2{ 25.0f, 25.0f },
+				boids[i]->getRotationInDegrees(),
+				WHITE
+			);
+		}
 
 		DrawTexturePro(
 			playerTexture,

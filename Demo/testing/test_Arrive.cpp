@@ -11,7 +11,7 @@
 
 int main(int argc, char* argv[])
 {
-  	uint32_t screenWidth = 1200;
+	uint32_t screenWidth = 1200;
 	uint32_t screenHeight = 900;
 	float tileSize = 50.0f;
 
@@ -23,17 +23,14 @@ int main(int argc, char* argv[])
 	float maxAcceleration = 0.5f;
 	VGAIL::Vec2f startVel = { 0.0f };
 
-    int entities = 10000;
-    std::vector<VGAIL::Boid*> boids;
-    for(int i = 0; i < entities; i++)
-    {
-	    VGAIL::Boid* boid = new VGAIL::Boid(
-            VGAIL::Vec2f{ VGAIL::randomFloat(0.0f, screenWidth / tileSize), VGAIL::randomFloat(0.0f, screenHeight / tileSize) },
-            startVel, 
-			maxSpeed, 
-			i);
-        boids.push_back(boid);        
-    }
+	int entities = 10000;
+	std::vector<VGAIL::Boid*> boids;
+	for(int i = 0; i < entities; i++)
+	{
+		VGAIL::Vec2f position{VGAIL::randomFloat(0.0f, screenWidth / tileSize), VGAIL::randomFloat(0.0f, screenHeight / tileSize)};
+		VGAIL::Boid* boid = new VGAIL::Boid(position, startVel, maxSpeed, i);
+		boids.push_back(boid);        
+	}
 
  	InitWindow(screenWidth, screenHeight, "Test for Arrive");
 	SetTargetFPS(60);
@@ -58,14 +55,14 @@ int main(int argc, char* argv[])
 		if(frameCount < 1000.0)
 		{
 			timer.start();
-            if (targetX > 0.0f && targetY > 0.0f)
-            {
-                for(int i = 0; i < entities; i++)
-			    {
-                    boids[i]->applySteeringForce(boids[i]->arrive(VGAIL::Vec2f{ targetX / tileSize, targetY / tileSize }, slowRadius, maxAcceleration));
-                    boids[i]->updatePosition(GetFrameTime());
-                }
-            }
+			if (targetX > 0.0f && targetY > 0.0f)
+			{
+				for(int i = 0; i < entities; i++)
+				{
+					boids[i]->applySteeringForce(boids[i]->arrive(VGAIL::Vec2f{ targetX / tileSize, targetY / tileSize }, slowRadius, maxAcceleration));
+					boids[i]->updatePosition(GetFrameTime());
+				}
+			}
 			timer.end();
 			total += timer.getDuration();
 			frameCount++;
@@ -80,21 +77,21 @@ int main(int argc, char* argv[])
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-        for(int i = 0; i < entities; i++)
-        {
-            DrawTexturePro(
-                agentTexture,
-                { 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
-                { boids[i]->getPosition().x * tileSize, boids[i]->getPosition().y * tileSize, 50.0f, 50.0f },
-                Vector2{ 25.0f, 25.0f },
-                boids[i]->getRotationInDegrees(),
-                WHITE
-            );
-        }
+		for(int i = 0; i < entities; i++)
+		{
+			DrawTexturePro(
+				agentTexture,
+				{ 0.0f, 0.0f, static_cast<float>(agentTexture.width), static_cast<float>(agentTexture.height) },
+				{ boids[i]->getPosition().x * tileSize, boids[i]->getPosition().y * tileSize, 50.0f, 50.0f },
+				Vector2{ 25.0f, 25.0f },
+				boids[i]->getRotationInDegrees(),
+				WHITE
+			);
+		}
 
 		DrawText(TextFormat("CURRENT FPS: %i", GetFPS()), GetScreenWidth() / 2 - 100, 50, 20, BLACK);
 
-        if (targetX > 0.0f && targetY > 0.0f)
+		if (targetX > 0.0f && targetY > 0.0f)
 		{
 			DrawCircle(targetX, targetY, 3.0f, GREEN);
 			DrawCircleLines(targetX, targetY, slowRadius * tileSize, RED);
