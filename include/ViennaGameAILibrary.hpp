@@ -27,7 +27,7 @@ namespace VGAIL
 
     typedef uint32_t ui32;                          /*!< The 32-bit representation of unsigned integers. */
     typedef int32_t i32;                            /*!< The 32-bit representation of signed integers. */
-    typedef float f32;                          	/*!< The 32-bit representation of floating-point numbers. */
+    typedef float f32;                              /*!< The 32-bit representation of floating-point numbers. */
 
     /**
      * @brief Custom assertion macro.
