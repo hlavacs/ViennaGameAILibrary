@@ -213,10 +213,10 @@ In the example from *demo_DecisionTree.cpp*, both characters have their own deci
 The logic behind the decision trees is displayed in the following picture.
 
 <div align="center">
-	<img src="assets/decisionTreeDiagram.jpg">
+	<img src="assets/decisionTreeDiagram.png">
 </div>
 
-In this example, the decision nodes are represented by the rectangular objects (*isGuardClose*, *isBurglarClose*, etc.).
+In this example, the decision nodes are represented by the rectangular objects (*IsGuardClose*, *IsBurglarClose*, etc.).
 
 ## 4. **State machines**
 
