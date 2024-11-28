@@ -66,7 +66,7 @@ Documentation is generated using Doxygen. To see it, open ```index.html``` which
 *Vienna Game AI Library* uses two custom made vectors: ```Vec2ui``` and ```Vec2f```. Both represent 2D vectors, with ```Vec2ui``` made of unsigned integers, and ```Vec2f``` of floats.
 The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to required mathematical operations. Other data structures used in the library are ```std::vector``` and ```std::unordered_map```.
 
-The data types used in the library are: ```uint32_t```, ```uint64_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable (```uint32_t``` -> ```ui32```, ```uint64_t``` -> ```ui64```, ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
+The data types used in the library are: ```uint32_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable (```uint32_t``` -> ```ui32```,  ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
 
 There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for path finding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
 
@@ -92,7 +92,7 @@ The navmesh file can be created either manually or by the game itself. The file 
 ```
 Both ```navmeshWidth``` and ```navmeshHeight``` need to be positive integers. The third line describes the pattern of the navigation mesh, where ```w``` is a walkable area and ```o``` is an obstacle. Make sure that the number of characters are equal to ```navmeshWidth``` * ```navmeshHeight```.
 
-There is also the option to save a randomly generated navmesh. This can be done by calling ```saveToFile(const std::string& filepath)``` (see lines 763-776) and by passing a filepath. If the file doesn't exist, it will be created automatically.
+There is also the option to save a randomly generated navmesh. This can be done by calling ```saveToFile(const std::string& filepath)``` (see lines 804-817) and by passing a filepath. If the file doesn't exist, it will be created automatically.
 
 - Create start and end positions for the A* algorithm
 
@@ -111,7 +111,7 @@ This process can be called while setting up the application (before the game loo
 ```
 The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (default: 4).
 
-This process will work on the Regions defined when the navmesh is created (see lines 871-894). The number of regions depends on the navmesh size, and by default they are set to each contain 5 x 5 nodes (5 on the *x* axis, 5 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
+This process will work on the Regions defined when the navmesh is created (see lines 912-935). The number of regions depends on the navmesh size, and by default they are set to each contain 5 x 5 nodes (5 on the *x* axis, 5 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
 
 The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
 
@@ -145,16 +145,16 @@ The ```findPath()``` method calculates the path by using A*, while ```findPrepro
 
 - For each node of the tree (and recursively its children) a custom class needs to be implemented to delegate actions to its children based on some criteria.
 
-Each decision node needs to implement its own ```makeDecision(float dt)``` method, in which it either delegates further actions to its children or implements game logic. In the example below, the ```isEnemyClose``` class is responsible for checking the distance between the player and an enemy. Depending on this distance, it calls a child decision node. 
+Each decision node needs to implement its own ```makeDecision(float dt)``` method, in which it either delegates further actions to its children or implements game logic. In the example below, the ```IsEnemyClose``` class is responsible for checking the distance between the player and an enemy. Depending on this distance, it calls a child decision node. 
 ```
 	// Example: a character makes decisions based on the distance to an enemy
-	class isEnemyClose : public VGAIL::DecisionNode
+	class IsEnemyClose : public VGAIL::DecisionNode
 	{
 	public:
-		isEnemyClose(VGAIL::Vec2f& enemyPos)
+		IsEnemyClose(VGAIL::Vec2f& enemyPos)
 			: enemyPos(enemyPos) {}
 
-		~isEnemyClose() {}
+		~IsEnemyClose() {}
 
 		void makeDecision(float dt) override
 		{
@@ -181,7 +181,7 @@ Each decision node needs to implement its own ```makeDecision(float dt)``` metho
 
 ```
 	// Example for the code shown above
-	VGAIL::DecisionNode& root = tree.createRoot<isEnemyClose>(...args);
+	VGAIL::DecisionNode& root = tree.createRoot<IsEnemyClose>(...args);
 ```
 
 → ```...args``` refers to any arguments that need to be passed to the custom class.
@@ -374,7 +374,7 @@ Each boid needs a position, a velocity and a maximum speed when instantiated. By
 	The *wander* steering behavior produces a natural-looking movement of a character "casually" walking around. Its implementation, following Craig Reynold's proposal, uses a circle defined in front of the character from which the steering force is calculated.
 
 	<div align="center">
-		<img src="assets/wander.jpg">
+		<img src="assets/wander.png">
 	</div>
 	
 	In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a ```circleDistance``` from the character and has a ```circleRadius```. Every frame, a random point is chosen from the outline of the circle which will the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving abruptly left and right), a ```displacementRange``` is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, ```maxAcceleration``` is the maximum rate at which the velocity can change per unit of time.
@@ -419,7 +419,7 @@ The flocking behavior only works on ```VGAIL::Boid``` instances. The implementat
 This is responsible for managing all boids such that they respect the three steering behaviors: separation, alignment and cohesion.
 
 ```
-	VGAIL::Flocking* flock = new VGAIL::Flocking();
+	VGAIL::Flock* flock = new VGAIL::Flock();
 ```
 
 Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding. Alignment is responsible for calculating the average velocity of the boids and steer them accordingly. Cohesion is steering the boids towards the average position of the boids from the same group.
