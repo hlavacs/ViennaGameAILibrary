@@ -23,11 +23,11 @@
 
 namespace VGAIL
 {
-	constexpr float PI = 3.14159265358979f;			/*!< The value of π computed at compile time */
+	constexpr float PI = 3.14159265358979f;			/*!< The value of π computed at compile time. */
 
-	typedef uint32_t ui32;							/*!< Unsigned 32-bit integer */
-	typedef int32_t i32;							/*!< Signed 32-bit integer */
-	typedef float f32;								/*!< 32-bit floating number */
+	typedef uint32_t ui32;							/*!< The 32-bit representation of unsigned integers. */
+	typedef int32_t i32;							/*!< The 32-bit representation of signed integers. */
+	typedef float f32;								/*!< The 32-bit representation of floating-point numbers. */
 
 	/**
 	 * @brief Custom assertion macro.
@@ -44,8 +44,8 @@ namespace VGAIL
 	  */
 	struct Vec2ui
 	{
-		ui32 x;										/*!< The `x` coordinate of the vector.*/
-		ui32 y;										/*!< The `y` coordinate of the vector.*/
+		ui32 x;										/*!< The `x` coordinate of the vector. */
+		ui32 y;										/*!< The `y` coordinate of the vector. */
 
 		/**
 		 * @brief Constructs a new Vec2ui object with default coordinates (0, 0).
@@ -74,7 +74,7 @@ namespace VGAIL
 			: x(val), y(val) {}
 
 		/**
-		 * @brief  Checks if this Vec2ui object is equal to another Vec2ui object.
+		 * @brief Checks if this Vec2ui object is equal to another Vec2ui object.
 		 *
 		 * Compares the `x` and `y` coordinates of two Vec2ui objects for equality.
 		 *
@@ -87,7 +87,7 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief  Checks whether this Vec2ui object is not equal to another Vec2ui object.
+		 * @brief Checks whether this Vec2ui object is not equal to another Vec2ui object.
 		 *
 		 * Compares the `x` and `y` coordinates of two Vec2ui objects for inequality.
 		 *
@@ -119,8 +119,8 @@ namespace VGAIL
 	 */
 	struct Vec2f
 	{
-		f32 x;										/*!< The `x` coordinate of the vector.*/
-		f32 y;										/*!< The `y` coordinate of the vector.*/
+		f32 x;										/*!< The `x` coordinate of the vector. */
+		f32 y;										/*!< The `y` coordinate of the vector. */
 
 		/**
 		 * @brief Constructs a new Vec2f object with default coordinates (0.0f, 0.0f).
@@ -191,7 +191,7 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief Multiplies the Vec2f object by a scalar and returns a new Vec2f object representing the result.
+		 * @brief Multiplies this Vec2f object by a scalar and returns a new Vec2f object representing the result.
 		 *
 		 * Does not modify the original Vec2f object. \n
 		 * Usage: `Vec2f result = vec * value;`
@@ -205,7 +205,7 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief Divides the Vec2f object by a scalar and returns a new Vec2f object representing the result.
+		 * @brief Divides this Vec2f object by a scalar and returns a new Vec2f object representing the result.
 		 *
 		 * Does not modify the original Vec2f object. \n
 		 * Usage: `Vec2f result = vec / value;`
@@ -219,7 +219,7 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief  Checks if this Vec2f object is equal to another Vec2f object.
+		 * @brief Checks if this Vec2f object is equal to another Vec2f object.
 		 *
 		 * Compares the `x` and `y` coordinates of two Vec2f objects for equality.
 		 *
@@ -232,7 +232,7 @@ namespace VGAIL
 		}
 
 		/**
-		 * @brief  Checks whether this Vec2f object is not equal to another Vec2f object.
+		 * @brief Checks whether this Vec2f object is not equal to another Vec2f object.
 		 *
 		 * Compares the `x` and `y` coordinates of two Vec2f objects for inequality.
 		 *
@@ -356,19 +356,20 @@ namespace VGAIL
 	/**
 	 * @brief Custom struct used in geometric preprocessing.
 	 *
-	 * When geometric preprocessing is used, the navigation mesh is divided into regions, with each region having assigned a set of nodes.
+	 * When geometric preprocessing is used, the navigation mesh is divided into regions, with each region having 
+	 * assigned a set of nodes.
 	 */
 	struct Region
 	{
-		ui32 regionID;								/*!< Region's index within RegionList */
-		std::vector<ui32> nodes;					/*!< List of assigned nodes */
+		ui32 regionID;								/*!< Region's index within RegionList. */
+		std::vector<ui32> nodes;					/*!< List of IDs of the Region's assigned nodes. */
 	};
 
 	/**
 	 * @brief Custom struct to manage all regions created for geometric preprocessing.
 	 *
-	 * During geometric preprocessing, the shortest distance between each region needs to be calculated and stored. In order to be able to loop
-	 * through all existing regions, they are all stored in a vector and managed by this class.
+	 * During geometric preprocessing, the shortest distance between each region needs to be calculated and stored. In
+	 * order to be able to loop through all existing regions, they are all stored in a vector and managed by this class.
 	 */
 	struct RegionList
 	{
@@ -490,8 +491,10 @@ namespace VGAIL
 		/**
 		 * @brief Compares two NodeData objects based on their `f()` value.
 		 *
-		* Used in the A* algorithm when managing the priority queue that contains all nodes to be looked at during the algorithm. \n
-		* Whenever a NodeData object is added to the queue, it checks where to put it depending on its `f()` value by comparing it to the other objects in the list.
+		 * Used in the A* algorithm when managing the priority queue that contains all nodes to be looked at 
+		 * during the algorithm. \n
+		 * Whenever a NodeData object is added to the queue, it checks where to put it depending on its `f()` value 
+		 * by comparing it to the other objects in the list.
 		 *
 		 * @param node1 First node.
 		 * @param node2 Second node.
@@ -516,9 +519,12 @@ namespace VGAIL
 		 *
 		 * @param width The width of the navigation mesh.
 		 * @param height The height of the navigation mesh.
-		 * @param obstaclePercentage The percentage to limit the amount of nodes with the state `obstructable` spawned within the navigation mesh.
-		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 5.
-		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 5.
+		 * @param obstaclePercentage The percentage to limit the amount of nodes with the state `obstructable spawned
+		 * within the navigation mesh.
+		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; 
+		 * by default it is set to 5.
+		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; 
+		 * by default it is set to 5.
 		 */
 		NavMesh(ui32 width, ui32 height, f32 obstaclePercentage, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
 			: m_width(width)
@@ -555,8 +561,10 @@ namespace VGAIL
 		 * @brief Constructs a new NavMesh object by loading data from a file.
 		 *
 		 * @param filepath The relative path of the file.
-		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; by default it is set to 5.
-		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; by default it is set to 5.
+		 * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; 
+		 * by default it is set to 5.
+		 * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; 
+		 * by default it is set to 5.
 		 */
 		NavMesh(const std::string& filepath, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
 		{
@@ -627,8 +635,9 @@ namespace VGAIL
 		 * Each thread receives a part of the already defined regions and is assigned the `preprocessWorker()` method.
 		 *
 		 * b) Single-threaded \n
-		 * For each node, calculate the shortest path to each region and store it at position `m_adjList[nodeIndex][regionID]`,
-		 * where `nodeIndex` is the index of the node within `m_nodes` and `regionID` is the ID of the region it found a path to.
+		 * For each node, calculate the shortest path to each region and store it at position 
+		 * `m_adjList[nodeIndex][regionID]`, where `nodeIndex` is the index of the node within `m_nodes` and `regionID` 
+		 * is the ID of the region it found a path to. 
 		 * `m_adjList` will then be used to retrieve shortest path within regions.
 		 */
 		void preprocess(bool multithreading = false, ui32 numThreads = 4)
@@ -718,11 +727,13 @@ namespace VGAIL
 		/**
 		 * @brief Finds the stored path between two nodes.
 		 *
-		 * After geometric preprocessing, the shortest paths between each node to each region is stored at `m_adjList[nodeIndex][regionID]`. \n
-		 * 	- If the nodes are in the same region, it simply calls the A* algorithm to find the shortest path between them. \n
-		 * 	- If they are in separate regions, it first retrieves the shortest path from the start node to the region in which the
-		 * target node exists. If the newly found path's end node is the target, the path is returned. Otherwise, A* will run to find
-		 * the path from this end node to the target node and return it, if found.
+		 * After geometric preprocessing, the shortest paths between each node to each region is stored at 
+		 * `m_adjList[nodeIndex][regionID]`. \n
+		 * 	- If the nodes are in the same region, it simply calls the A* algorithm to find the shortest path 
+		 * between them. \n
+		 * 	- If they are in separate regions, it first retrieves the shortest path from the start node to the region 
+		 * in which the target node exists. If the newly found path's end node is the target, the path is returned. 
+		 * Otherwise, A* will run to find the path from this end node to the target node and return it, if found.
 		 *
 		 * @param start The position of the start node.
 		 * @param target The position of the target node.
@@ -736,13 +747,13 @@ namespace VGAIL
 			ui32 startRegionID = startNode.regionID;
 			ui32 targetRegionID = targetNode.regionID;
 
-			// If start and target nodes are in the same region, call A* to find the shortest path
+			// If start and target nodes are in the same region, call A* to find the shortest path.
 			if (startRegionID == targetRegionID)
 			{
 				return findPath(start, target);
 			}
 
-			// Check if there is at least one precomputed path from the start node stored in `m_adjList`
+			// Check if there is at least one precomputed path from the start node stored in `m_adjList`.
 			if (m_adjList[getIndex(startNode.pos)].size() == 0)
 			{
 				std::cout << "Cannot find path!" << std::endl;
@@ -752,14 +763,14 @@ namespace VGAIL
 			ui32 startNodeIndex = getIndex(startNode.pos);
 			std::vector<Vec2ui> pathToRegion = m_adjList[startNodeIndex][targetRegionID];
 
-			// Check if there is a precomputed path from the start node to the region in which the target node is
+			// Check if there is a precomputed path from the start node to the region in which the target node is.
 			if (pathToRegion.size() == 0)
 			{
 				std::cout << "No path found to region!" << std::endl;
 				return {};
 			}
 
-			// Retrieve the last node from the newly found path and check whether it is the target node
+			// Retrieve the last node from the newly found path and check whether it is the target node.
 			Vec2ui pathEndNode = pathToRegion[pathToRegion.size() - 1];
 			if (pathEndNode == target)
 			{
@@ -767,7 +778,7 @@ namespace VGAIL
 				return pathToRegion;
 			}
 
-			// If the end node of the path is not the target, get the shortest path between it and the target
+			// If the end node of the path is not the target, get the shortest path between it and the target.
 			std::vector<Vec2ui> pathWithinRegion = findPath(pathEndNode, target);
 			if (pathWithinRegion.size() == 0)
 			{
@@ -784,9 +795,11 @@ namespace VGAIL
 		/**
 		 * @brief Saves the structure of a navigation mesh to a file.
 		 *
-		 * The file will consist of 3 main lines: the first one will represent the width, the second one will be the height and the third will be the pattern.
+		 * The file will consist of 3 main lines: the first one will represent the width, the second one will be the 
+		 * height and the third will be the pattern.
 		 *
-		 * @param filepath The relative path of the file, including the filename; if the file does not exist, it will be created automatically.
+		 * @param filepath The relative path of the file, including the filename; if the file does not exist, it will 
+		 * be created automatically.
 		 */
 		void saveToFile(const std::string& filepath)
 		{
@@ -986,7 +999,8 @@ namespace VGAIL
 		/**
 		 * @brief Method to be called by each thread during geometric preprocessing.
 		 *
-		 * This method does the same thing as the `preprocess()` method, only that it is adapted to work for individual threads.
+		 * This method does the same thing as the `preprocess()` method, only that it is adapted to work for 
+		 * individual threads.
 		 *
 		 * @param threadID The ID of the thread.
 		 * @param numThreads The total number of threads used.
@@ -1121,12 +1135,12 @@ namespace VGAIL
 		}
 
 	private:
-		bool m_isPreprocessed = false;													/*!< Indicates whether geometric preprocessing has been performed. */
-		ui32 m_width, m_height;															/*!< Width and height of the navigation mesh. */
-		RegionList* m_regions;															/*!< The list of regions. */
-		std::vector<NodeData> m_nodes;													/*!< The nodes of the navigation mesh. */
-		std::vector<std::vector<ui32>> m_neighbors;										/*!< The list of the nodes' neighbors. */
-		std::vector<std::unordered_map<ui32, std::vector<Vec2ui>>> m_adjList;			/*!< The list of all preprocessed paths from each node to each region. */
+		bool m_isPreprocessed = false;											/*!< Indicates whether geometric preprocessing has been performed. */
+		ui32 m_width, m_height;													/*!< Width and height of the navigation mesh. */
+		RegionList* m_regions;													/*!< The list of regions. */
+		std::vector<NodeData> m_nodes;											/*!< The nodes of the navigation mesh. */
+		std::vector<std::vector<ui32>> m_neighbors;								/*!< The list of the nodes' neighbors. */
+		std::vector<std::unordered_map<ui32, std::vector<Vec2ui>>> m_adjList;	/*!< The list of all preprocessed paths from each node to each region. */
 	};
 
 	class State;
@@ -1159,8 +1173,8 @@ namespace VGAIL
 		 */
 		~Transition() = default;
 
-		std::function<bool()> onCheckCallback;			/*!< Checks the given condition. */
-		State* targetState = nullptr;					/*!< The state this `Transition` object is checking for. */
+		std::function<bool()> onCheckCallback;		/*!< Checks the given condition. */
+		State* targetState = nullptr;				/*!< The state this `Transition` object is checking for. */
 	};
 
 	/**
@@ -1232,7 +1246,7 @@ namespace VGAIL
 		std::function<void(f32)> onUpdateCallback;
 
 	private:
-		std::vector<Transition*> m_transitions;				/*!< The list of this state's outgoing transitions. */
+		std::vector<Transition*> m_transitions;		/*!< The list of this state's outgoing transitions. */
 	};
 
 	/**
@@ -1337,8 +1351,8 @@ namespace VGAIL
 		}
 
 	private:
-		std::vector<State*> m_states;						/*!< The list of all states. */
-		State* m_currentState = nullptr;					/*!< The current active state. */
+		std::vector<State*> m_states;				/*!< The list of all states. */
+		State* m_currentState = nullptr;			/*!< The current active state. */
 	};
 
 	/**
@@ -1363,7 +1377,8 @@ namespace VGAIL
 		/**
 		 * @brief The implementation of this DecisionNode object.
 		 *
-		 * This method either carries out a list of given actions or it delegates work to its child nodes based on some criteria.
+		 * This method either carries out a list of given actions or it delegates work to its child nodes based on
+		 * some criteria.
 		 *
 		 * @param deltaTime Elapsed time between last frame and current frame.
 		 */
@@ -1384,8 +1399,10 @@ namespace VGAIL
 		/**
 		 * @brief Creates a new DecisionNode object and adds it to the list of child nodes of this DecisionNode object.
 		 *
-		 * This is a templated method, meaning any custom class can be added as a child node as long as it inherits from DecisionNode. \n
-		 * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor then there will be a compile time error.
+		 * This is a templated method, meaning any custom class can be added as a child node as long as it inherits 
+		 * from DecisionNode. \n
+		 * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor 
+		 * then there will be a compile time error.
 		 *
 		 * @tparam T Generic class.
 		 * @tparam Args Variadic variables.
@@ -1411,7 +1428,7 @@ namespace VGAIL
 		}
 
 	private:
-		std::vector<DecisionNode*> m_children;					/*!< The list of child nodes of this DecisionNode object. */
+		std::vector<DecisionNode*> m_children;		/*!< The list of child nodes of this DecisionNode object. */
 	};
 
 	/**
@@ -1454,8 +1471,10 @@ namespace VGAIL
 		/**
 		 * @brief Creates and returns the root of the decision tree.
 		 *
-		 * This is a templated method, meaning any custom class can be used as a root node as it inherits from DecisionNode. \n
-		 * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor then there will be a compile time error.
+		 * This is a templated method, meaning any custom class can be used as a root node as it inherits from 
+		 * DecisionNode. \n
+		 * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor then 
+		 * there will be a compile time error.
 		 *
 		 * @tparam T Generic class.
 		 * @tparam Args Variadic variables.
@@ -1488,7 +1507,7 @@ namespace VGAIL
 		}
 
 	private:
-		DecisionNode* m_root = nullptr;			/*!< The root of this DecisionTree object. */
+		DecisionNode* m_root = nullptr;				/*!< The root of this DecisionTree object. */
 	};
 
 	/**
@@ -1611,7 +1630,8 @@ namespace VGAIL
 		/**
 		 * @brief The flocking algorithm implemented per individual Boid.
 		 *
-		 * This method manages the three steering behaviors (separation, alignment and cohesion) in order to simulate a realistic simulation of flocking behavior.
+		 * This method manages the three steering behaviors (separation, alignment and cohesion) in order to simulate 
+		 * a realistic simulation of flocking behavior.
 		 *
 		 * @param deltaTime Elapsed time between last frame and current frame.
 		 * @param separationRange The range to avoid colliding with other boids.
@@ -1621,7 +1641,8 @@ namespace VGAIL
 		 * @param centeringFactor How strongly this boid steers to match the average position of their neighbours.
 		 * @param flock The flock this Boid object is part of.
 		 */
-		void flocking(f32 deltaTime, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, f32 centeringFactor, const std::vector<Boid*>& flock)
+		void doFlocking(f32 deltaTime, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, 
+						f32 centeringFactor, const std::vector<Boid*>& flock)
 		{
 			Vec2f separationVector, alignVector, cohesionVector;
 			ui32 neighbors = 0;
@@ -1673,7 +1694,8 @@ namespace VGAIL
 		/**
 		 * @brief Performs the separation steering behavior.
 		 *
-		 * Separation ensures that the boids do not overlap, thus steers the boids away from one another to avoid crowding.
+		 * Separation ensures that the boids do not overlap, thus steers the boids away from one another
+		 * to avoid crowding.
 		 *
 		 * @param separationRange The range to avoid colliding with other boids.
 		 * @param avoidFactor How strongly this boid reacts to possible collisions.
@@ -1802,8 +1824,9 @@ namespace VGAIL
 		/**
 		 * @brief Performs the pursue steering behavior.
 		 *
-		 * The pursue steering behavior allows for a realistic movement of trying to "catch" a target by anticipating its movement.
-		 * It will estimate where the target will be within the next few seconds and move towards that new position.
+		 * The pursue steering behavior allows for a realistic movement of trying to "catch" a target by 
+		 * anticipating its movement. It will estimate where the target will be within the next few seconds and
+		 * move towards that new position.
 		 *
 		 * @param target The target Boid object.
 		 * @param maxAcceleration The maximum rate at which the velocity can change per unit of time.
@@ -1834,8 +1857,9 @@ namespace VGAIL
 		/**
 		 * @brief Performs the evade steering behavior.
 		 *
-		 * The evade steering behavior allows for a realistic movement of trying to "outrun" a target by anticipating its movement.
-		 * It will estimate where the target will be within the next few seconds and move away from that new position.
+		 * The evade steering behavior allows for a realistic movement of trying to "outrun" a target by 
+		 * anticipating its movement. It will estimate where the target will be within the next few seconds and 
+		 * move away from that new position.
 		 *
 		 * @param target The target Boid object.
 		 * @param maxAcceleration The maximum rate at which the velocity can change per unit of time.
@@ -1866,7 +1890,8 @@ namespace VGAIL
 		/**
 		 * @brief Performs the arrive steering behavior.
 		 *
-		 * 	The arrive steering behavior is responsible for slowing down the character before it reaches its destination such that it can stop smoothly.
+		 * The arrive steering behavior is responsible for slowing down the character before it reaches its destination 
+		 * such that it can stop smoothly.
 		 *
 		 * @param targetPosition The position of the target.
 		 * @param slowRadius The radius of the slowing area.
@@ -1908,9 +1933,11 @@ namespace VGAIL
 		/**
 		 * @brief Performs the wander steering behavior.
 		 *
-		 * This implementation follows Craig Reynold's proposal, uses a circle defined in front of the character from which the steering force is calculated.
-		 * Every frame, a random point is chosen from the outline of this circle which will the new direction the character will need to steer towards.
-		 * In order to limit flickering, a `displacementRange` is needed such that it limits the interval from which this random point is chosen.
+		 * This implementation follows Craig Reynold's proposal.
+		 * It uses a circle defined in front of the character from which the steering force is calculated. 
+		 * Every frame, a random point is chosen from the outline of this circle which will the new direction the 
+		 * character will need to steer towards. In order to limit flickering, a `displacementRange` is needed such 
+		 * that it limits the interval from which this random point is chosen.
 		 *
 		 * @param circleDistance The distance from this Boid object to the circle.
 		 * @param circleRadius The radius of the circle.
@@ -1934,7 +1961,7 @@ namespace VGAIL
 			f32 x = circleRadius * cos(theta);
 			f32 y = circleRadius * sin(theta);
 
-			desired = desired + Vec2f{ x, y };
+			desired = desired + Vec2f{x, y};
 
 			Vec2f steeringForce = desired - m_position;
 			steeringForce.normalize();
@@ -1977,31 +2004,31 @@ namespace VGAIL
 		}
 
 	private:
-		ui32 m_id;											/*!< The ID of this Boid object. */
-		f32 m_lastRotation = 0.0f;							/*!< The last stored rotation of this Boid object. */
-		f32 m_theta = PI / 2.0f;							/*!< The angle between the randomly chosen point and the horizontal axis used in the wander behavior. */
-		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;			/*!< The minimum and maximum speed of this Boid object. */
-		Vec2f m_position, m_velocity;						/*!< The position and velocity of this Boid object. */
+		ui32 m_id;									/*!< The ID of this Boid object. */
+		f32 m_lastRotation = 0.0f;					/*!< The last stored rotation of this Boid object. */
+		f32 m_theta = PI / 2.0f;					/*!< The angle between the randomly chosen point and the horizontal axis used in the wander behavior. */
+		f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;	/*!< The minimum and maximum speed of this Boid object. */
+		Vec2f m_position, m_velocity;				/*!< The position and velocity of this Boid object. */
 	};
 
 	/**
-	 * @brief Custom class that is responsible for managing the flocking behavior for a group of Boid objects.
+	 * @brief Custom class that is responsible for performing the flocking behavior for a group of Boid objects.
 	 *
 	 */
-	class Flocking
+	class Flock
 	{
 	public:
 		/**
-		 * @brief Constructs a new Flocking object.
+		 * @brief Constructs a new Flock object.
 		 *
 		 */
-		Flocking() {}
+		Flock() {}
 
 		/**
-		 * @brief Destroys the Flocking object and its associated boids.
+		 * @brief Destroys the Flock object and its associated boids.
 		 *
 		 */
-		~Flocking()
+		~Flock()
 		{
 			for (ui32 i = 0; i < boids.size(); i++)
 			{
@@ -2050,13 +2077,15 @@ namespace VGAIL
 		{
 			for (Boid* boid : boids)
 			{
-				boid->flocking(deltaTime, m_separationRange, m_perceptionRange, avoidFactor, matchingFactor, centeringFactor, boids);
+				boid->doFlocking(deltaTime, m_separationRange, m_perceptionRange,
+					avoidFactor, matchingFactor, centeringFactor, boids);
 			}
 		}
 
-		std::vector<Boid*> boids;										/*!< The flock of boids. */
+		std::vector<Boid*> boids;				/*!< The flock of boids. */
 
 	private:
-		f32 m_separationRange = 0.0f, m_perceptionRange = 0.0f;			/*!< The separation and perception ranges to be used on all boids of the flock. */
+		f32 m_separationRange = 0.0f;			/*!< The range to be used in the "separation" behaviour. */
+		f32 m_perceptionRange = 0.0f;			/*!< The range to be used in the "align" and "cohesion" behaviours. */
 	};
 }

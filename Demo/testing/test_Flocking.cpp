@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	float separationRange = 25.0f;
 	float perceptionRange = 50.0f;
 
-	VGAIL::Flocking* flock = new VGAIL::Flocking();
+	VGAIL::Flock* flock = new VGAIL::Flock();
 	flock->setRanges(separationRange, perceptionRange);
 	int boids = 1000;
 	for (uint32_t i = 0; i < boids; i++)

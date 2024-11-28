@@ -82,15 +82,15 @@ public:
 	GuardMode mode;
 };
 
-class isGuardClose : public VGAIL::DecisionNode
+class IsGuardClose : public VGAIL::DecisionNode
 {
 public:
-	isGuardClose(Burglar* burglar, Guard* guard)
+	IsGuardClose(Burglar* burglar, Guard* guard)
 		: burglar(burglar)
 		, guard(guard)
 	{}
 
-	~isGuardClose() {}
+	~IsGuardClose() {}
 
 	void makeDecision(float dt) override
 	{
@@ -109,15 +109,15 @@ public:
 	Guard* guard = nullptr;
 };
 
-class isInDanger : public VGAIL::DecisionNode
+class IsInDanger : public VGAIL::DecisionNode
 {
 public:
-	isInDanger(Burglar* burglar, Guard* guard)
+	IsInDanger(Burglar* burglar, Guard* guard)
 		: burglar(burglar)
 		, guard(guard)
 	{}
 
-	~isInDanger() {}
+	~IsInDanger() {}
 
 	void makeDecision(float dt) override
 	{
@@ -154,17 +154,17 @@ public:
 	float takeDamageTimeCooldown = 2.0f;
 };
 
-class isCloseToCastle : public VGAIL::DecisionNode
+class IsCloseToCastle : public VGAIL::DecisionNode
 {
 public:
-	isCloseToCastle(Burglar* burglar, VGAIL::Vec2f castlePosition)
+	IsCloseToCastle(Burglar* burglar, VGAIL::Vec2f castlePosition)
 		: burglar(burglar)
 	{
 		castlePos.x = castlePosition.x * tileSize + castleSizeX / 2.0f;
 		castlePos.y = burglar->position.y;
 	}
 
-	~isCloseToCastle() {}
+	~IsCloseToCastle() {}
 
 	void makeDecision(float dt) override
 	{
@@ -199,15 +199,15 @@ public:
 	VGAIL::Vec2f castlePos;
 };
 
-class isBurglarClose : public VGAIL::DecisionNode
+class IsBurglarClose : public VGAIL::DecisionNode
 {
 public:
-	isBurglarClose(Guard* guard, Burglar* burglar)
+	IsBurglarClose(Guard* guard, Burglar* burglar)
 		: guard(guard)
 		, burglar(burglar)
 	{}
 
-	~isBurglarClose() {}
+	~IsBurglarClose() {}
 
 	void makeDecision(float dt) override
 	{
@@ -285,12 +285,12 @@ int main(int argc, char* argv[])
 	VGAIL::Vec2f castlePos = { 7, 3 };
 
 	VGAIL::DecisionTree burglar_tree;
-	VGAIL::DecisionNode& burglar_root = burglar_tree.createRoot<isGuardClose>(burglar, guard);
-	burglar_root.addChild<isInDanger>(burglar, guard);
-	burglar_root.addChild<isCloseToCastle>(burglar, castlePos);
+	VGAIL::DecisionNode& burglar_root = burglar_tree.createRoot<IsGuardClose>(burglar, guard);
+	burglar_root.addChild<IsInDanger>(burglar, guard);
+	burglar_root.addChild<IsCloseToCastle>(burglar, castlePos);
 
 	VGAIL::DecisionTree guard_tree;
-	VGAIL::DecisionNode& guard_root = guard_tree.createRoot<isBurglarClose>(guard, burglar);
+	VGAIL::DecisionNode& guard_root = guard_tree.createRoot<IsBurglarClose>(guard, burglar);
 
 	InitWindow(screenWidth, screenHeight, "Demo for Decision Tree");
 	SetTargetFPS(60);

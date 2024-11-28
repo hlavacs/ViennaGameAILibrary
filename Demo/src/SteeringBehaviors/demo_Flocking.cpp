@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 	Rectangle centering_textBox = { 750, 70, 225, 40 };
 	bool centering_mouseOnText = false;
 
-	VGAIL::Flocking* flock = new VGAIL::Flocking();
+	VGAIL::Flock* flock = new VGAIL::Flock();
 	flock->setRanges(separationRange, perceptionRange);
 
 	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Flocking");
