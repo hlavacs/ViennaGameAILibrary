@@ -4,7 +4,7 @@ Vienna Game AI Library is a single-header, comprehensive C++ library that encomp
 
 The library was created due to the lack of toolkits written in the C++ programming language that contains all algorithms required to develop RTS games. It started as a Master thesis by Lavinia-Elena Lehaci under the supervision of Univ.-Prof. Dipl.-Ing. Dr. Helmut Hlavacs. This project is intended to be worked on during future theses and it will be expanded by other algorithms.
 
-From path finding, to state machines, decision trees and steering algorithms, Vienna Game AI Library should encompass everything a game developer might need in creating a 2D RTS game. In order to show its efficiency and applicability, each implemented feature is showcased in a respective demo created with the help of the [raylib](https://github.com/raysan5/raylib) library.
+From pathfinding, to state machines, decision trees and steering algorithms, Vienna Game AI Library should encompass everything a game developer might need in creating a 2D RTS game. In order to show its efficiency and applicability, each implemented feature is showcased in a respective demo created with the help of the [raylib](https://github.com/raysan5/raylib) library.
 
 # Project structure
 - *assets* - Resource folder containing media files used for the ```README``` file
@@ -68,7 +68,7 @@ The navigation mesh uses ```Vec2ui```, while Boids use ```Vec2f``` due to requir
 
 The data types used in the library are: ```uint32_t```, ```int32_t``` and ```float```. Each has a typedef declaration to make the code more readable (```uint32_t``` -> ```ui32```,  ```int32_t``` -> ```i32```, ```float``` -> ```f32```).
 
-There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for path finding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
+There are custom structs also defined in the library. The ```NavMesh``` class is represented by a ```std::vector``` of ```NodeData``` objects. If geometric preprocessing is used for pathfinding, the ```Region``` struct is also used to store the nodes inside each region, and  ```RegionList``` to manage all regions.
 
 ## 2. **Path finding**
 
@@ -109,11 +109,11 @@ This process can be called while setting up the application (before the game loo
 ```
 	void preprocess(bool multithreading = false, ui32 numThreads = 4)
 ```
-The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (default: 4).
+The boolean specifies whether to use multithreading (default: false), and ```numThreads``` is the number of threads needed to run in parallel (by default, it is set to 4).
 
 This process will work on the Regions defined when the navmesh is created (see lines 912-935). The number of regions depends on the navmesh size, and by default they are set to each contain 5 x 5 nodes (5 on the *x* axis, 5 on the *y* axis). Depending on the navmesh size, this can be changed accordingly to maximize performance. If multithreading is used, each thread receives ```totalNumberOfRegions / numThreads``` regions.
 
-The following picture shows how the regions would look like on top of the demo for path finding by using the default values. Each orange square represents a region.
+The following picture shows how the regions would look like on top of the demo for pathfinding by having region sizes of 9x9. Each orange square represents a region.
 
 <div align="center">
 	<img src="assets/pathfinding.png">
