@@ -286,7 +286,7 @@ int main(int argc, char* argv[])
 	{
 		float delta = GetFrameTime();
 		stateMachine.update(delta);
-		
+
 		if (IsKeyDown(KEY_S))
 		{
 			navmesh->saveToFile("Demo/res/navmesh.txt");

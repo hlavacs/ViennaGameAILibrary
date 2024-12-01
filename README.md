@@ -226,7 +226,6 @@ In this example, the decision nodes are represented by the rectangular objects (
 	<img src="assets/stateMachines.gif">
 </div>
 
-
 - Create a state machine
 
 ```
