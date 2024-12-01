@@ -308,7 +308,7 @@ namespace VGAIL
     }
 
     /**
-     * @brief Generates a random float value between a range.
+     * @brief Generates a random floating-point number between a given range.
      *
      * @param min Minimum value of the range.
      * @param max Maximum value of the range.
@@ -323,7 +323,7 @@ namespace VGAIL
     }
 
     /**
-     * @brief Generates a random signed integer value between a range.
+     * @brief Generates a random signed integer between a given range.
      *
      * @param min Minimum value of the range.
      * @param max Maximum value of the range.
@@ -368,8 +368,9 @@ namespace VGAIL
     /**
      * @brief Custom struct to manage all regions created for geometric preprocessing.
      *
-     * During geometric preprocessing, the shortest distance between each region needs to be calculated and stored. In
-     * order to be able to loop through all existing regions, they are all stored in a vector and managed by this class.
+     * During geometric preprocessing, the shortest distance between each node and each region needs to be calculated and 
+     * stored. In order to be able to loop through all existing regions, they are all stored in a vector and managed by 
+     * this class.
      */
     struct RegionList
     {
@@ -423,9 +424,9 @@ namespace VGAIL
     };
 
     /**
-     * @brief States of the navmesh nodes.
+     * @brief State of a NavMesh node.
      *
-     * Characters can pass through walkable nodes only, and obstructable nodes could be obstacles, walls etc.
+     * Characters can pass through walkable nodes only, while obstructable nodes could be obstacles, walls etc.
      */
     enum NodeState
     {
@@ -434,7 +435,7 @@ namespace VGAIL
     };
 
     /**
-     * @brief Custom struct to hold node data.
+     * @brief Custom struct to hold node information.
      *
      */
     struct NodeData
@@ -442,8 +443,8 @@ namespace VGAIL
         Vec2ui pos;                                 /*!< 2D position of the node. */
         f32 g;                                      /*!< The cost of the path from the start node to the current node. */
         f32 h;                                      /*!< The heuristic function. */
-        ui32 regionID;                              /*!< The id of the region this node is part of. */
-        NodeState state;                            /*!< State of this node. */
+        ui32 regionID;                              /*!< The ID of the region this node is assigned to. */
+        NodeState state;                            /*!< The state of this node. */
 
         /**
          * @brief Constructs a new NodeData object.
@@ -471,7 +472,7 @@ namespace VGAIL
         /**
          * @brief Compares this NodeData object to another NodeData object.
          *
-         * Compares the `regionID`, `state` and `g` and `h` values of two NodeData objects for equality.
+         * Compares the `regionID`, `state`, `g` and `h` values of two NodeData objects for equality.
          *
          * @param other NodeData to compare against.
          * @return `true` if the NodeData objects are equal, `false` otherwise.
@@ -492,12 +493,12 @@ namespace VGAIL
          * @brief Compares two NodeData objects based on their `f()` value.
          *
          * Used in the A* algorithm when managing the priority queue that contains all nodes to be looked at 
-         * during the algorithm. \n
+         * during the search. \n
          * Whenever a NodeData object is added to the queue, it checks where to put it depending on its `f()` value 
          * by comparing it to the other objects in the list.
          *
-         * @param node1 First node.
-         * @param node2 Second node.
+         * @param node1 First NodeData object.
+         * @param node2 Second NodeData object.
          * @return `true` if the first NodeData object has a higher `f()` value, `false` otherwise.
          */
         bool operator()(const NodeData& node1, const NodeData& node2) const
@@ -507,9 +508,9 @@ namespace VGAIL
     };
 
     /**
-     * @brief Custom navigation mesh created especially for path finding.
+     * @brief Custom navigation mesh created especially for pathfinding.
      *
-     * It can be used without path finding as well.
+     * It can be used without pathfinding as well.
      */
     class NavMesh
     {
@@ -519,11 +520,11 @@ namespace VGAIL
          *
          * @param width The width of the navigation mesh.
          * @param height The height of the navigation mesh.
-         * @param obstaclePercentage The percentage to limit the amount of nodes with the state `obstructable spawned
-         * within the navigation mesh.
+         * @param obstaclePercentage The percentage to limit the amount of nodes with the state `obstructable` 
+         * spawned within the navigation mesh.
          * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; 
          * by default it is set to 5.
-         * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; 
+         * @param regionLengthOnY The amount of regions on the `y` axis. Only needed for geometric preprocessing; 
          * by default it is set to 5.
          */
         NavMesh(ui32 width, ui32 height, f32 obstaclePercentage, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
@@ -558,12 +559,12 @@ namespace VGAIL
         }
 
         /**
-         * @brief Constructs a new NavMesh object by loading data from a file.
+         * @brief Constructs a new NavMesh object by loading its data from a file.
          *
          * @param filepath The relative path of the file.
          * @param regionLengthOnX The amount of regions on the `x` axis. Only needed for geometric preprocessing; 
          * by default it is set to 5.
-         * @param regionLengthOnY Theamount of regions on the `y` axis. Only needed for geometric preprocessing; 
+         * @param regionLengthOnY The amount of regions on the `y` axis. Only needed for geometric preprocessing; 
          * by default it is set to 5.
          */
         NavMesh(const std::string& filepath, f32 regionLengthOnX = 5.0f, f32 regionLengthOnY = 5.0f)
@@ -628,17 +629,16 @@ namespace VGAIL
         /**
          * @brief Performs geometric preprocessing with optional multithreading.
          *
-         * @param multithreading Set to `true` to enable multithreading, `false` otherwise.
-         * @param numThreads The number of threads to use if multithreading is enabled.
-         *
          * a) Multithreaded \n
          * Each thread receives a part of the already defined regions and is assigned the `preprocessWorker()` method.
          *
          * b) Single-threaded \n
-         * For each node, calculate the shortest path to each region and store it at position 
-         * `m_adjList[nodeIndex][regionID]`, where `nodeIndex` is the index of the node within `m_nodes` and `regionID` 
-         * is the ID of the region it found a path to. 
+         * For each node, calculate the shortest path to each region and store it at position `m_adjList[nodeIndex][regionID]`, 
+         * where `nodeIndex` is the index of the node within `m_nodes`, and `regionID` is the ID of the region it found a path to. 
          * `m_adjList` will then be used to retrieve shortest path within regions.
+         * 
+         * @param multithreading Set to `true` to enable multithreading, `false` otherwise.
+         * @param numThreads The number of threads to use if multithreading is enabled; by default it is set to 4.
          */
         void preprocess(bool multithreading = false, ui32 numThreads = 4)
         {
@@ -662,8 +662,6 @@ namespace VGAIL
             {
                 for (ui32 i = 0; i < m_nodes.size(); i++)
                 {
-                    // std::cout << "Processing node " << i << "/" << m_nodes.size() - 1 << std::endl;
-
                     // Avoid unavailable nodes
                     if (m_nodes[i].state == NodeState::OBSTRUCTABLE)
                         continue;
@@ -727,7 +725,7 @@ namespace VGAIL
         /**
          * @brief Finds the stored path between two nodes.
          *
-         * After geometric preprocessing, the shortest paths between each node to each region is stored at 
+         * After geometric preprocessing, the shortest path from a node to a region is stored at 
          * `m_adjList[nodeIndex][regionID]`. \n
          * 	- If the nodes are in the same region, it simply calls the A* algorithm to find the shortest path 
          * between them. \n
@@ -756,7 +754,7 @@ namespace VGAIL
             // Check if there is at least one precomputed path from the start node stored in `m_adjList`.
             if (m_adjList[getIndex(startNode.pos)].size() == 0)
             {
-                std::cout << "Cannot find path!" << std::endl;
+                std::cout << "Could not find any path from the start node!" << std::endl;
                 return {};
             }
 
@@ -766,7 +764,7 @@ namespace VGAIL
             // Check if there is a precomputed path from the start node to the region in which the target node is.
             if (pathToRegion.size() == 0)
             {
-                std::cout << "No path found to region!" << std::endl;
+                std::cout << "No path found to target region!" << std::endl;
                 return {};
             }
 
@@ -782,7 +780,7 @@ namespace VGAIL
             std::vector<Vec2ui> pathWithinRegion = findPath(pathEndNode, target);
             if (pathWithinRegion.size() == 0)
             {
-                std::cout << "No path found inside region!" << std::endl;
+                std::cout << "No path found inside target region!" << std::endl;
                 return {};
             }
 
@@ -796,7 +794,13 @@ namespace VGAIL
          * @brief Saves the structure of a navigation mesh to a file.
          *
          * The file will consist of 3 main lines: the first one will represent the width, the second one will be the 
-         * height and the third will be the pattern.
+         * height and the third will be the pattern. \n
+         * 
+         * Example: \n
+         *      10 \n
+         *      1 \n
+         *      oowowowoww \n
+         * Where `o` stands for the `obstructable` state, and `w` for `walkable`.
          *
          * @param filepath The relative path of the file, including the filename; if the file does not exist, it will 
          * be created automatically.
@@ -867,7 +871,7 @@ namespace VGAIL
         /**
          * @brief Gets the 2D coordinates of a NodeData object.
          *
-         * @param index The index of the NodeData object within the navmesh (`m_nodes`).
+         * @param index The index of the NodeData object within the NavMesh.
          * @return Vec2ui 2D coordinates of the NodeData object.
          */
         Vec2ui get2DCoordinates(ui32 index)
@@ -878,9 +882,9 @@ namespace VGAIL
         }
 
         /**
-         * @brief Gets the index of a NodeData object within the navmesh.
+         * @brief Gets the index of a NodeData object within the NavMesh.
          *
-         * @param pos The 2D coordinates of the NodeData object
+         * @param pos The 2D coordinates of the NodeData object.
          * @return ui32 The index of the NodeData object.
          */
         ui32 getIndex(Vec2ui pos)
@@ -889,7 +893,7 @@ namespace VGAIL
         }
 
         /**
-         * @brief Gets a NodeData object.
+         * @brief Gets a NodeData object based on its 2D coordinates.
          *
          * @param pos The 2D coordinates of the NodeData object.
          * @return NodeData& The NodeData object.
@@ -904,7 +908,7 @@ namespace VGAIL
          * @brief Creates Region objects and assigns nodes to each region.
          *
          * Used for geometric preprocessing.
-         * It divides the navmesh into regions and determines which region each node should be assigned to.
+         * It divides the NavMesh into regions and determines which region each node should be assigned to.
          *
          * @param regionLengthOnX The amount of regions on the `x` axis.
          * @param regionLengthOnY The amount of regions on the `y` axis.
@@ -935,12 +939,15 @@ namespace VGAIL
         }
 
         /**
-         * @brief Finds and stores the neighbors of each node within the navmesh.
+         * @brief Finds and stores the neighbors of each node within the NavMesh.
          *
-         * Done after generating or loading a navmesh.
+         * Done after generating or loading a NavMesh.
          * It determines the neighbors of each node and stores them at `m_neighbors[nodeIndex]`.
+         * 
+         * Each node can have from 3 to 8 neighbours depending on its location within the NavMesh.
+         * All neighbours are considered: vertical, horizontal, and diagonal.
          *
-         * @param nodeIndex The index of the node within the navmesh.
+         * @param nodeIndex The index of the node within the NavMesh.
          */
         void setNeighbors(ui32 nodeIndex)
         {
@@ -970,7 +977,7 @@ namespace VGAIL
          *
          * @param v1 First Vec2ui object.
          * @param v2 Second Vec2ui object.
-         * @return f32 The distance between the Vec2ui objects.
+         * @return f32 The Manhattan distance between the Vec2ui objects.
          */
         f32 manhattan(const Vec2ui& v1, const Vec2ui& v2)
         {
@@ -985,7 +992,7 @@ namespace VGAIL
          *
          * @param v1 First Vec2ui object.
          * @param v2 Second Vec2ui object.
-         * @return f32 The distance between the Vec2ui objects.
+         * @return f32 The Euclidean distance between the Vec2ui objects.
          */
         f32 euclidean(const Vec2ui& v1, const Vec2ui& v2)
         {
@@ -1004,7 +1011,7 @@ namespace VGAIL
          *
          * @param threadID The ID of the thread.
          * @param numThreads The total number of threads used.
-         * @param nodes The navmesh nodes. Each thread receives a copy of the nodes such that data racing is avoided.
+         * @param nodes The NavMesh nodes. Each thread receives a copy of the nodes such that data racing is avoided.
          * @param regionList The list of regions.
          */
         void preprocessWorker(ui32 threadID, ui32 numThreads, std::vector<NodeData> nodes, std::vector<Region*> regionList)
@@ -1013,7 +1020,6 @@ namespace VGAIL
 
             for (ui32 regionIndex = startIndex; regionIndex < regionList.size(); regionIndex += numThreads)
             {
-                // std::cout << "Preprocessing region " << regionIndex << "/" << regionList.size() << std::endl;
                 for (ui32 i = 0; i < regionList[regionIndex]->nodes.size(); i++)
                 {
                     ui32 nodeIndex = regionList[regionIndex]->nodes[i];
@@ -1028,7 +1034,7 @@ namespace VGAIL
 
                         std::vector<std::vector<Vec2ui>> paths;
 
-                        // Calculate distances from N to all nodes in region R
+                        // Calculate distances from node N to all nodes in region R
                         for (ui32 O_tentative : R->nodes)
                         {
                             std::vector<NodeData> nodes = m_nodes;
@@ -1046,7 +1052,7 @@ namespace VGAIL
                             continue;
                         }
 
-                        // Find most optimal path from N to R
+                        // Find most optimal path from node N to region R
                         ui32 bestPathIndex = 0;
                         for (ui32 j = 1; j < paths.size(); j++)
                         {
@@ -1056,7 +1062,7 @@ namespace VGAIL
                             }
                         }
 
-                        // Add best path to R to the node N
+                        // Add best path to region R to the node N
                         m_adjList[nodeIndex][R->regionID] = paths[bestPathIndex];
                     }
                 }
@@ -1068,7 +1074,7 @@ namespace VGAIL
          *
          * @param start The position of the start node.
          * @param target The position of the target node.
-         * @param nodes The nodes of the navmesh.
+         * @param nodes The nodes of the NavMesh.
          * @return std::vector<Vec2ui> The shortest path between the start and the target nodes.
          */
         std::vector<Vec2ui> AStar(Vec2ui start, Vec2ui target, std::vector<NodeData>& nodes)
@@ -1220,7 +1226,7 @@ namespace VGAIL
         /**
          * @brief Gets a list of all transitions outgoing from this State object.
          *
-         * @return std::vector<Transition*> The list of this state's outgoing transitions.
+         * @return std::vector<Transition*> The list of this State's outgoing transitions.
          */
         std::vector<Transition*> getTransitions()
         {
@@ -1246,11 +1252,11 @@ namespace VGAIL
         std::function<void(f32)> onUpdateCallback;
 
     private:
-        std::vector<Transition*> m_transitions;     /*!< The list of this state's outgoing transitions. */
+        std::vector<Transition*> m_transitions;     /*!< The list of this State's outgoing transitions. */
     };
 
     /**
-     * @brief Custom class that manages the behavior of a state machine.
+     * @brief Custom class that manages the behavior of a finite state machine.
      *
      * It manages the states and transitions between them.
      */
@@ -1352,7 +1358,7 @@ namespace VGAIL
 
     private:
         std::vector<State*> m_states;               /*!< The list of all states. */
-        State* m_currentState = nullptr;            /*!< The current active state. */
+        State* m_currentState = nullptr;            /*!< The current active State. */
     };
 
     /**
@@ -1377,8 +1383,8 @@ namespace VGAIL
         /**
          * @brief The implementation of this DecisionNode object.
          *
-         * This method either carries out a list of given actions or it delegates work to its child nodes based on
-         * some criteria.
+         * This abstract method needs to be implemented manually. It should either carry out a list of given actions or 
+         * delegate work to its child nodes based on some criteria.
          *
          * @param deltaTime Elapsed time between last frame and current frame.
          */
@@ -1399,10 +1405,10 @@ namespace VGAIL
         /**
          * @brief Creates a new DecisionNode object and adds it to the list of child nodes of this DecisionNode object.
          *
-         * This is a templated method, meaning any custom class can be added as a child node as long as it inherits 
-         * from DecisionNode. \n
-         * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor 
-         * then there will be a compile time error.
+         * This is a templated method, thus any custom class can be added as a child node as long as it inherits 
+         * from a DecisionNode instance. \n
+         * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor, 
+         * there will be a compile time error.
          *
          * @tparam T Generic class.
          * @tparam Args Variadic variables.
@@ -1471,9 +1477,9 @@ namespace VGAIL
         /**
          * @brief Creates and returns the root of the decision tree.
          *
-         * This is a templated method, meaning any custom class can be used as a root node as it inherits from 
-         * DecisionNode. \n
-         * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor then 
+         * This is a templated method, thus any custom class can be used as a root node as it inherits from a
+         * DecisionNode instance. \n
+         * Any number of variables can be passed, but if there is a mismatch of variables with the `T` constructor, 
          * there will be a compile time error.
          *
          * @tparam T Generic class.
@@ -1496,6 +1502,8 @@ namespace VGAIL
     private:
         /**
          * @brief Resets the decision tree by deleting its root.
+         * 
+         * This will subsequently delete its children.
          *
          */
         void resetTree()
@@ -1511,7 +1519,7 @@ namespace VGAIL
     };
 
     /**
-     * @brief Custom class responsible for managing agents that can use steering behaviors.
+     * @brief Custom class responsible for enabling steering behaviours for AI agents.
      *
      */
     class Boid
@@ -1523,7 +1531,7 @@ namespace VGAIL
          * @param position The position of the Boid object.
          * @param velocity The velocity of the Boid object.
          * @param maxSpeed The maximum speed of the Boid object.
-         * @param id The ID of the Boid object. Only used in flocking; by default it is 0.
+         * @param id The ID of the Boid object. Currentlt only used in flocking; by default it is 0.
          */
         Boid(Vec2f position, Vec2f velocity, f32 maxSpeed, ui32 id = 0)
             : m_position(position)
@@ -1578,7 +1586,6 @@ namespace VGAIL
             return m_velocity;
         }
 
-
         /**
          * @brief Gets the ID of this Boid object.
          *
@@ -1591,6 +1598,9 @@ namespace VGAIL
 
         /**
          * @brief Gets the rotation of this Boid object in degrees.
+         * 
+         * Also depicts the "face" behaviour if used properly, as it will rotate the Boid to face
+         * its target.
          *
          * @return f32 The rotation of this Boid object in degrees.
          */
@@ -1630,15 +1640,15 @@ namespace VGAIL
         /**
          * @brief The flocking algorithm implemented per individual Boid.
          *
-         * This method manages the three steering behaviors (separation, alignment and cohesion) in order to simulate 
-         * a realistic simulation of flocking behavior.
+         * This method manages three steering behaviors ("separation", "alignment", and "cohesion") in order to create 
+         * a realistic simulation of the flocking behavior.
          *
          * @param deltaTime Elapsed time between last frame and current frame.
          * @param separationRange The range to avoid colliding with other boids.
-         * @param perceptionRange The range within which a boid considers other boids as part of the flock.
-         * @param avoidFactor How strongly this boid reacts to possible collisions.
-         * @param matchingFactor How strongly this boid steers to match the average velocity of their neighbours.
-         * @param centeringFactor How strongly this boid steers to match the average position of their neighbours.
+         * @param perceptionRange The range within which this Boid considers other boids as part of its flock.
+         * @param avoidFactor How strongly this Boid reacts to possible collisions.
+         * @param matchingFactor How strongly this Boid steers to match the average velocity of its neighbours.
+         * @param centeringFactor How strongly this Boid steers to match the average position of its neighbours.
          * @param flock The flock this Boid object is part of.
          */
         void doFlocking(f32 deltaTime, f32 separationRange, f32 perceptionRange, f32 avoidFactor, f32 matchingFactor, 
@@ -1692,13 +1702,13 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the separation steering behavior.
+         * @brief Performs the "separation" steering behavior.
          *
-         * Separation ensures that the boids do not overlap, thus steers the boids away from one another
+         * "Separation" ensures that boids do not overlap, thus steers them away from one another
          * to avoid crowding.
          *
          * @param separationRange The range to avoid colliding with other boids.
-         * @param avoidFactor How strongly this boid reacts to possible collisions.
+         * @param avoidFactor How strongly this Boid reacts to possible collisions.
          * @param flock  The flock this Boid object is part of.
          * @return Vec2f The steering force used to steer away from close boids.
          */
@@ -1720,12 +1730,12 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the alignment steering behavior.
+         * @brief Performs the "alignment" steering behavior.
          *
-         * Alignment is responsible for calculating the average velocity of the boids and steer them accordingly.
+         * "Alignment" is responsible for calculating the average velocity of the boids and steer them accordingly.
          *
-         * @param perceptionRange The range within which a boid considers other boids as part of the flock.
-         * @param matchingFactor How strongly this boid steers to match the average velocity of their neighbours.
+         * @param perceptionRange The range within which this Boid considers other boids as part of the flock.
+         * @param matchingFactor How strongly this Boid steers to match the average velocity of its neighbours.
          * @param flock The flock this Boid object is part of.
          * @return Vec2f The steering force used to steer towards the average velocity of the neighbouring boids.
          */
@@ -1755,10 +1765,10 @@ namespace VGAIL
 
 
         /**
-         * @brief Performs the cohesion steering behavior.
+         * @brief Performs the "cohesion" steering behavior.
          *
-         * @param perceptionRange The range within which a boid considers other boids as part of the flock.
-         * @param centeringFactor How strongly this boid steers to match the average position of their neighbours.
+         * @param perceptionRange The range within which this Boid considers other boids as part of the flock.
+         * @param centeringFactor How strongly this Boid steers to match the average position of its neighbours.
          * @param flock The flock this Boid object is part of.
          * @return Vec2f The steering force used to steer towards the average position of the neighbouring boids.
          */
@@ -1786,9 +1796,9 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the seek steering behavior.
+         * @brief Performs the "seek" steering behavior.
          *
-         * The seek steering behavior allows for a realistic movement towards a given target.
+         * The "seek" steering behavior allows for a realistic movement towards a given target.
          *
          * @param targetPosition The position of the target.
          * @param maxAcceleration The maximum rate at which the velocity can change per unit of time.
@@ -1822,9 +1832,9 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the pursue steering behavior.
+         * @brief Performs the "pursue" steering behavior.
          *
-         * The pursue steering behavior allows for a realistic movement of trying to "catch" a target by 
+         * The "pursue" steering behavior allows for a realistic movement of trying to "catch" a target by 
          * anticipating its movement. It will estimate where the target will be within the next few seconds and
          * move towards that new position.
          *
@@ -1855,9 +1865,9 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the evade steering behavior.
+         * @brief Performs the "evade" steering behavior.
          *
-         * The evade steering behavior allows for a realistic movement of trying to "outrun" a target by 
+         * The "evade" steering behavior allows for a realistic movement of trying to "outrun" a target by 
          * anticipating its movement. It will estimate where the target will be within the next few seconds and 
          * move away from that new position.
          *
@@ -1888,9 +1898,9 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the arrive steering behavior.
+         * @brief Performs the "arrive" steering behavior.
          *
-         * The arrive steering behavior is responsible for slowing down the character before it reaches its destination 
+         * The "arrive" steering behavior is responsible for slowing down the character before it reaches its destination 
          * such that it can stop smoothly.
          *
          * @param targetPosition The position of the target.
@@ -1931,11 +1941,11 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the wander steering behavior.
+         * @brief Performs the "wander" steering behavior.
          *
          * This implementation follows Craig Reynold's proposal.
          * It uses a circle defined in front of the character from which the steering force is calculated. 
-         * Every frame, a random point is chosen from the outline of this circle which will the new direction the 
+         * Every frame, a random point is chosen from the outline of this circle which will be the new direction the 
          * character will need to steer towards. In order to limit flickering, a `displacementRange` is needed such 
          * that it limits the interval from which this random point is chosen.
          *
@@ -1974,7 +1984,7 @@ namespace VGAIL
         /**
          * @brief Applies the newly calculated steering force to the Boid's velocity.
          *
-         * @param steeringForce The steering force obtained from any of the methods performing steering behaviors.
+         * @param steeringForce The steering force obtained from any of the methods enabling the steering behaviors.
          */
         void applySteeringForce(Vec2f steeringForce)
         {
@@ -2006,13 +2016,13 @@ namespace VGAIL
     private:
         ui32 m_id;                                  /*!< The ID of this Boid object. */
         f32 m_lastRotation = 0.0f;                  /*!< The last stored rotation of this Boid object. */
-        f32 m_theta = PI / 2.0f;                    /*!< The angle between the randomly chosen point and the horizontal axis used in the wander behavior. */
+        f32 m_theta = PI / 2.0f;                    /*!< The angle between the randomly chosen point and the horizontal axis used in the "wander" behavior. */
         f32 m_minSpeed = 1.0f, m_maxSpeed = 5.0f;   /*!< The minimum and maximum speed of this Boid object. */
         Vec2f m_position, m_velocity;               /*!< The position and velocity of this Boid object. */
     };
 
     /**
-     * @brief Custom class that is responsible for performing the flocking behavior for a group of Boid objects.
+     * @brief Custom class that is responsible for performing the flocking algorithm on a group of Boid objects.
      *
      */
     class Flock
@@ -2037,7 +2047,7 @@ namespace VGAIL
         }
 
         /**
-         * @brief Adds a Boid object to the flock (list of Boids).
+         * @brief Adds a Boid object to the flock.
          *
          * @param position The position of the new Boid object.
          * @param velocity The velocity of the new Boid object.
@@ -2052,10 +2062,10 @@ namespace VGAIL
         }
 
         /**
-         * @brief Sets the separation and perception ranges to be used by each Boid object.
+         * @brief Sets the separation and perception ranges to be used by all Boid objects.
          *
-         * @param separationRange The range within which a boid avoids colliding with other boids.
-         * @param perceptionRange The range within which a boid considers other boids as part of the flock.
+         * @param separationRange The range within which a Boid avoids colliding with other boids.
+         * @param perceptionRange The range within which a Boid considers other boids as part of its flock.
          */
         void setRanges(f32 separationRange, f32 perceptionRange)
         {
@@ -2064,7 +2074,7 @@ namespace VGAIL
         }
 
         /**
-         * @brief Performs the flocking steering behavior.
+         * @brief Performs the "flocking" steering behavior.
          *
          * It loops through the list of boids and calls their individual implementation of the algorithm.
          *
@@ -2085,7 +2095,7 @@ namespace VGAIL
         std::vector<Boid*> boids;               /*!< The flock of boids. */
 
     private:
-        f32 m_separationRange = 0.0f;           /*!< The range to be used in the "separation" behaviour. */
-        f32 m_perceptionRange = 0.0f;           /*!< The range to be used in the "align" and "cohesion" behaviours. */
+        f32 m_separationRange = 0.0f;           /*!< The range used in the "separation" behaviour. */
+        f32 m_perceptionRange = 0.0f;           /*!< The range used in the "align" and "cohesion" behaviours. */
     };
 }
