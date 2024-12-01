@@ -101,8 +101,7 @@ int main(int argc, char* argv[])
 	InitWindow(screenWidth, screenHeight, "Demo for State Machine");
 	SetTargetFPS(60);
 
-	Font stateFont = LoadFont("Demo/res/demo_StateMachine/pixelplay.ttf");
-	Font loadFont = LoadFont("Demo/res/demo_StateMachine/SunnySpellsBasic.ttf");
+	Font font = LoadFontEx("Demo/res/Signika-SemiBold.ttf", 40, 0, 0);
 
 	Texture2D homeTexture = LoadTexture("Demo/res/demo_StateMachine/home.png");
 	Rectangle homeTextureSrc = { 0.0f, 0.0f, static_cast<float>(homeTexture.width), static_cast<float>(homeTexture.height) };
@@ -287,7 +286,7 @@ int main(int argc, char* argv[])
 	{
 		float delta = GetFrameTime();
 		stateMachine.update(delta);
-
+		
 		if (IsKeyDown(KEY_S))
 		{
 			navmesh->saveToFile("Demo/res/navmesh.txt");
@@ -326,17 +325,17 @@ int main(int argc, char* argv[])
 
 		std::stringstream ss;
 		ss << currentLoad;
-		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ worker.x - 5.0f, worker.y }, 25, 1.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{ worker.x - 5.0f, worker.y }, 25, 1.0f, BLACK);
 
 		ss.str(std::string());
 		ss << homeLoad;
-		DrawTextEx(loadFont, ss.str().c_str(), Vector2{ home.x - 10.0f, home.y }, 25, 1.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{ home.x - 10.0f, home.y }, 25, 1.0f, BLACK);
 
 		for (Mine* mine : mines)
 		{
 			ss.str(std::string());
 			ss << mine->size;
-			DrawTextEx(loadFont, ss.str().c_str(), Vector2{ mine->position.x * tileSize - 10.0f, mine->position.y * tileSize }, 25, 1.0f, BLACK);
+			DrawTextEx(font, ss.str().c_str(), Vector2{ mine->position.x * tileSize - 10.0f, mine->position.y * tileSize }, 25, 1.0f, BLACK);
 		}
 
 		std::string currentState = "";
@@ -364,9 +363,9 @@ int main(int argc, char* argv[])
 		ss.str(std::string());
 		ss << "CURRENT STATE -> " << currentState;
 		const char* fullText = ss.str().c_str();
-		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 200.0f, 50.0f };
-		DrawRectangle(textPosition.x - 20.0f, textPosition.y, 500.0f, 30.0f, WHITE);
-		DrawTextEx(stateFont, fullText, textPosition, stateFont.baseSize, 3.0f, BLACK);
+		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 300.0f, 50.0f };
+		DrawRectangle(textPosition.x - 20.0f, textPosition.y, 750.0f, 40.0f, WHITE);
+		DrawTextEx(font, fullText, textPosition, font.baseSize, 3.0f, BLACK);
 		
 		EndDrawing();
 	}
@@ -377,8 +376,7 @@ int main(int argc, char* argv[])
 	UnloadTexture(mineTexture);
 	UnloadTexture(workerTexture);
 
-	UnloadFont(stateFont);
-	UnloadFont(loadFont);
+	UnloadFont(font);
 
 	CloseWindow();
 

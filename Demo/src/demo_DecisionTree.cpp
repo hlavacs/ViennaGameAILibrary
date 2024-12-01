@@ -295,8 +295,7 @@ int main(int argc, char* argv[])
 	InitWindow(screenWidth, screenHeight, "Demo for Decision Tree");
 	SetTargetFPS(60);
 
-	Font sunnyFont = LoadFont("Demo/res/demo_DecisionTree/SunnySpellsBasic.ttf");
-	Font pixelFont = LoadFont("Demo/res/demo_DecisionTree/pixelplay.ttf");
+	Font font = LoadFontEx("Demo/res/demo_DecisionTree/Signika-Bold.ttf", 40, 0, 0);
 
 	Texture2D backgroundTexture = LoadTexture("Demo/res/demo_DecisionTree/background.png");
 	Texture2D groundTexture = LoadTexture("Demo/res/demo_DecisionTree/ground.png");
@@ -486,28 +485,28 @@ int main(int argc, char* argv[])
 
 		std::stringstream ss;
 		ss << "Guard health: " << guard->health;
-		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ 10.0f, 20.0f }, sunnyFont.baseSize, 1.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{ 10.0f, 20.0f }, font.baseSize, 1.0f, BLACK);
 
 		ss.str(std::string());
 		ss << "Burglar health: " << burglar->health;
-		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ 950.0f, 20.0f }, sunnyFont.baseSize, 1.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{ 950.0f, 20.0f }, font.baseSize, 1.0f, BLACK);
 
 		if (!entered)
 		{
 			ss.str(std::string());
 			ss << "Burglar decision -> " << burglar_currentDecision;
-			DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
+			DrawTextEx(font, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, font.baseSize, 1.0f, BLACK);
 		}
 		else
 		{
 			ss.str(std::string());
 			ss << "The burglar entered the castle !!";
-			DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
+			DrawTextEx(font, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 9.5f * tileSize }, font.baseSize, 1.0f, BLACK);
 		}
 
 		ss.str(std::string());
 		ss << "Guard decision -> " << guard_currentDecision;
-		DrawTextEx(sunnyFont, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 10.5f * tileSize }, sunnyFont.baseSize, 1.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{ castlePos.x * tileSize, 10.5f * tileSize }, font.baseSize, 1.0f, BLACK);
 
 		EndDrawing();
 	}
@@ -528,8 +527,7 @@ int main(int argc, char* argv[])
 	UnloadTexture(guardPatrollingTexture);
 	UnloadTexture(guardRunningTexture);
 
-	UnloadFont(sunnyFont);
-	UnloadFont(pixelFont);
+	UnloadFont(font);
 
 	return 0;
 }

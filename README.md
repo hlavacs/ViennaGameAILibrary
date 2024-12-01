@@ -207,7 +207,7 @@ The order in which the child nodes are instantiated is important, as it will mat
 In the example from *demo_DecisionTree.cpp*, both characters have their own decision tree and each chosen decision is displayed every frame on the screen.
 
 <div align="center">
-	<img src="assets/decisionTrees.png">
+	<img src="assets/decisionTrees.gif">
 </div>
 
 The logic behind the decision trees is displayed in the following picture.
@@ -221,6 +221,11 @@ In this example, the decision nodes are represented by the rectangular objects (
 ## 4. **State machines**
 
 > Demo example: *Demo/src/demo_StateMachine.cpp*
+
+<div align="center">
+	<img src="assets/stateMachines.gif">
+</div>
+
 
 - Create a state machine
 
@@ -407,7 +412,7 @@ Please note that the ```updatePosition()``` method must be called after applying
 There is also a demo that uses all the steering behaviours covered in this section and it can be found in the *Demo/src/demo_SteeringBehaviors.cpp* file. A snippet of this example is given in the following picture.
 
 <div align="center">
-	<img src="assets/steeringBehaviors.png">
+	<img src="assets/steering.gif">
 </div>
 
 ## 6. **Flocking**
@@ -470,13 +475,13 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 	- https://kenney.nl/assets/shape-characters
 	- https://kenney.nl/assets/animal-pack-redux
 	- https://kenney.nl/assets/tiny-town
-	- https://p3d.in/JeRJE
+	- https://kenney.nl/assets/fish-pack
 - Fonts
-	- https://www.dafont.com/pixelplay.font
-	- https://www.dafont.com/sunny-spells-basic.font
+	- https://fonts.google.com/specimen/Signika/about?preview.size=57&lang=en_Latn
 - Steering behaviors
 	- Craig Reynold's proposals: https://www.red3d.com/cwr/steer/
 	- Wander behavior: https://www.youtube.com/watch?v=ujsR2vcJlLk
 	- Flocking algorithm: https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html
 - User Interface for Flocking
 	- https://www.raylib.com/examples/text/loader.html?name=text_input_box
+- All demo videos were converted to GIF format by using [Ezgif](https://ezgif.com/video-to-gif).

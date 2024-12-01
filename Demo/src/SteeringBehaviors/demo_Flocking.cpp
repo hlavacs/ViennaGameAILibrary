@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 	InitWindow(static_cast<int>(screenWidth), static_cast<int>(screenHeight), "Demo for Flocking");
 	SetTargetFPS(60);
 
-	Texture2D texture = LoadTexture("Demo/res/bird.png");
+	Texture2D texture = LoadTexture("Demo/res/demo_SteeringBehaviors/fish.png");
 
 	for (uint32_t i = 0; i < 100; i++)
 	{
@@ -207,18 +207,18 @@ int main(int argc, char* argv[])
 		}
 		else
 			SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-
+ 
 		BeginDrawing();
-		ClearBackground(WHITE);
+		ClearBackground(SKYBLUE);
 
 		for (VGAIL::Boid* boid : flock->boids)
 		{
 			DrawTexturePro(
 				texture,
 				{ 0.0f, 0.0f, static_cast<float>(texture.width), static_cast<float>(texture.height) },
-				{ boid->getPosition().x, boid->getPosition().y, 50.0f, 50.0f },
+				{ boid->getPosition().x, boid->getPosition().y, 40.0f, 40.0f },
 				Vector2{ 25.0f, 25.0f },
-				boid->getRotationInDegrees() - 90.f,
+				boid->getRotationInDegrees(),
 				WHITE
 			);
 		}

@@ -163,6 +163,8 @@ int main(int argc, char* argv[])
 	Texture2D groundTextureNight = LoadTexture("Demo/res/demo_SteeringBehaviors/ground_night.png");
 	Texture2D grassTextureNight = LoadTexture("Demo/res/demo_SteeringBehaviors/grass_night.png");
 
+	Font font = LoadFontEx("Demo/res/Signika-SemiBold.ttf", 40, 0, 0);
+
 	while (!WindowShouldClose())
 	{
 		float dt = GetFrameTime();
@@ -341,30 +343,30 @@ int main(int argc, char* argv[])
 			);
 		}
 
-		DrawRectangle(0, screenHeight - 900, screenWidth, 150, Color{255, 255, 255, 100});
+		DrawRectangle(0, screenHeight - 910, screenWidth, 150, Color{255, 255, 255, 100});
 
 		std::stringstream ss;
 		if (dayTime)
-			ss << "Day time";
+			ss << ">> DAY time";
 		else
-			ss << "Night time";
-		DrawText(ss.str().c_str(), 20, 20, 30, BLACK);
+			ss << ">> NIGHT time";
+		DrawTextEx(font, ss.str().c_str(), Vector2{20, 10}, font.baseSize, 3.0f, BLACK);
 
 		ss.str(std::string());
 		ss << "Chickens: " << chickens.size();
-		DrawText(ss.str().c_str(), 20, 60, 30, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{20, 50}, font.baseSize, 3.0f, BLACK);
 
 		ss.str(std::string());
 		ss << "Chicken behaviour: " << chickenBehaviour;
-		DrawText(ss.str().c_str(), screenWidth - 550,  20, 30, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{screenWidth - 570,  10}, font.baseSize, 3.0f, BLACK);
 
 		ss.str(std::string());
 		ss << "Dog behaviour: " << dogBehaviour;
-		DrawText(ss.str().c_str(), screenWidth - 550, 60, 30, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{screenWidth - 570, 50}, font.baseSize, 3.0f, BLACK);
 
 		ss.str(std::string());
 		ss << "Snake behaviour: " << snakeBehaviour;
-		DrawText(ss.str().c_str(), screenWidth - 550, 100, 30, BLACK);
+		DrawTextEx(font, ss.str().c_str(), Vector2{screenWidth - 570, 90}, font.baseSize, 3.0f, BLACK);
 
 		EndDrawing();
 	}
@@ -377,6 +379,8 @@ int main(int argc, char* argv[])
 	UnloadTexture(groundTextureNight);
 	UnloadTexture(grassTexture);
 	UnloadTexture(grassTextureNight);
+
+	UnloadFont(font);
 
 	CloseWindow();
 
