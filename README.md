@@ -381,7 +381,7 @@ Each boid needs a position, a velocity, and a maximum speed when instantiated. B
 	The "wander" steering behavior produces a natural-looking movement of a character "casually" walking around. Its implementation, following Craig Reynold's proposal, uses a circle defined in front of the character from which the steering force is calculated.
 
 	<div align="center">
-		<img src="assets/wander.png" style="width:35%">
+		<img src="assets/wander.png" style="width:50%">
 	</div>
 	
 	In the picture above, the character is represented by the triangle. The circle defined in this behavior is set at a ```circleDistance``` from the character and has a ```circleRadius```. Every frame, a random point is chosen from the outline of the circle which will be the new direction the character will need to steer towards. In order to avoid strong flickering (the character moving abruptly left and right), a ```displacementRange``` is given which will be responsible for limiting the interval from which this random point is chosen. As for the previous steering behaviors, ```maxAcceleration``` is the maximum rate at which the velocity can change per unit of time.
