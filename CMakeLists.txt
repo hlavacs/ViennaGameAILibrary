@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.28.0)
 project (
   ViennaGameAILibrary
   VERSION 1.0
-  DESCRIPTION "A library containing game AI algorithms."
+  DESCRIPTION "A C++ library containing game AI algorithms."
   LANGUAGES CXX
 )
 
