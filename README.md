@@ -471,18 +471,24 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 
 # Resources
 - Textures
-	- https://kenney.nl/assets/platformer-pack-medieval
-	- https://kenney.nl/assets/toon-characters-1
-	- https://kenney.nl/assets/medieval-rts
-	- https://kenney.nl/assets/shape-characters
-	- https://kenney.nl/assets/animal-pack-redux
-	- https://kenney.nl/assets/tiny-town
-	- https://kenney.nl/assets/fish-pack
-- Fonts: https://fonts.google.com/specimen/Signika/about?preview.size=57&lang=en_Latn
+	- [Platformer Pack Medieval](https://kenney.nl/assets/platformer-pack-medieval)
+	- [Toon Characters 1](https://kenney.nl/assets/toon-characters-1)
+	- [Medieval RTS](https://kenney.nl/assets/medieval-rts)
+	- [Shape Characters](https://kenney.nl/assets/shape-characters)
+	- [Animal Pack Redux](https://kenney.nl/assets/animal-pack-redux)
+	- [Tiny Town](https://kenney.nl/assets/tiny-town)
+	- [Fish Pack](https://kenney.nl/assets/fish-pack)
+- Fonts: 
+	- [Signika](https://fonts.google.com/specimen/Signika/about?preview.size=57&lang=en_Latn)
+- Inspiration for all features -> [Artificial Intelligence for Games, 2nd edition](https://www.oreilly.com/library/view/artificial-intelligence-for/9780123747310/)
+- A* algorithm -> The pseudocode from [A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm)
 - Steering behaviors
-	- Craig Reynold's proposals: https://www.red3d.com/cwr/steer/
-	- Wander behavior: https://www.youtube.com/watch?v=ujsR2vcJlLk
-	- Flocking algorithm: https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html
-- User Interface for Flocking: https://www.raylib.com/examples/text/loader.html?name=text_input_box
-- Inspiration for all features: [Artificial Intelligence for Games, 2nd edition](https://www.oreilly.com/library/view/artificial-intelligence-for/9780123747310/) by Ian Millington and John Funge.
+	- All steering behaviors -> [Craig Reynold's proposals](https://www.red3d.com/cwr/steer/)
+	- "Arrive" behavior -> [Understanding Steering Behaviors: Flee and Arrival](https://code.tutsplus.com/understanding-steering-behaviors-flee-and-arrival--gamedev-1303t)
+	- "Pursue" and "Evade" behaviors -> [Understanding Steering Behaviors: Pursuit and Evade](https://code.tutsplus.com/understanding-steering-behaviors-pursuit-and-evade--gamedev-2946t)
+	- "Wander" behavior 
+		- [5.5 Wander Steering Behavior - The Nature of Code](https://www.youtube.com/watch?v=ujsR2vcJlLk)
+		- [Understanding Steering Behaviors: Wander](https://code.tutsplus.com/understanding-steering-behaviors-wander--gamedev-1624t)
+	- Flocking algorithm -> [Boids algorithm - augmented for distributed consensus](https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html)
+	- User Interface for the flocking demo -> [raylib [text] example - input box](https://www.raylib.com/examples/text/loader.html?name=text_input_box)
 - All demo videos were converted to GIF format by using [Ezgif](https://ezgif.com/video-to-gif).
