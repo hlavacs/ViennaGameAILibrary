@@ -16,8 +16,8 @@ int main(int argc, char* argv[])
 
 	bool pathFound = false;
 
-	float gridStride = 30.0f;
-	float tileSize = 25.0f;
+	float gridStride = 50.0f;
+	float tileSize = 45.0f;
 
 	uint32_t navmeshWidth = static_cast<uint32_t>(screenWidth / gridStride);
 	uint32_t navmeshHeight = static_cast<uint32_t>(screenHeight / gridStride);

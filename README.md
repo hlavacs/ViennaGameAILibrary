@@ -22,7 +22,8 @@ From pathfinding to state machines, decision trees, and steering algorithms, Vie
 - ```README.md```
 
 # Setup - Windows
-## Prerequisites
+## 1. Build and run with Clang and Ninja
+### Prerequisites
 - [Doxygen](https://www.doxygen.nl/index.html)
 - [Ninja](https://ninja-build.org/)
 - [MSYS2](https://www.msys2.org/) - CMake and Clang need to be installed through it.
@@ -36,7 +37,7 @@ From pathfinding to state machines, decision trees, and steering algorithms, Vie
 	- *doxygen/bin*
 	- *ninja*
 
-## Build and run the project
+### Build and run the project
 1. Clone the project.
 2. Run ```git submodule init``` and ```git submodule update``` to fetch raylib.
 3. Run ```build_demo_win.bat``` to build the project. The output will be stored in the build folder. 
@@ -48,6 +49,11 @@ Make sure Clang and Ninja are used by this project. The first time you build the
 -- The CXX compiler identification is Clang ...
 ```
 4. Run ```run_demo_win.bat``` to start the project.
+
+## 2. Build and run with Microsoft Visual Studio
+1. Clone the project.
+2. Wait for MSVC to compile and link everything. 
+3. To run the project, look for ```Demo.exe``` from the list of debug targets. You will need to scroll down to find it.
 
 ## To run different demos
 In *Demo/```CMakeLists.txt```*, uncomment the path of the .cpp file that you want to run.

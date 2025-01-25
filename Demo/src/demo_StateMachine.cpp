@@ -362,10 +362,9 @@ int main(int argc, char* argv[])
 
 		ss.str(std::string());
 		ss << "CURRENT STATE -> " << currentState;
-		const char* fullText = ss.str().c_str();
 		Vector2 textPosition = Vector2{ screenWidth / 2.0f - 300.0f, 50.0f };
 		DrawRectangle(textPosition.x - 20.0f, textPosition.y, 750.0f, 40.0f, WHITE);
-		DrawTextEx(font, fullText, textPosition, font.baseSize, 3.0f, BLACK);
+		DrawTextEx(font, ss.str().c_str(), textPosition, font.baseSize, 3.0f, BLACK);
 		
 		EndDrawing();
 	}

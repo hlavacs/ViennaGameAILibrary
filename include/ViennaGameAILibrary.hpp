@@ -1020,6 +1020,7 @@ namespace VGAIL
 
             for (ui32 regionIndex = startIndex; regionIndex < regionList.size(); regionIndex += numThreads)
             {
+                std::cout << "Preprocessing region " << regionIndex << "/" << regionList.size() << std::endl;
                 for (ui32 i = 0; i < regionList[regionIndex]->nodes.size(); i++)
                 {
                     ui32 nodeIndex = regionList[regionIndex]->nodes[i];
