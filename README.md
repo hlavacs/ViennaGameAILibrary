@@ -2,7 +2,7 @@
 
 Vienna Game AI Library is a single-header C++ library that encompasses popular AI algorithms to be used in the development of 2D real-time strategy games with a focus on non-player character management.
 
-The library was created due to the lack of toolkits written in the C++ programming language that contain all algorithms required to develop RTS games. It started as a Master thesis by Lavinia-Elena Lehaci under the supervision of Univ.-Prof. Dipl.-Ing. Dr. Helmut Hlavacs. This project is intended to be worked on during future theses and it will be expanded by other algorithms.
+The library was created due to the lack of toolkits written in the C++ programming language that contain all algorithms required to develop RTS games. It started as a [Master thesis](https://utheses.univie.ac.at/detail/74050/) by Lavinia-Elena Lehaci under the supervision of Univ.-Prof. Dipl.-Ing. Dr. Helmut Hlavacs. This project is intended to be worked on during future theses and it will be expanded by other algorithms.
 
 From pathfinding to state machines, decision trees, and steering algorithms, Vienna Game AI Library should encompass everything a game developer might require when developing a 2D RTS game. In order to show the applicability of the library, each implemented feature is showcased in a separate example created with the help of the [raylib](https://github.com/raysan5/raylib) library.
 
