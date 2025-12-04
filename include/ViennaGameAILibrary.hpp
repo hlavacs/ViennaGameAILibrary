@@ -20,6 +20,7 @@
 #include <thread>
 #include <mutex>
 #include <functional>
+#include <memory>
 
 namespace VGAIL
 {
@@ -2098,5 +2099,75 @@ namespace VGAIL
     private:
         f32 m_separationRange = 0.0f;           /*!< The range used in the "separation" behaviour. */
         f32 m_perceptionRange = 0.0f;           /*!< The range used in the "align" and "cohesion" behaviours. */
+    };
+
+    class Action {
+    public:
+        virtual ~Action() {}
+        virtual void execute() = 0;
+    };
+
+    class MCTSState {
+    public:
+        std::vector<Action> actions;
+    };
+
+    class MCTSNode {
+    private:
+        MCTSState state;
+        std::vector<std::shared_ptr<MCTSNode>> children;
+        std::weak_ptr<MCTSNode> parent;
+        int num_visits = 0;
+        int num_wins = 0;
+
+    public:
+        MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent) : state(state), parent(parent) {}
+
+        void addChild(std::shared_ptr<MCTSNode> child) {
+            children.push_back(child);
+        }
+
+        MCTSState& getState() {
+            return state;
+        }
+
+        std::vector<std::shared_ptr<MCTSNode>>& getChildren() {
+            return children;
+        }
+
+        std::shared_ptr<MCTSNode> getParent() {
+            return parent.lock();
+        }
+
+        void incrementVisits() {
+            num_visits++;
+        }
+
+        void incrementWins() {
+            num_wins++;
+        }
+
+        int getVisits() const {
+            return num_visits;
+        }
+
+        int getWins() const {
+            return num_wins;
+        }
+
+        double getWinrate() const {
+            if (num_visits == 0) {
+                return 0.0;
+            }
+
+            return static_cast<double>(num_wins) / static_cast<double>(num_visits);
+        }
+    };
+
+    class MCTS {
+    private:
+        MCTSState currentState;
+    public:
+
     };
 }
