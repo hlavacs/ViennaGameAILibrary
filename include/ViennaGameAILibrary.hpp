@@ -2162,12 +2162,60 @@ namespace VGAIL
 
             return static_cast<double>(num_wins) / static_cast<double>(num_visits);
         }
+
+        bool isCompletelyExpanded() {
+            return children.size() == state.actions.size();
+        }
     };
 
     class MCTS {
     private:
         MCTSState currentState;
-    public:
+        int timeLimit = 1000;
+        double c_value = sqrt(2);
 
+    public:
+        MCTS(MCTSState currentState) : currentState(currentState) {}
+
+        Action searchBestAction(MCTS currentState) {
+            // Select
+            std::shared_ptr<MCTSNode> root = std::make_shared<MCTSNode>(currentState, nullptr);
+            std::shared_ptr<MCTSNode> selectedChild = select(root);
+            // Expand
+
+            // Simulate
+
+            // Backpropagate
+
+            // Return action
+        }
+
+        std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode> currentNode) {
+            std::shared_ptr<MCTSNode> bestChild = nullptr;
+            if (currentNode->isCompletelyExpanded() == false) {
+                return currentNode;
+            }
+
+            if (currentNode->getVisits() < 10) {
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_int_distribution<> distr(0, currentNode->getChildren().size() - 1);
+                return currentNode->getChildren()[distr(gen)];
+            }
+
+
+        }
+
+        MCTSNode expand(MCTSNode currentNode) {
+
+        }
+
+        int simulate(MCTSNode currentNode) {
+
+        }
+
+        void backpropagate(MCTSNode* currentNode, int result) {
+
+        }
     };
 }
