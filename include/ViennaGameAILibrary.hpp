@@ -2166,6 +2166,17 @@ namespace VGAIL
         bool isCompletelyExpanded() {
             return children.size() == state.actions.size();
         }
+
+        double getUCB1(const double& c_value) const {
+            if (num_visits == 0) {
+                return std::numeric_limits<double>::infinity();
+            }
+            double exploit = getWinrate();
+            double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
+            double UCB1 = exploit + explore;
+
+            return UCB1;
+        }
     };
 
     class MCTS {
@@ -2190,12 +2201,13 @@ namespace VGAIL
             // Return action
         }
 
-        std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode> currentNode) {
+        std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode>& currentNode) {
             std::shared_ptr<MCTSNode> bestChild = nullptr;
             if (currentNode->isCompletelyExpanded() == false) {
                 return currentNode;
             }
 
+            // This will get removed probably because of UCB1 added, still here because of double check
             if (currentNode->getVisits() < 10) {
                 std::random_device rd;
                 std::mt19937 gen(rd());
@@ -2203,7 +2215,17 @@ namespace VGAIL
                 return currentNode->getChildren()[distr(gen)];
             }
 
+            double bestUCB1_value = -1;
+            for (auto& child : currentNode->getChildren()) {
+                double child_UCB1 = child->getUCB1(c_value);
 
+                if (child_UCB1 > bestUCB1_value) {
+                    bestUCB1_value = child_UCB1;
+                    bestChild = child;
+                }
+            }
+
+            return bestChild;
         }
 
         MCTSNode expand(MCTSNode currentNode) {
