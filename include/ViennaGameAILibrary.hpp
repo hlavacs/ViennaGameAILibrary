@@ -2135,6 +2135,8 @@ namespace VGAIL
         Action actionToGetHere;
 
     public:
+        MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent, Action actionToGetHere) : state(state), parent(parent), actionToGetHere(actionToGetHere) {}
+
         MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent) : state(state), parent(parent) {}
 
         void addChild(std::shared_ptr<MCTSNode> child) {
@@ -2206,8 +2208,16 @@ namespace VGAIL
             // Select
             std::shared_ptr<MCTSNode> root = std::make_shared<MCTSNode>(currentState, nullptr);
             std::shared_ptr<MCTSNode> selectedChild = select(root);
+            while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
+                selectedChild = select(selectedChild);
+            }
             // Expand
+            std::shared_ptr<MCTSNode> expandedNode = expand(selectedChild);
 
+            // If expanding is not possible because the selected node is terminal then use that
+            if (expandedNode == nullptr) {
+                expandedNode = selectedChild;
+            }
             // Simulate
 
             // Backpropagate
@@ -2217,7 +2227,7 @@ namespace VGAIL
 
         std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode>& currentNode) {
             std::shared_ptr<MCTSNode> bestChild = nullptr;
-            if (currentNode->isCompletelyExpanded() == false) {
+            if (currentNode->isCompletelyExpanded() == false || currentNode->getState().getIsTerminal() == true) {
                 return currentNode;
             }
 
