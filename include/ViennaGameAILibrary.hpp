@@ -2283,8 +2283,17 @@ namespace VGAIL
             backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
         }
 
-        void backpropagate(MCTSNode* currentNode, int result) {
+        void backpropagate(std::shared_ptr<MCTSNode>& currentNode, int winnerPlayerId, int playerId) {
+            auto backpropagatedNode = currentNode;
+            while (backpropagatedNode != nullptr) {
+                backpropagatedNode->incrementVisits();
 
+                if (winnerPlayerId == playerId) {
+                    backpropagatedNode->incrementWins();
+                }
+
+                backpropagatedNode = backpropagatedNode->getParent();
+            }
         }
     };
 }
