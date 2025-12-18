@@ -2167,15 +2167,15 @@ namespace VGAIL
             return children.size() == state.actions.size();
         }
 
-        double getUCB1(const double& c_value) const {
+        double getUCT(const double& c_value) const {
             if (num_visits == 0) {
                 return std::numeric_limits<double>::infinity();
             }
             double exploit = getWinrate();
             double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
-            double UCB1 = exploit + explore;
+            double UCT = exploit + explore;
 
-            return UCB1;
+            return UCT;
         }
     };
 
@@ -2215,12 +2215,12 @@ namespace VGAIL
                 return currentNode->getChildren()[distr(gen)];
             }
 
-            double bestUCB1_value = -1;
+            double bestUCT_value = -1;
             for (auto& child : currentNode->getChildren()) {
-                double child_UCB1 = child->getUCB1(c_value);
+                double child_UCT = child->getUCT(c_value);
 
-                if (child_UCB1 > bestUCB1_value) {
-                    bestUCB1_value = child_UCB1;
+                if (child_UCT > bestUCT_value) {
+                    bestUCT_value = child_UCT;
                     bestChild = child;
                 }
             }
