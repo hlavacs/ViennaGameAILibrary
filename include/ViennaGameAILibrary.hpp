@@ -2245,7 +2245,7 @@ namespace VGAIL
         std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode> currentNode) {
             int untriedActions = currentNode->getState().getActions().size() - currentNode->getChildren().size();
 
-            if (currentNode->getState().getIsTerminal() || untriedActions < 0) {
+            if (currentNode->getState().getIsTerminal() || untriedActions < 1) {
                 return nullptr;
             }
 
