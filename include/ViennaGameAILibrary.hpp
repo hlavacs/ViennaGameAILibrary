@@ -2252,7 +2252,7 @@ namespace VGAIL
             return bestChild;
         }
 
-        std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode> currentNode) {
+        std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode>& currentNode) {
             int untriedActions = currentNode->getState().getActions().size() - currentNode->getChildren().size();
 
             if (currentNode->getState().getIsTerminal() || untriedActions < 1) {
@@ -2270,8 +2270,17 @@ namespace VGAIL
             return child;
         }
 
-        int simulate(MCTSNode currentNode) {
+        void simulate(std::shared_ptr<MCTSNode>& currentNode) {
+            auto currentState = currentNode->getState();
 
+            while (currentState.getIsTerminal() == false) {
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_int_distribution<> distr(0, currentState.getActions().size() - 1);
+                currentState.executeAction(currentState.getActions()[distr(gen)]);
+            }
+
+            backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
         }
 
         void backpropagate(MCTSNode* currentNode, int result) {
