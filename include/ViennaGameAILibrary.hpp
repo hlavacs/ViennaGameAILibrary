@@ -2110,6 +2110,19 @@ namespace VGAIL
     class MCTSState {
     public:
         std::vector<Action> actions;
+        bool isTerminal;
+
+        MCTSState(std::vector<Action> actions, bool isTerminal = false) : actions(actions), isTerminal(isTerminal) {}
+
+        virtual bool getIsTerminal() const {
+            return isTerminal;
+        }
+
+        std::vector<Action> getActions() const {
+            return actions;
+        }
+
+        virtual void executeAction(Action& action) {}
     };
 
     class MCTSNode {
@@ -2119,6 +2132,7 @@ namespace VGAIL
         std::weak_ptr<MCTSNode> parent;
         int num_visits = 0;
         int num_wins = 0;
+        Action actionToGetHere;
 
     public:
         MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent) : state(state), parent(parent) {}
@@ -2228,8 +2242,22 @@ namespace VGAIL
             return bestChild;
         }
 
-        MCTSNode expand(MCTSNode currentNode) {
+        std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode> currentNode) {
+            int untriedActions = currentNode->getState().getActions().size() - currentNode->getChildren().size();
 
+            if (currentNode->getState().getIsTerminal() || untriedActions < 0) {
+                return nullptr;
+            }
+
+            auto action = currentNode->getState().getActions()[untriedActions - 1];
+
+            MCTSState stateToAdd = currentNode->getState();
+            stateToAdd.executeAction(action);
+
+            auto child = std::make_shared<MCTSNode>(stateToAdd, currentNode, action);
+            currentNode->addChild(child);
+
+            return child;
         }
 
         int simulate(MCTSNode currentNode) {
