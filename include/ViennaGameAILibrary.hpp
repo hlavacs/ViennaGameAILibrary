@@ -2256,18 +2256,19 @@ namespace VGAIL
         }
 
         std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode>& currentNode) {
+            // If at least one action not tried or game over don't go deeper
             std::shared_ptr<MCTSNode> bestChild = nullptr;
             if (currentNode->isCompletelyExpanded() == false || currentNode->getState().getIsTerminal() == true) {
                 return currentNode;
             }
 
             // This will get removed probably because of UCB1 added, still here because of double check
-            if (currentNode->getVisits() < 10) {
+            /* if (currentNode->getVisits() < 10) {
                 std::random_device rd;
                 std::mt19937 gen(rd());
                 std::uniform_int_distribution<> distr(0, currentNode->getChildren().size() - 1);
                 return currentNode->getChildren()[distr(gen)];
-            }
+            } */
 
             double bestUCT_value = -1;
             int currentPlayerId = currentNode->getState().getPlayerTurnId();
@@ -2286,6 +2287,7 @@ namespace VGAIL
         std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode>& currentNode) {
             int untriedActions = currentNode->getState().getActions().size() - currentNode->getChildren().size();
 
+            // If game is over or all actions have been tried don't create new node
             if (currentNode->getState().getIsTerminal() || untriedActions < 1) {
                 return nullptr;
             }
@@ -2304,6 +2306,8 @@ namespace VGAIL
         void simulate(std::shared_ptr<MCTSNode>& currentNode) {
             auto currentState = currentNode->getState();
 
+            // While not game over take random actions to play until game is over
+            // NOTE: This has no time or depth limit right now, might need to be implemented in case a simulation takes too long
             while (currentState.getIsTerminal() == false) {
                 std::random_device rd;
                 std::mt19937 gen(rd());
@@ -2311,11 +2315,13 @@ namespace VGAIL
                 currentState.executeAction(currentState.getActions()[distr(gen)]);
             }
 
+            // Backpropagate the result of simulation
             backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
         }
 
         void backpropagate(std::shared_ptr<MCTSNode>& currentNode, int winnerPlayerId, int playerId) {
             auto backpropagatedNode = currentNode;
+            // As long as not root increase visits upwards and if winner is the same as current player of each node increase wins as well
             while (backpropagatedNode != nullptr) {
                 backpropagatedNode->incrementVisits();
 
