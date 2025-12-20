@@ -2103,12 +2103,12 @@ namespace VGAIL
 
     class Action {
     public:
-        virtual ~Action() {}
-        virtual void execute() = 0;
+        Action() {}
+        virtual void execute() {};
     };
 
     class MCTSState {
-    public:
+    private:
         std::vector<Action> actions;
         bool isTerminal;
         int playerTurnId; // Whose player's turn it is based on their id
