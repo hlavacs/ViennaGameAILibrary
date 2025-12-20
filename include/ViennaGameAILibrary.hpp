@@ -2180,14 +2180,18 @@ namespace VGAIL
         }
 
         bool isCompletelyExpanded() {
-            return children.size() == state.actions.size();
+            return children.size() == state.getActions().size();
         }
 
-        double getUCT(const double& c_value) const {
+        double getUCT(const double& c_value, const int& lastTurnPlayerId) const {
             if (num_visits == 0) {
                 return std::numeric_limits<double>::infinity();
             }
             double exploit = getWinrate();
+            // If the current player did not make the last move then inverse winrate to make it worse because it is the opponent's statistic
+            if (lastTurnPlayerId != state.getPlayerTurnId()) {
+                exploit *= -1;
+            }
             double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
             double UCT = exploit + explore;
 
@@ -2198,7 +2202,7 @@ namespace VGAIL
     class MCTS {
     private:
         MCTSState currentState;
-        int timeLimit = 1000;
+        int timeLimitMs = 1000;
         double c_value = sqrt(2);
 
     public:
@@ -2240,8 +2244,9 @@ namespace VGAIL
             }
 
             double bestUCT_value = -1;
+            int currentPlayerId = currentNode->getState().getPlayerTurnId();
             for (auto& child : currentNode->getChildren()) {
-                double child_UCT = child->getUCT(c_value);
+                double child_UCT = child->getUCT(c_value, currentPlayerId);
 
                 if (child_UCT > bestUCT_value) {
                     bestUCT_value = child_UCT;
