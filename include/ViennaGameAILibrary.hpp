@@ -2111,8 +2111,13 @@ namespace VGAIL
     public:
         std::vector<Action> actions;
         bool isTerminal;
+        int playerTurnId; // Whose player's turn it is based on their id
+        int winnerPlayerId; // The id of the winning player
 
+    public:
         MCTSState(std::vector<Action> actions, bool isTerminal = false) : actions(actions), isTerminal(isTerminal) {}
+
+        MCTSState(std::vector<Action> actions, bool isTerminal, int playerTurnId, int winnerPlayerId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId), winnerPlayerId(winnerPlayerId) {}
 
         virtual bool getIsTerminal() const {
             return isTerminal;
@@ -2120,6 +2125,14 @@ namespace VGAIL
 
         std::vector<Action> getActions() const {
             return actions;
+        }
+
+        int getPlayerTurnId() const {
+            return playerTurnId;
+        }
+
+        int getWinnerPlayerId() const {
+            return winnerPlayerId;
         }
 
         virtual void executeAction(Action& action) {}
@@ -2272,6 +2285,7 @@ namespace VGAIL
 
             double bestUCT_value = -1;
             int currentPlayerId = currentNode->getState().getPlayerTurnId();
+            // Get best child according to UCT formula
             for (auto& child : currentNode->getChildren()) {
                 double child_UCT = child->getUCT(c_value, currentPlayerId);
 
@@ -2292,6 +2306,7 @@ namespace VGAIL
                 return nullptr;
             }
 
+            // Get an action that has not been tried yet and is next in line and create new node
             auto action = currentNode->getState().getActions()[untriedActions - 1];
 
             MCTSState stateToAdd = currentNode->getState();
