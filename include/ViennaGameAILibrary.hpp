@@ -2155,6 +2155,10 @@ namespace VGAIL
             return parent.lock();
         }
 
+        Action getAction() const {
+            return actionToGetHere;
+        }
+
         void incrementVisits() {
             num_visits++;
         }
@@ -2202,31 +2206,53 @@ namespace VGAIL
     class MCTS {
     private:
         MCTSState currentState;
-        int timeLimitMs = 1000;
+        double timeLimitMs = 1000;
         double c_value = sqrt(2);
 
     public:
         MCTS(MCTSState currentState) : currentState(currentState) {}
 
-        Action searchBestAction(MCTS currentState) {
-            // Select
+        Action searchBestAction(const MCTSState& currentState, const double& timeLimitMs) {
+            auto startingTime = std::chrono::high_resolution_clock::now();
+            double currentTime = 0.0;
+            double timePassed = 0.0;
             std::shared_ptr<MCTSNode> root = std::make_shared<MCTSNode>(currentState, nullptr);
-            std::shared_ptr<MCTSNode> selectedChild = select(root);
-            while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
-                selectedChild = select(selectedChild);
+
+            // Iterate as long as time limit has not been reached
+            while (true) {
+
+                // Select
+                std::shared_ptr<MCTSNode> selectedChild = select(root);
+                while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
+                    selectedChild = select(selectedChild);
+                }
+                // Expand
+                std::shared_ptr<MCTSNode> expandedNode = expand(selectedChild);
+
+                // If expanding is not possible because the selected node is terminal then use that
+                if (expandedNode == nullptr) {
+                    expandedNode = selectedChild;
+                }
+                // Simulate and Backpropagate
+                simulate(expandedNode);
+
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
+                // If time limit exceeded stop MCTS
+                if (timePassed >= timeLimitMs) {
+                    break;
+                }
             }
-            // Expand
-            std::shared_ptr<MCTSNode> expandedNode = expand(selectedChild);
 
-            // If expanding is not possible because the selected node is terminal then use that
-            if (expandedNode == nullptr) {
-                expandedNode = selectedChild;
+            // Get best child
+            std::shared_ptr<MCTSNode> bestChild = nullptr;
+            for (auto& child : root->getChildren()) {
+                if (bestChild == nullptr || child->getWinrate() > bestChild->getWinrate()) {
+                    bestChild = child;
+                }
             }
-            // Simulate
 
-            // Backpropagate
-
-            // Return action
+            return bestChild->getAction();
         }
 
         std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode>& currentNode) {
