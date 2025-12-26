@@ -2272,18 +2272,28 @@ namespace VGAIL
             // std::cout << "I got here 1" << '\n';
             // Iterate as long as time limit has not been reached
             while (true) {
-
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
+                // If time limit exceeded stop MCTS
+                if (timePassed >= timeLimitMs) {
+                    break;
+                }
                 // Select
-                std::shared_ptr<MCTSNode> selectedChild = select(root);
+                std::shared_ptr<MCTSNode<DS, DA>> selectedChild = select(root, c_value);
+                // std::cout << "I got here 2" << '\n';
+                // if (selectedChild == nullptr) { std::cout << "I got here 7" << '\n'; }
                 while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
                     selectedChild = select(selectedChild);
                 }
                 // Expand
-                std::shared_ptr<MCTSNode> expandedNode = expand(selectedChild);
+                std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
 
                 // If expanding is not possible because the selected node is terminal then use that
                 if (expandedNode == nullptr) {
-                    expandedNode = selectedChild;
+                    // std::cout << "Expand 5" << '\n';
+                    // expandedNode = selectedChild;
+                    backpropagate(selectedChild, "", "");
+                    continue;
                 }
                 // Simulate and Backpropagate
                 simulate(expandedNode);
@@ -2297,9 +2307,9 @@ namespace VGAIL
             }
 
             // Get best child
-            std::shared_ptr<MCTSNode> bestChild = nullptr;
+            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
             for (auto& child : root->getChildren()) {
-                if (bestChild == nullptr || child->getWinrate() > bestChild->getWinrate()) {
+                if (bestChild == nullptr || child->getVisits() > bestChild->getVisits()) {
                     bestChild = child;
                 }
             }
