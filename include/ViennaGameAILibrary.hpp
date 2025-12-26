@@ -2131,6 +2131,8 @@ namespace VGAIL
             return isTerminal;
         }
 
+        virtual void executeAction(DA& action) {}
+
         std::vector<DA> getActions() const {
             return actions;
         }
@@ -2166,8 +2168,6 @@ namespace VGAIL
         bool getAllTried() {
             return allTried;
         }
-
-        virtual void executeAction(DA& action) {}
     };
 
     template<typename DS, typename DA>
@@ -2253,56 +2253,6 @@ namespace VGAIL
     class MCTS {
     private:
         double timeLimitMs = 1000;
-
-    public:
-        MCTS() {}
-
-        DA searchBestAction(DS& currentState, const double& timeLimitMs, double c) {
-            auto startingTime = std::chrono::high_resolution_clock::now();
-            double currentTime = 0.0;
-            double timePassed = 0.0;
-            double c_value = sqrt(c);
-            auto root = std::make_shared<MCTSNode<DS, DA>>(currentState, std::weak_ptr<MCTSNode<DS, DA>>());
-
-            while (true) {
-                auto currentTime = std::chrono::high_resolution_clock::now();
-                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
-                // If time limit exceeded stop MCTS
-                if (timePassed >= timeLimitMs) {
-                    break;
-                }
-                // Select
-                std::shared_ptr<MCTSNode<DS, DA>> selectedChild = select(root, c_value);
-
-                while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
-                    selectedChild = select(selectedChild, c_value);
-                }
-
-                // Expand
-                std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
-
-                // If expanding is not possible because the selected node is terminal then backpropagate visit but not win
-                // Note: This will probably be changed to add win as well
-                if (expandedNode == nullptr) {
-                    // std::cout << "Expand 5" << '\n';
-                    // expandedNode = selectedChild;
-                    backpropagate(selectedChild, "", "");
-                    continue;
-                }
-                // Simulate and Backpropagate
-                simulate(expandedNode);
-            }
-
-            // Get best child
-            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
-            for (auto& child : root->getChildren()) {
-                if (bestChild == nullptr || child->getVisits() > bestChild->getVisits()) {
-                    bestChild = child;
-                }
-            }
-
-            return bestChild->getAction();
-        }
 
         std::shared_ptr<MCTSNode<DS, DA>> select(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, double& c_value) {
             // If at least one action not tried or game over don't go deeper
@@ -2393,6 +2343,56 @@ namespace VGAIL
 
                 backpropagatedNode = backpropagatedNode->getParent();
             }
+        }
+
+    public:
+        MCTS() {}
+
+        DA searchBestAction(DS& currentState, const double& timeLimitMs, double c) {
+            auto startingTime = std::chrono::high_resolution_clock::now();
+            double currentTime = 0.0;
+            double timePassed = 0.0;
+            double c_value = sqrt(c);
+            auto root = std::make_shared<MCTSNode<DS, DA>>(currentState, std::weak_ptr<MCTSNode<DS, DA>>());
+
+            while (true) {
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
+                // If time limit exceeded stop MCTS
+                if (timePassed >= timeLimitMs) {
+                    break;
+                }
+                // Select
+                std::shared_ptr<MCTSNode<DS, DA>> selectedChild = select(root, c_value);
+
+                while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
+                    selectedChild = select(selectedChild, c_value);
+                }
+
+                // Expand
+                std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
+
+                // If expanding is not possible because the selected node is terminal then backpropagate visit but not win
+                // Note: This will probably be changed to add win as well
+                if (expandedNode == nullptr) {
+                    // std::cout << "Expand 5" << '\n';
+                    // expandedNode = selectedChild;
+                    backpropagate(selectedChild, "", "");
+                    continue;
+                }
+                // Simulate and Backpropagate
+                simulate(expandedNode);
+            }
+
+            // Get best child
+            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
+            for (auto& child : root->getChildren()) {
+                if (bestChild == nullptr || child->getVisits() > bestChild->getVisits()) {
+                    bestChild = child;
+                }
+            }
+
+            return bestChild->getAction();
         }
     };
 }
