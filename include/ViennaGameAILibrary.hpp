@@ -2356,12 +2356,16 @@ namespace VGAIL
             }
 
             // If game is over or all actions have been tried don't create new node
-            if (currentNode->getState().getIsTerminal() || untriedActions < 1) {
+            if (currentNode->getState().getIsTerminal() || currentNode->getState().getAllTried() == true) {
+                // std::cout << "Expand 101" << '\n';
                 return nullptr;
             }
 
             // Get an action that has not been tried yet and is next in line and create new node
-            auto action = currentNode->getState().getActions()[untriedActions - 1];
+            int index = std::rand() % currentNode->getState().getUntriedActions().size();
+            auto randomAction = currentNode->getState().getUntriedActions()[index];
+            currentNode->getState().removeTriedAction(index);
+            // Remove move from untried moves
 
             DS stateToAdd = currentNode->getState();
             stateToAdd.executeAction(randomAction);
