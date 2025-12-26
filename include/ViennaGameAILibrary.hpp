@@ -2244,8 +2244,6 @@ namespace VGAIL
             if (lastTurnPlayerId != state.getPlayerTurnId()) {
                 return -UCT;
             }
-            double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
-            double UCT = exploit + explore;
 
             return UCT;
         }
@@ -2254,12 +2252,9 @@ namespace VGAIL
     template<typename DS, typename DA>
     class MCTS {
     private:
-        // DS currentState;
         double timeLimitMs = 1000;
-        // double c_value = sqrt(1);
 
     public:
-        // MCTS(DS currentState) : currentState(currentState) {}
         MCTS() {}
 
         DA searchBestAction(DS& currentState, const double& timeLimitMs, double c) {
@@ -2267,10 +2262,8 @@ namespace VGAIL
             double currentTime = 0.0;
             double timePassed = 0.0;
             double c_value = sqrt(c);
-            // std::cout << "Current state action size: " << currentState.getActions().size() << '\n';
             auto root = std::make_shared<MCTSNode<DS, DA>>(currentState, std::weak_ptr<MCTSNode<DS, DA>>());
-            // std::cout << "I got here 1" << '\n';
-            // Iterate as long as time limit has not been reached
+
             while (true) {
                 auto currentTime = std::chrono::high_resolution_clock::now();
                 timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
@@ -2280,16 +2273,16 @@ namespace VGAIL
                 }
                 // Select
                 std::shared_ptr<MCTSNode<DS, DA>> selectedChild = select(root, c_value);
-                // std::cout << "I got here 2" << '\n';
-                // if (selectedChild == nullptr) { std::cout << "I got here 7" << '\n'; }
+
                 while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
-                    // std::cout << "I got here 3" << '\n';
                     selectedChild = select(selectedChild, c_value);
                 }
+
                 // Expand
                 std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
 
-                // If expanding is not possible because the selected node is terminal then use that
+                // If expanding is not possible because the selected node is terminal then backpropagate visit but not win
+                // Note: This will probably be changed to add win as well
                 if (expandedNode == nullptr) {
                     // std::cout << "Expand 5" << '\n';
                     // expandedNode = selectedChild;
@@ -2298,13 +2291,6 @@ namespace VGAIL
                 }
                 // Simulate and Backpropagate
                 simulate(expandedNode);
-
-                auto currentTime = std::chrono::high_resolution_clock::now();
-                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
-                // If time limit exceeded stop MCTS
-                if (timePassed >= timeLimitMs) {
-                    break;
-                }
             }
 
             // Get best child
@@ -2325,17 +2311,9 @@ namespace VGAIL
                 return currentNode;
             }
 
-            // This will get removed probably because of UCB1 added, still here because of double check
-            /* if (currentNode->getVisits() < 10) {
-                std::random_device rd;
-                std::mt19937 gen(rd());
-                std::uniform_int_distribution<> distr(0, currentNode->getChildren().size() - 1);
-                return currentNode->getChildren()[distr(gen)];
-            } */
-
             double bestUCT_value = std::numeric_limits<double>::lowest();
             std::string currentPlayerId = currentNode->getState().getPlayerTurnId();
-            // std::cout << "I got here 6, player " << currentPlayerId << '\n';
+
             // Get best child according to UCT formula
             for (auto& child : currentNode->getChildren()) {
                 double child_UCT = child->getUCT(c_value, currentPlayerId);
@@ -2350,7 +2328,6 @@ namespace VGAIL
         }
 
         std::shared_ptr<MCTSNode<DS, DA>> expand(std::shared_ptr<MCTSNode<DS, DA>>& currentNode) {
-            // std::cout << "Expand 1" << '\n';
             if (currentNode->getState().getAllTried() == false && currentNode->getState().getUntriedActions().empty())
             {
                 currentNode->getState().setUntriedActions();
@@ -2358,7 +2335,6 @@ namespace VGAIL
 
             // If game is over or all actions have been tried don't create new node
             if (currentNode->getState().getIsTerminal() || currentNode->getState().getAllTried() == true) {
-                // std::cout << "Expand 101" << '\n';
                 return nullptr;
             }
 
@@ -2366,11 +2342,10 @@ namespace VGAIL
             int index = std::rand() % currentNode->getState().getUntriedActions().size();
             auto randomAction = currentNode->getState().getUntriedActions()[index];
             currentNode->getState().removeTriedAction(index);
-            // Remove move from untried moves
 
+            // Remove move from untried moves
             DS stateToAdd = currentNode->getState();
             stateToAdd.executeAction(randomAction);
-            // std::cout << "Expand 3" << '\n';
             auto child = std::make_shared<MCTSNode<DS, DA>>(stateToAdd, currentNode, randomAction);
             currentNode->addChild(child);
 
@@ -2391,7 +2366,7 @@ namespace VGAIL
                     break;
                 }
                 std::uniform_int_distribution<> distr(0, actions.size() - 1);
-                // std::cout << "Simulate 2" << '\n';
+
                 try {
                     auto randomAction = actions[distr(gen)];
                     randomAction.execute(currentState);
@@ -2401,17 +2376,6 @@ namespace VGAIL
                     break;
                 }
             }
-
-            /* while (currentState.getIsTerminal() == false) {
-                std::random_device rd;
-                std::mt19937 gen(rd());
-                std::uniform_int_distribution<> distr(0, currentState.getActions().size() - 1);
-                std::cout << "Simulate 2" << '\n';
-                auto randomAction = currentState.getActions()[distr(gen)];
-                randomAction.execute(currentState);
-            } */
-
-            // std::cout << "Simulate 3" << '\n';
 
             // Backpropagate the result of simulation
             backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
