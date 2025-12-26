@@ -2139,11 +2139,35 @@ namespace VGAIL
             return playerTurnId;
         }
 
-        int getWinnerPlayerId() const {
+        std::string getWinnerPlayerId() const {
             return winnerPlayerId;
         }
 
-        virtual void executeAction(Action& action) {}
+        void setWinnerPlayerId(std::string playerId) {
+            winnerPlayerId = playerId;
+        }
+
+        void setUntriedActions() {
+            untriedActions = actions;
+        }
+
+        std::vector<DA> getUntriedActions() {
+            return untriedActions;
+        }
+
+        void removeTriedAction(int index) {
+            untriedActions.erase(untriedActions.begin() + index);
+        }
+
+        void setAllTried(bool allWereTried) {
+            allTried = allWereTried;
+        }
+
+        bool getAllTried() {
+            return allTried;
+        }
+
+        virtual void executeAction(DA& action) {}
     };
 
     template<typename DS, typename DA>
