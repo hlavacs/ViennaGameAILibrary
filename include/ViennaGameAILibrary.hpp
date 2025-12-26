@@ -2381,12 +2381,36 @@ namespace VGAIL
 
             // While not game over take random actions to play until game is over
             // NOTE: This has no time or depth limit right now, might need to be implemented in case a simulation takes too long
+            std::random_device rd;
+            std::mt19937 gen(rd());
+
             while (currentState.getIsTerminal() == false) {
+                auto actions = currentState.getActions();
+                if (actions.empty()) {
+                    break;
+                }
+                std::uniform_int_distribution<> distr(0, actions.size() - 1);
+                // std::cout << "Simulate 2" << '\n';
+                try {
+                    auto randomAction = actions[distr(gen)];
+                    randomAction.execute(currentState);
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "Exception: " << e.what() << '\n';
+                    break;
+                }
+            }
+
+            /* while (currentState.getIsTerminal() == false) {
                 std::random_device rd;
                 std::mt19937 gen(rd());
                 std::uniform_int_distribution<> distr(0, currentState.getActions().size() - 1);
-                currentState.executeAction(currentState.getActions()[distr(gen)]);
-            }
+                std::cout << "Simulate 2" << '\n';
+                auto randomAction = currentState.getActions()[distr(gen)];
+                randomAction.execute(currentState);
+            } */
+
+            // std::cout << "Simulate 3" << '\n';
 
             // Backpropagate the result of simulation
             backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
