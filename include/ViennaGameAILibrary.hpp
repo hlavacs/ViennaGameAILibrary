@@ -2233,14 +2233,16 @@ namespace VGAIL
             return children.size() == state.getActions().size();
         }
 
-        double getUCT(const double& c_value, const int& lastTurnPlayerId) const {
+        double getUCT(const double& c_value, const std::string& lastTurnPlayerId) const {
             if (num_visits == 0) {
                 return std::numeric_limits<double>::infinity();
             }
             double exploit = getWinrate();
+            double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
+            double UCT = exploit + explore;
             // If the current player did not make the last move then inverse winrate to make it worse because it is the opponent's statistic
             if (lastTurnPlayerId != state.getPlayerTurnId()) {
-                exploit *= -1;
+                return -UCT;
             }
             double explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits()) / num_visits));
             double UCT = exploit + explore;
