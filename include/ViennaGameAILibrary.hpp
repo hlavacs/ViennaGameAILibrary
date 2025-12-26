@@ -2256,7 +2256,7 @@ namespace VGAIL
     private:
         // DS currentState;
         double timeLimitMs = 1000;
-        double c_value = sqrt(2);
+        // double c_value = sqrt(1);
 
     public:
         // MCTS(DS currentState) : currentState(currentState) {}
@@ -2283,7 +2283,8 @@ namespace VGAIL
                 // std::cout << "I got here 2" << '\n';
                 // if (selectedChild == nullptr) { std::cout << "I got here 7" << '\n'; }
                 while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
-                    selectedChild = select(selectedChild);
+                    // std::cout << "I got here 3" << '\n';
+                    selectedChild = select(selectedChild, c_value);
                 }
                 // Expand
                 std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
@@ -2422,7 +2423,7 @@ namespace VGAIL
             while (backpropagatedNode != nullptr) {
                 backpropagatedNode->incrementVisits();
 
-                if (winnerPlayerId == playerId) {
+                if (winnerPlayerId != "" && winnerPlayerId == playerId) {
                     backpropagatedNode->incrementWins();
                 }
 
