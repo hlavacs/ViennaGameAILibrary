@@ -2319,7 +2319,7 @@ namespace VGAIL
 
         std::shared_ptr<MCTSNode<DS, DA>> select(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, double& c_value) {
             // If at least one action not tried or game over don't go deeper
-            std::shared_ptr<MCTSNode> bestChild = nullptr;
+            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
             if (currentNode->isCompletelyExpanded() == false || currentNode->getState().getIsTerminal() == true) {
                 return currentNode;
             }
@@ -2332,8 +2332,9 @@ namespace VGAIL
                 return currentNode->getChildren()[distr(gen)];
             } */
 
-            double bestUCT_value = -1;
-            int currentPlayerId = currentNode->getState().getPlayerTurnId();
+            double bestUCT_value = std::numeric_limits<double>::lowest();
+            std::string currentPlayerId = currentNode->getState().getPlayerTurnId();
+            // std::cout << "I got here 6, player " << currentPlayerId << '\n';
             // Get best child according to UCT formula
             for (auto& child : currentNode->getChildren()) {
                 double child_UCT = child->getUCT(c_value, currentPlayerId);
