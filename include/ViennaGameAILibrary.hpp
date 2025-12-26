@@ -2252,8 +2252,6 @@ namespace VGAIL
     template<typename DS, typename DA>
     class MCTS {
     private:
-        double timeLimitMs = 1000;
-
         std::shared_ptr<MCTSNode<DS, DA>> select(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, double& c_value) {
             // If at least one action not tried or game over don't go deeper
             std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
