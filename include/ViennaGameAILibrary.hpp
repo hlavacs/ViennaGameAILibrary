@@ -2101,33 +2101,41 @@ namespace VGAIL
         f32 m_perceptionRange = 0.0f;           /*!< The range used in the "align" and "cohesion" behaviours. */
     };
 
+    template<typename DS>
     class Action {
     public:
         Action() {}
-        virtual void execute() {};
+        virtual void execute(DS& gameState) {};
     };
 
+    template<typename DS, typename DA>
     class MCTSState {
     private:
-        std::vector<Action> actions;
-        bool isTerminal;
-        int playerTurnId; // Whose player's turn it is based on their id
-        int winnerPlayerId; // The id of the winning player
+        bool allTried = false;
+        std::vector<DA> untriedActions;
+
+    protected:
+        std::vector<DA> actions;
+        bool isTerminal = false;
+        std::string playerTurnId = ""; // Whose player's turn it is based on their id
+        std::string winnerPlayerId = ""; // The id of the winning player
 
     public:
-        MCTSState(std::vector<Action> actions, bool isTerminal = false) : actions(actions), isTerminal(isTerminal) {}
+        MCTSState() {}
 
-        MCTSState(std::vector<Action> actions, bool isTerminal, int playerTurnId, int winnerPlayerId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId), winnerPlayerId(winnerPlayerId) {}
+        MCTSState(std::vector<DA> actions, bool isTerminal, std::string playerTurnId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId), untriedActions(actions) {}
 
-        virtual bool getIsTerminal() const {
+        MCTSState(std::vector<DA> actions, bool isTerminal, std::string playerTurnId, std::string winnerPlayerId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId), winnerPlayerId(winnerPlayerId), untriedActions(actions) {}
+
+        virtual bool getIsTerminal() {
             return isTerminal;
         }
 
-        std::vector<Action> getActions() const {
+        std::vector<DA> getActions() const {
             return actions;
         }
 
-        int getPlayerTurnId() const {
+        std::string getPlayerTurnId() const {
             return playerTurnId;
         }
 
@@ -2138,25 +2146,26 @@ namespace VGAIL
         virtual void executeAction(Action& action) {}
     };
 
+    template<typename DS, typename DA>
     class MCTSNode {
     private:
-        MCTSState state;
-        std::vector<std::shared_ptr<MCTSNode>> children;
-        std::weak_ptr<MCTSNode> parent;
+        DS state;
+        std::vector<std::shared_ptr<MCTSNode<DS, DA>>> children = {};
+        std::weak_ptr<MCTSNode<DS, DA>> parent;
         int num_visits = 0;
         int num_wins = 0;
-        Action actionToGetHere;
+        DA actionToGetHere;
 
     public:
-        MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent, Action actionToGetHere) : state(state), parent(parent), actionToGetHere(actionToGetHere) {}
+        MCTSNode(DS state, std::weak_ptr<MCTSNode<DS, DA>> parent, DA actionToGetHere) : state(state), parent(parent), actionToGetHere(actionToGetHere) {}
 
-        MCTSNode(MCTSState state, std::shared_ptr<MCTSNode> parent) : state(state), parent(parent) {}
+        MCTSNode(DS state, std::weak_ptr<MCTSNode<DS, DA>> parent) : state(state), parent(parent) {}
 
         void addChild(std::shared_ptr<MCTSNode> child) {
             children.push_back(child);
         }
 
-        MCTSState& getState() {
+        DS& getState() {
             return state;
         }
 
@@ -2168,7 +2177,7 @@ namespace VGAIL
             return parent.lock();
         }
 
-        Action getAction() const {
+        DA getAction() const {
             return actionToGetHere;
         }
 
@@ -2216,21 +2225,25 @@ namespace VGAIL
         }
     };
 
+    template<typename DS, typename DA>
     class MCTS {
     private:
-        MCTSState currentState;
+        // DS currentState;
         double timeLimitMs = 1000;
         double c_value = sqrt(2);
 
     public:
-        MCTS(MCTSState currentState) : currentState(currentState) {}
+        // MCTS(DS currentState) : currentState(currentState) {}
+        MCTS() {}
 
-        Action searchBestAction(const MCTSState& currentState, const double& timeLimitMs) {
+        DA searchBestAction(DS& currentState, const double& timeLimitMs, double c) {
             auto startingTime = std::chrono::high_resolution_clock::now();
             double currentTime = 0.0;
             double timePassed = 0.0;
-            std::shared_ptr<MCTSNode> root = std::make_shared<MCTSNode>(currentState, nullptr);
-
+            double c_value = sqrt(c);
+            // std::cout << "Current state action size: " << currentState.getActions().size() << '\n';
+            auto root = std::make_shared<MCTSNode<DS, DA>>(currentState, std::weak_ptr<MCTSNode<DS, DA>>());
+            // std::cout << "I got here 1" << '\n';
             // Iterate as long as time limit has not been reached
             while (true) {
 
@@ -2268,7 +2281,7 @@ namespace VGAIL
             return bestChild->getAction();
         }
 
-        std::shared_ptr<MCTSNode> select(std::shared_ptr<MCTSNode>& currentNode) {
+        std::shared_ptr<MCTSNode<DS, DA>> select(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, double& c_value) {
             // If at least one action not tried or game over don't go deeper
             std::shared_ptr<MCTSNode> bestChild = nullptr;
             if (currentNode->isCompletelyExpanded() == false || currentNode->getState().getIsTerminal() == true) {
@@ -2298,8 +2311,12 @@ namespace VGAIL
             return bestChild;
         }
 
-        std::shared_ptr<MCTSNode> expand(std::shared_ptr<MCTSNode>& currentNode) {
-            int untriedActions = currentNode->getState().getActions().size() - currentNode->getChildren().size();
+        std::shared_ptr<MCTSNode<DS, DA>> expand(std::shared_ptr<MCTSNode<DS, DA>>& currentNode) {
+            // std::cout << "Expand 1" << '\n';
+            if (currentNode->getState().getAllTried() == false && currentNode->getState().getUntriedActions().empty())
+            {
+                currentNode->getState().setUntriedActions();
+            }
 
             // If game is over or all actions have been tried don't create new node
             if (currentNode->getState().getIsTerminal() || untriedActions < 1) {
@@ -2309,16 +2326,16 @@ namespace VGAIL
             // Get an action that has not been tried yet and is next in line and create new node
             auto action = currentNode->getState().getActions()[untriedActions - 1];
 
-            MCTSState stateToAdd = currentNode->getState();
-            stateToAdd.executeAction(action);
-
-            auto child = std::make_shared<MCTSNode>(stateToAdd, currentNode, action);
+            DS stateToAdd = currentNode->getState();
+            stateToAdd.executeAction(randomAction);
+            // std::cout << "Expand 3" << '\n';
+            auto child = std::make_shared<MCTSNode<DS, DA>>(stateToAdd, currentNode, randomAction);
             currentNode->addChild(child);
 
             return child;
         }
 
-        void simulate(std::shared_ptr<MCTSNode>& currentNode) {
+        void simulate(std::shared_ptr<MCTSNode<DS, DA>>& currentNode) {
             auto currentState = currentNode->getState();
 
             // While not game over take random actions to play until game is over
@@ -2334,7 +2351,7 @@ namespace VGAIL
             backpropagate(currentNode, currentState.getWinnerPlayerId(), currentNode->getState().getPlayerTurnId());
         }
 
-        void backpropagate(std::shared_ptr<MCTSNode>& currentNode, int winnerPlayerId, int playerId) {
+        void backpropagate(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, const std::string& winnerPlayerId, const std::string& playerId) {
             auto backpropagatedNode = currentNode;
             // As long as not root increase visits upwards and if winner is the same as current player of each node increase wins as well
             while (backpropagatedNode != nullptr) {
