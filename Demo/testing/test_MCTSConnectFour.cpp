@@ -43,6 +43,7 @@ private:
     int x;
     int y;
     std::string playerId;
+    std::string actionId;
 
 public:
     ConnectFourAction(int x, int y, std::string playerId) : x(x), y(y), playerId(playerId) {}
@@ -50,6 +51,10 @@ public:
     ConnectFourAction() {}
 
     void execute(ConnectFourGameState& gameState) override;
+
+    void setActionId(std::string id) {
+        actionId = id;
+    }
 
     int getX() const {
         return x;
@@ -127,7 +132,9 @@ public:
 
             for (auto& cell : columnCells) {
                 if (cell.getPlayerChip() == "0") {
+                    std::string actionId = std::to_string(cell.getX() * 10 + cell.getY());
                     ConnectFourAction actionToAdd(cell.getX(), cell.getY(), playerTurnId);
+                    actionToAdd.setActionId(actionId);
                     this->actions.push_back(actionToAdd);
                     break;
                 }
@@ -294,7 +301,7 @@ public:
         return "";
     }
 
-    bool getIsTerminal() {
+    bool getIsTerminal() override {
         if (actions.size() == 0) {
             return true;
         }
@@ -355,45 +362,43 @@ int main() {
     double timeMs = 0;
     double c_value;
 
-    int msWins100c03 = 0;
-    int msWins300c03 = 0;
-    int msWins500c03 = 0;
-    int msWins700c03 = 0;
+    int msWins10 = 0;
+    int msWins20 = 0;
+    int msWins40 = 0;
 
-    int msWins100c05 = 0;
-    int msWins300c05 = 0;
-    int msWins500c05 = 0;
-    int msWins700c05 = 0;
+    int msWins60 = 0;
+    int msWins80 = 0;
+    int msWins100 = 0;
 
-    for (int i = 0; i < 1200; i++) {
+    for (int i = 0; i < 1800; i++) {
         if (i < 300) {
-            timeMs = 100;
-            c_value = 2;
+            timeMs = 10;
+            c_value = 4;
         }
 
         else if (i < 600) {
-            timeMs = 200;
-            c_value = 2;
+            timeMs = 20;
+            c_value = 4;
         }
 
         else if (i < 900) {
-            timeMs = 300;
-            c_value = 2;
+            timeMs = 40;
+            c_value = 4;
         }
 
         else if (i < 1200) {
-            timeMs = 500;
-            c_value = 2;
+            timeMs = 60;
+            c_value = 4;
         }
 
-        else if (i < 2500) {
-            timeMs = 50;
-            c_value = 1;
+        else if (i < 1500) {
+            timeMs = 80;
+            c_value = 4;
         }
 
-        else if (i < 3000) {
+        else if (i < 1800) {
             timeMs = 100;
-            c_value = 1;
+            c_value = 4;
         }
 
         else if (i < 3500) {
@@ -418,8 +423,10 @@ int main() {
         while (gameState.getIsTerminal() == false) {
             if (gameState.getPlayerTurnId() == "1") {
                 try {
-                    auto actionFromMCTS = mcts.searchBestAction(gameState, timeMs, c_value);
-                    actionFromMCTS.execute(gameState);
+                    if (i < 1800) {
+                        auto actionFromMCTS = mcts.runMCTS(gameState, timeMs, c_value, 1);
+                        actionFromMCTS.execute(gameState);
+                    }
                 }
                 catch (const std::exception& e) {
                     std::cerr << "Exception: " << e.what() << '\n';
@@ -434,6 +441,8 @@ int main() {
                 randomAction.execute(gameState);
             }
 
+            // Uncomment next line to see board after every executed action
+            // gameState.printBoardUsingNumbers();
             gameState.increaseTurnCounter();
         }
 
@@ -443,50 +452,37 @@ int main() {
         std::cout << "The winner is Player " << gameState.getWinnerPlayerId() << '\n';
         if (gameState.getWinnerPlayerId() == "1") {
             if (i < 300) {
-                msWins100c03++;
+                msWins10++;
             }
 
             else if (i < 600) {
-                msWins300c03++;
+                msWins20++;
             }
 
             else if (i < 900) {
-                msWins500c03++;
+                msWins40++;
             }
 
             else if (i < 1200) {
-                msWins700c03++;
+                msWins60++;
             }
 
-            else if (i < 2500) {
-                msWins100c05++;
+            else if (i < 1500) {
+                msWins80++;
             }
 
-            else if (i < 3000) {
-                msWins300c05++;
+            else if (i < 1800) {
+                msWins100++;
             }
-
-            else if (i < 3500) {
-                msWins500c05++;
-            }
-
-            else if (i < 4000) {
-                msWins700c05++;
-            }
-        }
-        else {
-            player2wins++;
         }
     }
 
-    std::cout << "100ms wins c = 1 of 300: " << msWins100c03 << '\n';
-    std::cout << "200ms wins c = 1 of 300: " << msWins300c03 << '\n';
-    std::cout << "300ms wins c = 1 of 300: " << msWins500c03 << '\n';
-    std::cout << "500ms wins c = 1 of 300: " << msWins700c03 << '\n';
-    std::cout << "50ms wins c = 1 of 500: " << msWins100c05 << '\n';
-    std::cout << "100ms wins c = 1 of 500: " << msWins300c05 << '\n';
-    std::cout << "300ms wins c = 1 of 500: " << msWins500c05 << '\n';
-    std::cout << "500ms wins c = 1 of 500: " << msWins700c05 << '\n';
+    std::cout << "10ms wins c = 2 of 300 Threads 1: " << msWins10 << '\n';
+    std::cout << "20ms wins c = 2 of 300 Threads 1: " << msWins20 << '\n';
+    std::cout << "40ms wins c = 2 of 300 Threads 1: " << msWins40 << '\n';
+    std::cout << "60ms wins c = 2 of 300 Threads 1: " << msWins60 << '\n';
+    std::cout << "80ms wins c = 2 of 300 Threads 1: " << msWins80 << '\n';
+    std::cout << "100ms wins c = 2 of 300 Threads 1: " << msWins100 << '\n';
 
     return 0;
 }
