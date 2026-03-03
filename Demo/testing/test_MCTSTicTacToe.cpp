@@ -157,13 +157,13 @@ int main() {
     double timeMs = 0;
     double c_value;
 
-    int msWins10c01 = 0;
-    int msWins40c01 = 0;
-    int msWins80c01 = 0;
+    int msWins10 = 0;
+    int msWins20 = 0;
+    int msWins40 = 0;
 
-    int msWins10c08 = 0;
-    int msWins40c08 = 0;
-    int msWins80c08 = 0;
+    int msWins60 = 0;
+    int msWins80 = 0;
+    int msWins100 = 0;
 
     for (int i = 0; i < 1800; i++) {
         if (i < 300) {
@@ -231,37 +231,37 @@ int main() {
         gameState.printBoardUsingCharacters();
         if (gameState.getWinnerPlayerId() == "X") {
             if (i < 300) {
-                msWins10c01++;
+                msWins10++;
             }
 
             else if (i < 600) {
-                msWins40c01++;
+                msWins20++;
             }
 
             else if (i < 900) {
-                msWins80c01++;
+                msWins40++;
             }
 
             else if (i < 1200) {
-                msWins10c08++;
+                msWins60++;
             }
 
             else if (i < 1500) {
-                msWins40c08++;
+                msWins80++;
             }
 
             else if (i < 1800) {
-                msWins80c08++;
+                msWins100++;
             }
         }
     }
 
-    std::cout << "10ms wins c = 2 of 300 Threads 1: " << msWins10c01 << '\n';
-    std::cout << "20ms wins c = 2 of 300 Threads 1: " << msWins40c01 << '\n';
-    std::cout << "40ms wins c = 2 of 300 Threads 1: " << msWins80c01 << '\n';
-    std::cout << "60ms wins c = 2 of 300 Threads 1: " << msWins10c08 << '\n';
-    std::cout << "80ms wins c = 2 of 300 Threads 1: " << msWins40c08 << '\n';
-    std::cout << "100ms wins c = 2 of 300 Threads 1: " << msWins80c08 << '\n';
+    std::cout << "10ms wins c = 2 of 300 Threads 1: " << msWins10 << '\n';
+    std::cout << "20ms wins c = 2 of 300 Threads 1: " << msWins20 << '\n';
+    std::cout << "40ms wins c = 2 of 300 Threads 1: " << msWins40 << '\n';
+    std::cout << "60ms wins c = 2 of 300 Threads 1: " << msWins60 << '\n';
+    std::cout << "80ms wins c = 2 of 300 Threads 1: " << msWins80 << '\n';
+    std::cout << "100ms wins c = 2 of 300 Threads 1: " << msWins100 << '\n';
 
     return 0;
 }
