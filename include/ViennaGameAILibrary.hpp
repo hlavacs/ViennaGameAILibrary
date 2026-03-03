@@ -20,6 +20,9 @@
 #include <thread>
 #include <mutex>
 #include <functional>
+#include <memory>
+#include <map>
+#include <atomic>
 
 namespace VGAIL
 {
@@ -2099,4 +2102,481 @@ namespace VGAIL
         f32 m_separationRange = 0.0f;           /*!< The range used in the "separation" behaviour. */
         f32 m_perceptionRange = 0.0f;           /*!< The range used in the "align" and "cohesion" behaviours. */
     };
+
+    /*
+    *
+    *   Start von (c) bei Bleon Jupa, University of Vienna, 2026
+    *
+    */
+
+    template<typename DS>
+    class Action {
+    public:
+        /**
+         * @brief Constructs a new Action object
+         */
+        Action() {}
+
+        /**
+         * @brief Executes the action on the game state and as a result modifies the game state
+         * @param gameState Game state on which the action should be executed
+         */
+        virtual void execute(DS& gameState) {};
+    };
+
+    template<typename DS, typename DA>
+    class MCTSState {
+    private:
+        bool allTried = false;
+        std::vector<DA> untriedActions;
+
+    protected:
+        std::vector<DA> actions;
+        bool isTerminal = false;
+        std::string playerTurnId = ""; // Whose player's turn it is based on their id
+        std::string winnerPlayerId = ""; // The id of the winning player
+
+    public:
+        /**
+         * @brief Constructs a new MCTSState object
+         */
+        MCTSState() {}
+
+        /**
+         * @brief Constructs a new MCTSState object
+         */
+        MCTSState(std::vector<DA> actions, bool isTerminal, std::string playerTurnId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId) {
+            this->untriedActions = actions;
+        }
+
+        /**
+         * @brief Constructs a new MCTSState object
+         */
+        MCTSState(std::vector<DA> actions, bool isTerminal, std::string playerTurnId, std::string winnerPlayerId) : actions(actions), isTerminal(isTerminal), playerTurnId(playerTurnId), winnerPlayerId(winnerPlayerId) {
+            this->untriedActions = actions;
+        }
+
+        /**
+         * @brief Checks if game state is terminal
+         * @return bool True if game state is terminal
+         */
+        virtual bool getIsTerminal() {
+            return isTerminal;
+        }
+
+        /**
+         * @brief Gets all possible actions
+         * @return std::vector<DA> All possible actions
+         */
+        std::vector<DA> getActions() const {
+            return actions;
+        }
+
+        /**
+         * @brief Gets the player if whose turn it is
+         * @return std::string the player id whose turn it is
+         */
+        std::string getPlayerTurnId() const {
+            return playerTurnId;
+        }
+
+        /**
+         * @brief Gets the winner player id
+         * @return std::string The player id of the winner
+         */
+        std::string getWinnerPlayerId() const {
+            return winnerPlayerId;
+        }
+
+        /**
+         * @brief Sets the winner player id of this node to be provided id
+         * @param playerId The winner player id
+         */
+        void setWinnerPlayerId(std::string playerId) {
+            winnerPlayerId = playerId;
+        }
+
+        /**
+         * @brief Sets untried actions to be all possible actions
+         */
+        void setUntriedActions() {
+            untriedActions.clear();
+            untriedActions = actions;
+        }
+
+        /**
+         * @brief Gets the untried actions
+         * @return std::vector<DA> The untried actions
+         */
+        std::vector<DA> getUntriedActions() {
+            return untriedActions;
+        }
+
+        /**
+         * @brief Removes a tried action from untried list
+         * @param index The index of the action
+         */
+        void removeTriedAction(int index) {
+            untriedActions.erase(untriedActions.begin() + index);
+        }
+    };
+
+    template<typename DS, typename DA>
+    class MCTSNode {
+    private:
+        DS state;
+        std::vector<std::shared_ptr<MCTSNode<DS, DA>>> children = {};
+        std::weak_ptr<MCTSNode<DS, DA>> parent;
+        std::atomic<int> num_visits = 0;
+        std::atomic<int> num_wins = 0;
+        DA actionToGetHere;
+
+    public:
+        std::mutex node_mutex;
+
+        /**
+         * @brief Constructs a new MCTSNode object
+         */
+        MCTSNode(DS state, std::weak_ptr<MCTSNode<DS, DA>> parent, DA actionToGetHere) : state(state), parent(parent), actionToGetHere(actionToGetHere) {}
+
+        /**
+         * @brief Constructs a new MCTSNode object
+         */
+        MCTSNode(DS state, std::weak_ptr<MCTSNode<DS, DA>> parent) : state(state), parent(parent) {}
+
+        /**
+         * @brief Adds node to the child nodes
+         * @param child The child to add to the node
+         */
+        void addChild(std::shared_ptr<MCTSNode> child) {
+            children.push_back(child);
+        }
+
+        /**
+         * @brief Gets the game state of this node
+         * @return DS& The game state of the node
+         */
+        DS& getState() {
+            return state;
+        }
+
+        /**
+         * @brief Gets the child nodes
+         * @return std::vector<std::shared_ptr<MCTSNode>>& The child nodes
+         */
+        std::vector<std::shared_ptr<MCTSNode>>& getChildren() {
+            return children;
+        }
+
+        /**
+         * @brief Gets the parent node
+         * @return std::shared_ptr<MCTSNode> The parent node
+         */
+        std::shared_ptr<MCTSNode> getParent() {
+            return parent.lock();
+        }
+
+        /**
+         * @brief Gets the action to get to this node from the previous node
+         * @return DA The action to get from parent node
+         */
+        DA getAction() const {
+            return actionToGetHere;
+        }
+
+        /**
+         * @brief Increases the number of visits for the node
+         */
+        void incrementVisits() {
+            num_visits++;
+        }
+
+        /**
+         * @brief Increases the number of wins for the node
+         */
+        void incrementWins() {
+            num_wins++;
+        }
+
+        /**
+         * @brief Gets the number of visits for the node
+         * @return int The number of visits for the node
+         */
+        int getVisits() const {
+            return num_visits.load();
+        }
+
+        /**
+         * @brief Gets the number of wins for the node
+         * @return int The number of wins for the node
+         */
+        int getWins() const {
+            return num_wins.load();
+        }
+
+        /**
+         * @brief Calculates and returns the winrate of the node
+         * @return double The winrate of the node
+         */
+        double getWinrate() const {
+            if (num_visits.load() == 0) {
+                return 0.0;
+            }
+
+            return static_cast<double>(num_wins.load()) / static_cast<double>(num_visits.load());
+        }
+
+        /**
+         * @brief Checks if node is completely expanded, so if all actions have been tried
+         * @return true If all actions have been tried
+         */
+        bool isCompletelyExpanded() {
+            return children.size() == state.getActions().size();
+        }
+
+        /**
+         * @brief Returns the UCT value of the node, if root player and current player are not the same then winrate gets flipped.
+         *
+         * @param c_value Exploration parameter for UCT formula
+         * @param rootPlayerId The id of the player at the root node
+         */
+        double getUCT(const double& c_value, const std::string& rootPlayerId) const {
+            double exploit;
+            double explore;
+            double UCT;
+            if (num_visits.load() == 0) {
+                return std::numeric_limits<double>::infinity();
+            }
+
+            exploit = getWinrate();
+
+            // If current node is not same as root player then invert win rate
+            if (rootPlayerId != state.getPlayerTurnId()) {
+                exploit = 1 - getWinrate();
+            }
+
+            explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits())) / static_cast<double>(num_visits.load()));
+            UCT = exploit + explore;
+
+            return UCT;
+        }
+    };
+
+    template<typename DS, typename DA>
+    class MCTS {
+    private:
+        
+        /**
+         * @brief Selection phase of MCTS, selects best child node
+         *
+         * @param currentNode The current node from which to select the best child
+         * @param c_value Exploration parameter for UCT formula
+         * @param rootPlayerId The id of the player at the root node
+         * @return std::shared_ptr<MCTSNode<DS, DA>> The selected child node
+         */
+        std::shared_ptr<MCTSNode<DS, DA>> select(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, double& c_value, std::string& rootPlayerId) {
+            std::lock_guard<std::mutex> lock(currentNode->node_mutex);
+
+            // If at least one action not tried or game over don't go deeper
+            if (currentNode->isCompletelyExpanded() == false || currentNode->getState().getIsTerminal() == true) {
+                return currentNode;
+            }
+
+            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
+            double bestUCT_value = std::numeric_limits<double>::lowest();
+
+            // Get best child according to UCT formula
+            for (auto& child : currentNode->getChildren()) {
+                std::lock_guard<std::mutex> lock(child->node_mutex);
+                double child_UCT = child->getUCT(c_value, rootPlayerId);
+
+                if (child_UCT > bestUCT_value) {
+                    bestUCT_value = child_UCT;
+                    bestChild = child;
+                }
+            }
+
+            return bestChild;
+        }
+
+        /**
+         * @brief Expansion phase of MCTS, expands the search tree by creating a random new node for untried action
+         *
+         * @param currentNode The current node to expand from
+         * @return std::shared_ptr<MCTSNode<DS, DA>> The expanded node
+         */
+        std::shared_ptr<MCTSNode<DS, DA>> expand(std::shared_ptr<MCTSNode<DS, DA>>& currentNode) {
+            std::lock_guard<std::mutex> lock(currentNode->node_mutex);
+
+            // If game is over or all actions have been tried don't create new node
+            if (currentNode->getState().getIsTerminal() || currentNode->isCompletelyExpanded()) {
+                return currentNode;
+            }
+
+            if (currentNode->getState().getActions().empty())
+            {
+                return currentNode;
+            }
+
+            // Get an action that has not been tried yet and is next in line and create new node
+            thread_local std::mt19937 rng(std::random_device{}());
+            std::uniform_int_distribution<int> dist(0, currentNode->getState().getUntriedActions().size() - 1);
+            int index = dist(rng);
+            auto randomAction = currentNode->getState().getUntriedActions()[index];
+            currentNode->getState().removeTriedAction(index);
+
+            DS stateToAdd(currentNode->getState());
+            randomAction.execute(stateToAdd);
+            stateToAdd.setUntriedActions();
+            auto child = std::make_shared<MCTSNode<DS, DA>>(stateToAdd, currentNode, randomAction);
+            currentNode->addChild(child);
+
+            return child;
+        }
+
+        /**
+         * @brief Simulation phase of MCTS, simulates a playout by choosing random actions from the current node
+         *
+         * @param currentNode The current node from which to start the simulation
+         */
+        void simulate(std::shared_ptr<MCTSNode<DS, DA>>& currentNode) {
+            auto currentState(currentNode->getState());
+
+            // While not game over take random actions to play until game is over
+            // NOTE: This has no time or depth limit right now, might need to be implemented in case a simulation takes too long
+            thread_local std::mt19937 rng(std::random_device{}());
+
+            while (currentState.getIsTerminal() == false) {
+                auto actions = currentState.getActions();
+                if (actions.empty()) {
+                    break;
+                }
+                std::uniform_int_distribution<int> distr(0, actions.size() - 1);
+                int index = distr(rng);
+
+                try {
+                    auto randomAction = actions[index];
+                    randomAction.execute(currentState);
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "Exception: " << e.what() << '\n';
+                    break;
+                }
+            }
+
+            // Backpropagate the result of simulation
+            backpropagate(currentNode, currentState.getWinnerPlayerId());
+        }
+
+        /**
+         * @brief Backpropagation phase of MCTS, backpropagates the result from the simulation phase up to root
+         *
+         * @param currentNode The current node from which the backpropagation starts
+         * @param winnerPlayerId The id of the player who has won the simulation phase
+         */
+        void backpropagate(std::shared_ptr<MCTSNode<DS, DA>>& currentNode, const std::string& winnerPlayerId) {
+            auto backpropagatedNode = currentNode;
+            // As long as not root increase visits upwards and if winner is the same as current player of each node increase wins as well
+            while (backpropagatedNode != nullptr) {
+                backpropagatedNode->incrementVisits();
+
+                if (winnerPlayerId == backpropagatedNode->getState().getPlayerTurnId()) {
+                    backpropagatedNode->incrementWins();
+                }
+
+                backpropagatedNode = backpropagatedNode->getParent();
+            }
+        }
+
+        /**
+         * @brief Full MCTS search within time limit
+         *
+         * @param root The root node from which the search starts
+         * @param timeLimitMs Time limit in milliseconds
+         * @param c Exploration parameter for UCT formula before sqrt, usually between 0.25 and 4
+         */
+        void searchBestAction(std::shared_ptr<MCTSNode<DS, DA>>& root, const double& timeLimitMs, double& c) {
+            auto startingTime = std::chrono::high_resolution_clock::now();
+            double currentTime = 0.0;
+            double timePassed = 0.0;
+            double c_value = sqrt(c);
+            auto rootPlayerId = root->getState().getPlayerTurnId();
+
+            while (true) {
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startingTime).count();
+                // If time limit exceeded stop MCTS
+                if (timePassed >= timeLimitMs) {
+                    break;
+                }
+
+                // Select
+                std::shared_ptr<MCTSNode<DS, DA>> selectedChild = root;
+                while (selectedChild->isCompletelyExpanded() && !selectedChild->getState().getIsTerminal()) {
+                    selectedChild = select(selectedChild, c_value, rootPlayerId);
+                }
+
+                // Expand
+                std::shared_ptr<MCTSNode<DS, DA>> expandedNode = expand(selectedChild);
+
+                // Simulate and Backpropagate
+                simulate(expandedNode);
+            }
+        }
+
+    public:
+        /**
+         * @brief Constructs a new MCTS object
+         */
+        MCTS() {}
+
+        /**
+         * @brief Runs the MCTS algorithm with provided input parameters.
+         *
+         * @param currentState Current game state from which the MCTS algorithm runs
+         * @param timeLimitMs Time limit in milliseconds the algorithm is allowed to search
+         * @param c Exploration parameter for UCT formula before sqrt, usually between 0.25 and 4
+         * @param thread_count Optional thread count for parallelization, default value is 1
+         * @return DA Returns best action
+         */
+        DA runMCTS(DS currentState, const double& timeLimitMs, double c, int thread_count = 1) {
+
+            std::vector<std::jthread> thread_vector;
+            auto root = std::make_shared<MCTSNode<DS, DA>>(currentState, std::weak_ptr<MCTSNode<DS, DA>>());
+            root->getState().setUntriedActions();
+
+            for (int i = 0; i < thread_count; i++) {
+                thread_vector.emplace_back([&]() {
+                    searchBestAction(root, timeLimitMs, c);
+                    });
+
+                // If only one action possible don't use multithreading
+                if (root->getState().getActions().size() <= 1) {
+                    break;
+                }
+            }
+
+            for (auto& t : thread_vector) {
+                if (t.joinable()) {
+                    t.join();
+                }
+            }
+
+            // Get best child
+            std::shared_ptr<MCTSNode<DS, DA>> bestChild = nullptr;
+            for (auto& child : root->getChildren()) {
+                if (bestChild == nullptr || child->getVisits() > bestChild->getVisits()) {
+                    bestChild = child;
+                }
+            }
+
+            return bestChild->getAction();
+        }
+    };
+
+    /*
+    *
+    *   Ende von (c) bei Bleon Jupa, University of Vienna, 2026
+    *
+    */
 }

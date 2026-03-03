@@ -475,6 +475,84 @@ To update the flock, ```deltaTime``` is needed such that smooth movement is ensu
 	<img src="assets/flocking.gif">
 </div>
 
+## 7. **Monte Carlo Tree Search**
+To make use of the Monte Carlo tree search (MCTS) algorithm you need to extend
+
+```
+	class Action
+```
+
+and implement ```virtual void execute(DS& gameState) {};``` by overriding it and integrating your own game logic. The method should apply the changes made to the game state by executing the action.
+
+The game state needs to be an object of a derived
+
+```
+	class MCTSState
+```
+
+of which also one method needs to be extended: ```virtual bool getIsTerminal()```. This method should return a bool value, true if game is in a terminal state and has concluded, false if game continues.
+
+To use the actual algorithm after both classes have been integrated into your project, create an instance of ```class MCTS``` with the default constructor and call the method:
+
+```
+	DA runMCTS(DS currentState, const double& timeLimitMs, double c, int thread_count = 1)
+```
+
+which returns the most prominent ```Action``` object (derived class) found in the search. Input parameters should be as followed:
+
+→ ```currentState``` should be the current game state containing a non-empty action set.
+
+→ ```timeLimitMs``` is the time limit for how long the algorithm should search before returning the most prominent action.
+
+→ ```c``` should be the exploration value for the Upper Confidence Bounds applied to trees (UCT), note that the square root of this value will be taken, e.g. if you want a value of c = 2 then use 4 as input parameter.
+
+→ ```thread_count``` (Optional) How many threads the algorithm should run on, if no thread_count parameter is included, as it is optional, the algorithm runs sequentially, so on one thread.
+
+A quick overview of how to use the interface:
+
+- For ```class Action```
+
+```
+class YourActionClass : public Action<YourGameStateClass> {
+	// Your implementation
+	...
+	// Your action execution implementation
+	void execute(YourGameStateClass& gameState) override;
+}
+```
+
+- For ```class MCTSState```
+
+```
+class YourGameStateClass : public MCTSState<YourGameStateClass, YourActionClass> {
+private:
+	using MCTSState<YourGameStateClass, YourActionClass>::actions;
+	using MCTSState<YourGameStateClass, YourActionClass>::isTerminal;
+	using MCTSState<YourGameStateClass, YourActionClass>::playerTurnid;
+	using MCTSState<YourGameStateClass, YourActionClass>::winnerPlayerId;
+	// Your member variables
+
+public:
+	bool getisTerminal() override {
+		// Your check if game has terminated
+	}
+}
+```
+
+- For ```class MCTS```
+
+```
+	MCTS<YourGameStateClass, YourActionClass> mcts;
+	auto actionFromMCTS = mcts.runMCTS(yourGameState, yourTimeLimit, yourC_Value, yourThread_Count);
+	actionFromMCTS.execute(yourGameState);
+```
+
+Detailed example implementations, used for testing purposes but also do demonstrate how to integrate it into your framework, can be found in:
+
+> *Demo/testing/test_MCTSConnectFour.cpp*
+> *Demo/testing/test_MCTSTicTacToe.cpp*
+> *Demo/testing/test_MCTSHex.cpp*
+
 # Resources
 - Textures
 	- [Platformer Pack Medieval](https://kenney.nl/assets/platformer-pack-medieval)
