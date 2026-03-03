@@ -550,7 +550,9 @@ public:
 Detailed example implementations, used for testing purposes but also do demonstrate how to integrate it into your framework, can be found in:
 
 > *Demo/testing/test_MCTSConnectFour.cpp*
+
 > *Demo/testing/test_MCTSTicTacToe.cpp*
+
 > *Demo/testing/test_MCTSHex.cpp*
 
 # Resources
