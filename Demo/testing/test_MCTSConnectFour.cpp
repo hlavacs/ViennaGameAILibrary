@@ -401,16 +401,6 @@ int main() {
             c_value = 4;
         }
 
-        else if (i < 3500) {
-            timeMs = 300;
-            c_value = 1;
-        }
-
-        else if (i < 4000) {
-            timeMs = 500;
-            c_value = 1;
-        }
-
         std::cout << "Iteration number: " << i + 1 << " of MCTS vs random actions in Connect Four" << '\n';
         gameState.initializeBoard();
         if (i % 2 == 0) {
@@ -441,6 +431,7 @@ int main() {
                 randomAction.execute(gameState);
             }
 
+            // For testing
             // Uncomment next line to see board after every executed action
             // gameState.printBoardUsingNumbers();
             gameState.increaseTurnCounter();
