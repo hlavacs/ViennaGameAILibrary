@@ -2227,8 +2227,8 @@ namespace VGAIL
         DS state;
         std::vector<std::shared_ptr<MCTSNode<DS, DA>>> children = {};
         std::weak_ptr<MCTSNode<DS, DA>> parent;
-        int num_visits = 0;
-        int num_wins = 0;
+        std::atomic<int> num_visits = 0;
+        std::atomic<int> num_wins = 0;
         DA actionToGetHere;
 
     public:
@@ -2303,7 +2303,7 @@ namespace VGAIL
          * @return int The number of visits for the node
          */
         int getVisits() const {
-            return num_visits;
+            return num_visits.load();
         }
 
         /**
@@ -2311,7 +2311,7 @@ namespace VGAIL
          * @return int The number of wins for the node
          */
         int getWins() const {
-            return num_wins;
+            return num_wins.load();
         }
 
         /**
@@ -2319,11 +2319,11 @@ namespace VGAIL
          * @return double The winrate of the node
          */
         double getWinrate() const {
-            if (num_visits == 0) {
+            if (num_visits.load() == 0) {
                 return 0.0;
             }
 
-            return static_cast<double>(num_wins) / static_cast<double>(num_visits);
+            return static_cast<double>(num_wins.load()) / static_cast<double>(num_visits.load());
         }
 
         /**
@@ -2344,7 +2344,7 @@ namespace VGAIL
             double exploit;
             double explore;
             double UCT;
-            if (num_visits == 0) {
+            if (num_visits.load() == 0) {
                 return std::numeric_limits<double>::infinity();
             }
 
@@ -2355,7 +2355,7 @@ namespace VGAIL
                 exploit = 1 - getWinrate();
             }
 
-            explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits())) / static_cast<double>(num_visits));
+            explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits())) / static_cast<double>(num_visits.load()));
             UCT = exploit + explore;
 
             return UCT;
@@ -2365,6 +2365,7 @@ namespace VGAIL
     template<typename DS, typename DA>
     class MCTS {
     private:
+        
         /**
          * @brief Selection phase of MCTS, selects best child node
          *
@@ -2477,13 +2478,10 @@ namespace VGAIL
             auto backpropagatedNode = currentNode;
             // As long as not root increase visits upwards and if winner is the same as current player of each node increase wins as well
             while (backpropagatedNode != nullptr) {
-                {
-                    std::lock_guard<std::mutex> lock(backpropagatedNode->node_mutex);
-                    backpropagatedNode->incrementVisits();
+                backpropagatedNode->incrementVisits();
 
-                    if (winnerPlayerId == backpropagatedNode->getState().getPlayerTurnId()) {
-                        backpropagatedNode->incrementWins();
-                    }
+                if (winnerPlayerId == backpropagatedNode->getState().getPlayerTurnId()) {
+                    backpropagatedNode->incrementWins();
                 }
 
                 backpropagatedNode = backpropagatedNode->getParent();
