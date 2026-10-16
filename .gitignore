@@ -34,9 +34,16 @@
 # Build files
 build/
 
-# Doxygen files except Doxyfile
-docs/
+# Generated Doxygen files; keep configuration and teaching guides.
+docs/*
 !docs/Doxyfile
+!docs/vgai_beginner_quickstart.pdf
+!docs/vgai_beginner_quickstart.tex
+!docs/vienna_game_ai_library_manual.pdf
+!docs/vienna_game_ai_library_manual.tex
+!docs/guide_style.tex
+!docs/build_guides.sh
+!docs/guide_validation.txt
 
 # VS code
 .vscode

@@ -1,0 +1,19 @@
+Guide validation, 16 October 2026
+Repository baseline: b1c76a1
+
+vgai_beginner_quickstart.pdf: 10 pages; text and references checked.
+vienna_game_ai_library_manual.pdf: 52 pages; text and references checked.
+
+Complete programs compiled and executed:
+path: PASS, start/target endpoints and nonempty result
+states: PASS, patrol=2 and chase=1
+steering: PASS, x=0.55 and y=0
+tree: PASS, each branch selected once
+flock: PASS, two agents with finite positions
+mcts_contract: PASS, terminal outcome after selected action
+take_game: PASS, legal action and independent live state
+
+Toolchain: Linux, Clang 18.1.3. VGAI: C++20, NDEBUG, pthread. VPE: C++23, libc++, Ninja, Release.
+PDFs built with XeLaTeX, three passes; rendered sample pages reviewed.
+Run bash build_guides.sh in this directory to rebuild the PDFs.
+Requires XeLaTeX, fontspec, TikZ, hyperref, listings, and Liberation Serif/Sans/Mono fonts.
