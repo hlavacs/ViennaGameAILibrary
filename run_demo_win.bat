@@ -31,7 +31,7 @@ echo.
 echo Demos of the Vienna Game AI Library  [%DEMO_DIR%]
 echo.
 echo   Main themes
-echo    1  Pathfinding         left click: start, right click: target, R: search
+echo    1  Pathfinding         left click: start, right click: target
 echo    2  DecisionTree        watch the guard and the burglar decide
 echo    3  StateMachine        watch the worker change its state
 echo    4  SteeringBehaviors   watch chickens, dog and snake; day and night change

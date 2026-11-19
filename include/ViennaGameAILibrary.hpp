@@ -13,6 +13,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <limits>
 #include <stdexcept>
 #include <utility>
@@ -42,10 +43,20 @@ namespace VGAIL
      * @brief Custom assertion macro.
      *
      */
+    // Stops the program in the debugger when an assertion fails. __debugbreak() exists only in
+    // Microsoft-compatible compilers. GCC and Clang on Linux and macOS use __builtin_trap().
+    #if defined(_MSC_VER)
+    #define VGAIL_DEBUG_BREAK() __debugbreak()
+    #elif defined(__GNUC__) || defined(__clang__)
+    #define VGAIL_DEBUG_BREAK() __builtin_trap()
+    #else
+    #define VGAIL_DEBUG_BREAK() std::abort()
+    #endif
+
     #ifdef NDEBUG
     #define VGAIL_ASSERT(x, msg) { }
     #else
-    #define VGAIL_ASSERT(x, msg) { if(!(x)) { std::cout << "Assertion Failed: " << msg << std::endl; __debugbreak(); } }
+    #define VGAIL_ASSERT(x, msg) { if(!(x)) { std::cout << "Assertion Failed: " << msg << std::endl; VGAIL_DEBUG_BREAK(); } }
     #endif
 
      /**

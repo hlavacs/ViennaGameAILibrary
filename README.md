@@ -18,8 +18,10 @@ From pathfinding to state machines, decision trees, and steering algorithms, Vie
 - *include* - ```ViennaGameAILibrary.hpp```
 - *tests* - Regression tests that run without a window.
 - ```build_windows.cmd``` - Script to build the tests and all demos on Windows with Visual Studio.
+- ```build_linux.sh```, ```build_macos.sh``` - Scripts to build the tests and all demos on Linux and macOS.
 - ```build_demo_win.bat``` - Script to build the project on Windows with Clang from MSYS2.
 - ```run_demo_win.bat``` - Script to start a demo on Windows.
+- ```run_demo.sh``` - Script to start a demo on Linux and macOS.
 - ```CMakeLists.txt``` - CMake file to build the entire project.
 - ```README.md```
 
@@ -66,12 +68,23 @@ Make sure Clang and Ninja are used by this project. The first time you build the
 2. Wait for MSVC to compile and link everything. 
 3. To run a demo, look for its program, for example ```demo_Flocking.exe```, in the list of debug targets. You will need to scroll down to find it.
 
-## The demos
-Every demo is built as its own program. There is one demo for each main theme of the library, and one for each single steering behaviour. Start the demos from the repository root, because they load their images and fonts from *Demo/res*. ```run_demo_win.bat``` does that.
+# Setup - Linux and macOS
+1. Clone the project.
+2. Run ```./build_linux.sh``` or ```./build_macos.sh```. The script fetches raylib, builds the tests and all demos into *build/release-linux* or *build/release-macos*, and runs the tests.
+3. Run ```./run_demo.sh``` and choose a demo from the menu, or start one directly, for example ```./run_demo.sh mcts```.
+
+Both scripts take the same options as ```build_windows.cmd```, except ```--clang```. ```--help``` lists them.
+
+- Linux needs CMake 3.28 or newer, a C++20 compiler (GCC 10 or newer, or Clang), Git, and the X11 and OpenGL development packages. The script names the packages if they are missing. ```CXX``` and ```CC``` select other compilers.
+- macOS needs the Xcode Command Line Tools and CMake. The MCTS part of the library uses ```std::jthread```. If Apple's clang++ cannot build it, the script uses the clang++ of Homebrew LLVM (```brew install llvm```).
+- If a script is not executable after cloning, start it with ```bash build_linux.sh```.
+
+# The demos
+Every demo is built as its own program. There is one demo for each main theme of the library, and one for each single steering behaviour. Start the demos from the repository root, because they load their images and fonts from *Demo/res*. ```run_demo_win.bat``` and ```run_demo.sh``` do that.
 
 | Demo | Theme | What to do |
 | --- | --- | --- |
-| ```demo_Pathfinding``` | Path finding | Left click sets the start, right click sets the target, R searches and draws both paths. |
+| ```demo_Pathfinding``` | Path finding | Left click sets the start, right click sets the target. Both paths are searched again after every click. |
 | ```demo_DecisionTree``` | Decision trees | Watch the guard and the burglar. Their current decisions are shown as text. |
 | ```demo_StateMachine``` | State machines | Watch the worker. Its current state is shown as text. |
 | ```demo_SteeringBehaviors``` | Steering behaviours | Watch chickens, dog and snake during day and night. Their current behaviours are shown as text. |
