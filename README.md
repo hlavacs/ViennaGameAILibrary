@@ -14,14 +14,25 @@ From pathfinding to state machines, decision trees, and steering algorithms, Vie
 	- *src* - Source folder containing the code for the demos.
 	- *res* - Resource folder containing assets used in demos.
 	- *testing* - Test folder containing the code used to measure feature execution time.
-	- ```CMakeLists.txt``` - CMake file that controls which demo is executed.
+	- ```CMakeLists.txt``` - CMake file that builds every demo as its own program.
 - *include* - ```ViennaGameAILibrary.hpp```
-- ```build_demo_win.bat``` - Script to build the project on Windows.
-- ```run_demo_win.bat``` - Script to run the project on Windows.
+- *tests* - Regression tests that run without a window.
+- ```build_windows.cmd``` - Script to build the tests and all demos on Windows with Visual Studio.
+- ```build_demo_win.bat``` - Script to build the project on Windows with Clang from MSYS2.
+- ```run_demo_win.bat``` - Script to start a demo on Windows.
 - ```CMakeLists.txt``` - CMake file to build the entire project.
 - ```README.md```
 
 # Setup - Windows
+## Quick start: build and run with ```build_windows.cmd```
+Requires Visual Studio 2022 or newer with the C++ workload and the C++ CMake tools, and Git.
+
+1. Clone the project.
+2. Run ```build_windows.cmd```. It fetches raylib, builds the tests and all demos into *build/release-windows*, and runs the tests.
+3. Run ```run_demo_win.bat``` and choose a demo from the menu, or start one directly, for example ```run_demo_win.bat mcts```.
+
+```build_windows.cmd --help``` lists the options, for example ```debug```, ```--no-demos``` and ```--run mcts```.
+
 ## 1. Build and run with Clang and Ninja
 ### Prerequisites
 - [Doxygen](https://www.doxygen.nl/index.html)
@@ -48,19 +59,31 @@ Make sure Clang and Ninja are used by this project. The first time you build the
 -- Building for: Ninja
 -- The CXX compiler identification is Clang ...
 ```
-4. Run ```run_demo_win.bat``` to start the project.
+4. Run ```run_demo_win.bat``` to start a demo.
 
 ## 2. Build and run with Microsoft Visual Studio
 1. Clone the project.
 2. Wait for MSVC to compile and link everything. 
-3. To run the project, look for ```Demo.exe``` from the list of debug targets. You will need to scroll down to find it.
+3. To run a demo, look for its program, for example ```demo_Flocking.exe```, in the list of debug targets. You will need to scroll down to find it.
 
-## To run different demos
-In *Demo/```CMakeLists.txt```*, uncomment the path of the .cpp file that you want to run.
-```
-add_executable(Demo src/demo_Pathfinding.cpp ${PROJECT_SOURCE_DIR}/include/ViennaGameAILibrary.hpp)
-```
-In the line above, the pathfinding example is used as the running demo.
+## The demos
+Every demo is built as its own program. There is one demo for each main theme of the library, and one for each single steering behaviour. Start the demos from the repository root, because they load their images and fonts from *Demo/res*. ```run_demo_win.bat``` does that.
+
+| Demo | Theme | What to do |
+| --- | --- | --- |
+| ```demo_Pathfinding``` | Path finding | Left click sets the start, right click sets the target, R searches and draws both paths. |
+| ```demo_DecisionTree``` | Decision trees | Watch the guard and the burglar. Their current decisions are shown as text. |
+| ```demo_StateMachine``` | State machines | Watch the worker. Its current state is shown as text. |
+| ```demo_SteeringBehaviors``` | Steering behaviours | Watch chickens, dog and snake during day and night. Their current behaviours are shown as text. |
+| ```demo_Flocking``` | Flocking | Click one of the three boxes, type a number, and press Enter. |
+| ```demo_MCTS``` | Monte Carlo Tree Search | Play Connect Four against the search. The keys are shown in the window. |
+| ```demo_SeekAndFlee``` | Seek and flee | The arrow keys move the target. |
+| ```demo_PursueAndEvade``` | Pursue and evade | The arrow keys move the target. |
+| ```demo_Arrive``` | Arrive | Left click sets the target. |
+| ```demo_Wander``` | Wander | Watch. |
+
+The sources are in *Demo/src*. To add a demo, add its source file to the list in *Demo/```CMakeLists.txt```*.
+
 # Code documentation
 Documentation is generated using Doxygen. To see it, open ```index.html``` which can be found in the *docs/html* folder.
 
@@ -555,6 +578,8 @@ Detailed example implementations, used for testing purposes but also do demonstr
 
 > *Demo/testing/test_MCTSHex.cpp*
 
+A graphical example is *Demo/src/demo_MCTS.cpp*: Connect Four against the search. Its game rules, which are all that the search needs from a game, are in *Demo/src/MCTS/ConnectFour.h*.
+
 # Resources
 - Textures
 	- [Platformer Pack Medieval](https://kenney.nl/assets/platformer-pack-medieval)
@@ -578,3 +603,26 @@ Detailed example implementations, used for testing purposes but also do demonstr
 	- Flocking algorithm -> [Boids algorithm - augmented for distributed consensus](https://vanhunteradams.com/Pico/Animal_Movement/Boids-algorithm.html)
 	- User Interface for the flocking demo -> [raylib [text] example - input box](https://www.raylib.com/examples/text/loader.html?name=text_input_box)
 - All demo videos were converted to GIF format by using [Ezgif](https://ezgif.com/video-to-gif).
+
+
+## Native correctness checks
+
+Configure with `-DVGAI_BUILD_DEMOS=OFF -DBUILD_TESTING=ON`, build the
+`vgai_path_regression` target, and run CTest. No graphical demo dependencies
+are needed for this check. The test includes the public header first and
+compares ordinary and preprocessed queries against independent Dijkstra on
+6,480 endpoint pairs, including blocked and identical endpoints, both
+preprocessing modes, and stale-cache handling.
+
+`findPreprocessedPath` now treats a cached regional route as an upper bound
+for exact A*, rather than assuming that route is optimal for every target.
+Routes have no duplicated join waypoint. Preprocessing compares routes by
+summed Euclidean cost; speedups still need measurement. The grid permits
+diagonal corner cutting and uses fixed Euclidean costs. Preprocessing and
+queries must not run concurrently with geometry mutation or with another
+query that shares the mutable search state.
+
+`vgai_mcts_regression` checks the Connect Four rules of the MCTS demo and that
+the search takes a win and blocks threats that are one move away. A node counts
+its wins for the player whose turn it is in that node. A parent therefore values
+a child by one minus the child's win rate, on every level of the tree.

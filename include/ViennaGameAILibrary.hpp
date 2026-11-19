@@ -10,6 +10,12 @@
 #pragma once
 
 #include <iostream>
+#include <chrono>
+#include <cmath>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
+#include <utility>
 #include <algorithm>
 #include <random>
 #include <fstream>
@@ -645,7 +651,10 @@ namespace VGAIL
          */
         void preprocess(bool multithreading = false, ui32 numThreads = 4)
         {
-            m_isPreprocessed = true;
+            if (multithreading && numThreads == 0)
+                throw std::invalid_argument("preprocessing needs at least one thread");
+            m_isPreprocessed = false;
+            for (auto& cached : m_adjList) cached.clear();
             if (multithreading)
             {
                 std::vector<std::thread> threads;
@@ -698,7 +707,7 @@ namespace VGAIL
                         ui32 bestPathIndex = 0;
                         for (ui32 j = 1; j < paths.size(); j++)
                         {
-                            if (paths[j].size() < paths[bestPathIndex].size())
+                            if (pathCost(paths[j]) < pathCost(paths[bestPathIndex]))
                             {
                                 bestPathIndex = j;
                             }
@@ -709,6 +718,7 @@ namespace VGAIL
                     }
                 }
             }
+            m_isPreprocessed = true;
         }
 
         /**
@@ -726,71 +736,31 @@ namespace VGAIL
         }
 
         /**
-         * @brief Finds the stored path between two nodes.
-         *
-         * After geometric preprocessing, the shortest path from a node to a region is stored at 
-         * `m_adjList[nodeIndex][regionID]`. \n
-         * 	- If the nodes are in the same region, it simply calls the A* algorithm to find the shortest path 
-         * between them. \n
-         * 	- If they are in separate regions, it first retrieves the shortest path from the start node to the region 
-         * in which the target node exists. If the newly found path's end node is the target, the path is returned. 
-         * Otherwise, A* will run to find the path from this end node to the target node and return it, if found.
-         *
-         * @param start The position of the start node.
-         * @param target The position of the target node.
-         * @return std::vector<Vec2ui> The shortest found path.
+         * @brief Finds an optimal point-to-point path, using a cached route as an upper bound.
+         * The cached route alone can detour. Exact A* refines it, so preprocessing
+         * is not a promise of faster queries. Missing or invalid caches fall back
+         * to ordinary A*. The current grid still permits diagonal corner cutting.
          */
         std::vector<Vec2ui> findPreprocessedPath(Vec2ui start, Vec2ui target)
         {
-            NodeData& startNode = getNode(start);
-            NodeData& targetNode = getNode(target);
-
-            ui32 startRegionID = startNode.regionID;
-            ui32 targetRegionID = targetNode.regionID;
-
-            // If start and target nodes are in the same region, call A* to find the shortest path.
-            if (startRegionID == targetRegionID)
-            {
+            if (!m_isPreprocessed || start.x >= m_width || start.y >= m_height ||
+                target.x >= m_width || target.y >= m_height)
                 return findPath(start, target);
+            const ui32 startIndex = getIndex(start);
+            const ui32 targetRegion = getNode(target).regionID;
+            if (getNode(start).regionID == targetRegion)
+                return findPath(start, target);
+            const auto cached = m_adjList[startIndex].find(targetRegion);
+            if (cached == m_adjList[startIndex].end() || cached->second.empty())
+                return findPath(start, target);
+            auto candidate = cached->second;
+            if (!(candidate.back() == target)) {
+                auto tail = findPath(candidate.back(), target);
+                if (tail.empty()) return findPath(start, target);
+                // The first tail node is already the last cached node.
+                candidate.insert(candidate.end(), tail.begin() + 1, tail.end());
             }
-
-            // Check if there is at least one precomputed path from the start node stored in `m_adjList`.
-            if (m_adjList[getIndex(startNode.pos)].size() == 0)
-            {
-                std::cout << "Could not find any path from the start node!" << std::endl;
-                return {};
-            }
-
-            ui32 startNodeIndex = getIndex(startNode.pos);
-            std::vector<Vec2ui> pathToRegion = m_adjList[startNodeIndex][targetRegionID];
-
-            // Check if there is a precomputed path from the start node to the region in which the target node is.
-            if (pathToRegion.size() == 0)
-            {
-                std::cout << "No path found to target region!" << std::endl;
-                return {};
-            }
-
-            // Retrieve the last node from the newly found path and check whether it is the target node.
-            Vec2ui pathEndNode = pathToRegion[pathToRegion.size() - 1];
-            if (pathEndNode == target)
-            {
-                // Reached destination
-                return pathToRegion;
-            }
-
-            // If the end node of the path is not the target, get the shortest path between it and the target.
-            std::vector<Vec2ui> pathWithinRegion = findPath(pathEndNode, target);
-            if (pathWithinRegion.size() == 0)
-            {
-                std::cout << "No path found inside target region!" << std::endl;
-                return {};
-            }
-
-            // Combine the two paths together: (start -> endNode) + (endNode -> target)
-            pathToRegion.insert(pathToRegion.end(), pathWithinRegion.begin(), pathWithinRegion.end());
-
-            return pathToRegion;
+            return AStar(start, target, m_nodes, std::move(candidate));
         }
 
         /**
@@ -1060,7 +1030,7 @@ namespace VGAIL
                         ui32 bestPathIndex = 0;
                         for (ui32 j = 1; j < paths.size(); j++)
                         {
-                            if (paths[j].size() < paths[bestPathIndex].size())
+                            if (pathCost(paths[j]) < pathCost(paths[bestPathIndex]))
                             {
                                 bestPathIndex = j;
                             }
@@ -1081,67 +1051,82 @@ namespace VGAIL
          * @param nodes The nodes of the NavMesh.
          * @return std::vector<Vec2ui> The shortest path between the start and the target nodes.
          */
-        std::vector<Vec2ui> AStar(Vec2ui start, Vec2ui target, std::vector<NodeData>& nodes)
+        // The route metric must match A*'s Euclidean edge costs.
+        f32 pathCost(const std::vector<Vec2ui>& path)
         {
-            std::vector<ui32> parents(nodes.size(), -1);
-            std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> openSet;
+            if (path.empty()) return std::numeric_limits<f32>::infinity();
+            f32 total = 0;
+            for (std::size_t i = 1; i < path.size(); ++i)
+                total += euclidean(path[i-1], path[i]);
+            return total;
+        }
 
-            for (NodeData& node : nodes)
-            {
-                node.g = INFINITY;
-                node.h = INFINITY;
-            }
-
-            ui32 startNodeIndex = getIndex(start);
-            ui32 targetNodeIndex = getIndex(target);
-
-            nodes[startNodeIndex].g = 0.0f;
-
-            openSet.push(nodes[startNodeIndex]);
-
-            while (openSet.size() > 0)
-            {
-                ui32 currentIndex = getIndex(openSet.top().pos);
-
-                while (openSet.size() > 0 && currentIndex == getIndex(openSet.top().pos))
-                {
-                    openSet.pop();
-                }
-
-                if (currentIndex == targetNodeIndex)
-                {
-                    std::vector<Vec2ui> shortestPath;
-
-                    while (currentIndex != -1)
-                    {
-                        shortestPath.push_back(nodes[currentIndex].pos);
-                        currentIndex = parents[currentIndex];
-                    }
-
-                    std::reverse(shortestPath.begin(), shortestPath.end());
-                    return shortestPath;
-                }
-
-                for (ui32 neighborIndex : m_neighbors[currentIndex])
-                {
-                    NodeData& neighbor = nodes[neighborIndex];
-                    if (neighbor.state == NodeState::OBSTRUCTABLE)
-                        continue;
-
-                    f32 tentativeG = nodes[currentIndex].g + euclidean(neighbor.pos, nodes[currentIndex].pos);
-
-                    if (tentativeG < neighbor.g)
-                    {
-                        parents[neighborIndex] = getIndex(nodes[currentIndex].pos);
-                        neighbor.g = tentativeG;
-                        neighbor.h = euclidean(neighbor.pos, nodes[targetNodeIndex].pos);
-
-                        openSet.push(nodes[neighborIndex]);
-                    }
+        // Geometry may have changed since preprocessing. Only a currently legal
+        // route can be used as an upper bound on the current optimum.
+        bool validCandidate(const std::vector<Vec2ui>& path, Vec2ui start,
+                            Vec2ui target, const std::vector<NodeData>& nodes)
+        {
+            if (path.empty() || !(path.front() == start) || !(path.back() == target))
+                return false;
+            for (std::size_t i = 0; i < path.size(); ++i) {
+                const auto p = path[i];
+                if (p.x >= m_width || p.y >= m_height ||
+                    nodes[p.y * m_width + p.x].state == NodeState::OBSTRUCTABLE)
+                    return false;
+                if (i) {
+                    const auto q = path[i-1];
+                    const auto dx = std::abs(static_cast<double>(p.x) - q.x);
+                    const auto dy = std::abs(static_cast<double>(p.y) - q.y);
+                    if (dx > 1 || dy > 1 || (dx == 0 && dy == 0)) return false;
                 }
             }
+            return true;
+        }
 
-            return {};
+        std::vector<Vec2ui> AStar(Vec2ui start, Vec2ui target,
+                                 std::vector<NodeData>& nodes,
+                                 std::vector<Vec2ui> incumbent = {})
+        {
+            if (start.x >= m_width || start.y >= m_height ||
+                target.x >= m_width || target.y >= m_height)
+                return {};
+            const ui32 startIndex = getIndex(start), targetIndex = getIndex(target);
+            if (nodes[startIndex].state == NodeState::OBSTRUCTABLE ||
+                nodes[targetIndex].state == NodeState::OBSTRUCTABLE) return {};
+            if (!validCandidate(incumbent, start, target, nodes)) incumbent.clear();
+            const f32 upperBound = pathCost(incumbent);
+            const ui32 noParent = std::numeric_limits<ui32>::max();
+            std::vector<ui32> parents(nodes.size(), noParent);
+            std::priority_queue<NodeData, std::vector<NodeData>, NodeDataComparator> open;
+            for (auto& node : nodes) { node.g = INFINITY; node.h = INFINITY; }
+            nodes[startIndex].g = 0;
+            nodes[startIndex].h = euclidean(start, target);
+            open.push(nodes[startIndex]);
+            while (!open.empty()) {
+                const auto entry = open.top(); open.pop();
+                const ui32 current = getIndex(entry.pos);
+                if (entry.g != nodes[current].g) continue; // stale queue entry
+                if (!incumbent.empty() && entry.f() >= upperBound) return incumbent;
+                if (current == targetIndex) {
+                    std::vector<Vec2ui> result;
+                    for (ui32 i = current; i != noParent; i = parents[i])
+                        result.push_back(nodes[i].pos);
+                    std::reverse(result.begin(), result.end());
+                    return result;
+                }
+                for (ui32 neighborIndex : m_neighbors[current]) {
+                    auto& neighbor = nodes[neighborIndex];
+                    if (neighbor.state == NodeState::OBSTRUCTABLE) continue;
+                    const f32 g = nodes[current].g + euclidean(neighbor.pos, entry.pos);
+                    if (g < neighbor.g) {
+                        parents[neighborIndex] = current;
+                        neighbor.g = g;
+                        neighbor.h = euclidean(neighbor.pos, target);
+                        open.push(neighbor);
+                    }
+                }
+            }
+            return incumbent;
         }
 
     private:
@@ -2348,12 +2333,13 @@ namespace VGAIL
                 return std::numeric_limits<double>::infinity();
             }
 
-            exploit = getWinrate();
-
-            // If current node is not same as root player then invert win rate
-            if (rootPlayerId != state.getPlayerTurnId()) {
-                exploit = 1 - getWinrate();
-            }
+            // The wins of a node are counted for the player whose turn it is in the node's state (see
+            // backpropagate). The parent chooses between its children, and in the parent the other
+            // player is to move. So a child is good for the parent when its own win rate is low.
+            // This holds on every level of the tree. The earlier code inverted the win rate only for
+            // nodes of the root's opponent, which made the opponent choose the moves that are best
+            // for the root player, so that the search overlooked simple threats.
+            exploit = 1 - getWinrate();
 
             explore = c_value * std::sqrt(std::log(static_cast<double>(parent.lock()->getVisits())) / static_cast<double>(num_visits.load()));
             UCT = exploit + explore;
