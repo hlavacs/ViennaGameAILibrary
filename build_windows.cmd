@@ -88,18 +88,32 @@ set "C_NAME=clang.exe"
 rem Prefer the clang that ships with Visual Studio, if that component is installed.
 if exist "%VSINSTALL%\VC\Tools\Llvm\x64\bin\clang++.exe" set "PATH=%VSINSTALL%\VC\Tools\Llvm\x64\bin;%PATH%"
 :compiler_chosen
-set "COMPILER_ARGS=-DCMAKE_CXX_COMPILER=%CXX_NAME%"
-rem Only raylib is written in C, so a C compiler is named only when the demos are built.
-if "%BUILD_DEMOS%"=="1" set "COMPILER_ARGS=%COMPILER_ARGS% -DCMAKE_C_COMPILER=%C_NAME%"
-
-for %%T in (%CXX_NAME% cmake.exe ninja.exe) do (
+for %%T in (cmake.exe ninja.exe) do (
     where %%T >nul 2>nul
     if errorlevel 1 (
         echo %%T not found. Install the C++ workload and the C++ CMake tools in Visual Studio Installer.
-        if "%USE_CLANG%"=="1" echo For --clang also install the component "C++ Clang tools for Windows".
         goto fail
     )
 )
+rem Use absolute compiler paths so a Visual Studio update is visible to CMake.
+for %%T in (%CXX_NAME%) do set "CXX_PATH=%%~$PATH:T"
+if not defined CXX_PATH (
+    echo %CXX_NAME% not found in the initialized Visual Studio environment.
+    if "%USE_CLANG%"=="1" echo For --clang also install the component "C++ Clang tools for Windows".
+    goto fail
+)
+set "CXX_PATH=%CXX_PATH:\=/%"
+set "C_ARG="
+if "%BUILD_DEMOS%"=="0" goto compilers_ready
+for %%T in (%C_NAME%) do set "C_PATH=%%~$PATH:T"
+if not defined C_PATH (
+    echo %C_NAME% not found in the initialized Visual Studio environment.
+    goto fail
+)
+set "C_PATH=%C_PATH:\=/%"
+set C_ARG="-DCMAKE_C_COMPILER:FILEPATH=%C_PATH%"
+:compilers_ready
+
 if "%RUN_TESTS%"=="1" (
     where ctest.exe >nul 2>nul
     if errorlevel 1 (
@@ -137,9 +151,21 @@ if "%BUILD_DOCS%"=="1" set "DOCS_ARG=-DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=OFF"
 
 rem --- Configure with Ninja (single configuration) ---
 set "STAGE=CMake configuration"
-cmake -S "%REPO_ROOT%" -B "%BUILD_DIR%" -G Ninja ^
-    -DCMAKE_BUILD_TYPE=%CONFIG% ^
-    %COMPILER_ARGS% %DEMO_ARG% %TEST_ARG% %DOCS_ARG%
+rem CMake also stores compiler paths under CMakeFiles. Refresh both copies
+rem when the selected toolchain changes or an older build cached only cl.exe.
+set "FRESH_ARG="
+set "CACHE=%BUILD_DIR%\CMakeCache.txt"
+if not exist "%CACHE%" goto configure
+findstr /I /L /X /C:"CMAKE_CXX_COMPILER:FILEPATH=%CXX_PATH%" /C:"CMAKE_CXX_COMPILER:STRING=%CXX_PATH%" "%CACHE%" >nul || goto refresh_compiler
+if "%BUILD_DEMOS%"=="0" goto configure
+findstr /I /L /X /C:"CMAKE_C_COMPILER:FILEPATH=%C_PATH%" /C:"CMAKE_C_COMPILER:STRING=%C_PATH%" "%CACHE%" >nul && goto configure
+:refresh_compiler
+echo Refreshing CMake configuration for "%CXX_PATH%" ...
+set "FRESH_ARG=--fresh"
+:configure
+cmake %FRESH_ARG% -S "%REPO_ROOT%" -B "%BUILD_DIR%" -G Ninja ^
+    -DCMAKE_BUILD_TYPE=%CONFIG% -DCMAKE_TRY_COMPILE_CONFIGURATION=%CONFIG% ^
+    "-DCMAKE_CXX_COMPILER:FILEPATH=%CXX_PATH%" %C_ARG% %DEMO_ARG% %TEST_ARG% %DOCS_ARG%
 if errorlevel 1 goto fail
 
 if "%BUILD_DOCS%"=="1" (
